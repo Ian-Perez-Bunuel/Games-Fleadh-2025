@@ -1,0 +1,56 @@
+{
+	"folders": [
+		{
+			"name": "Linux Config",
+			"path": "linux"
+		},
+		{
+			"name": "Windows Config",
+			"path": "windows"
+		},
+		{
+			"name": "macOS Config",
+			"path": "macos"
+		},
+		{
+			"name": "Source Code",
+			"path": "src"
+		},
+		{
+			"name": "Header Files",
+			"path": "include"
+		},
+		{
+			"name": "Debug Build",
+			"path": "debug"
+		},
+		{
+			"name": "Release Build",
+			"path": "release"
+		},
+		{
+			"name": "Web Build",
+			"path": "web"
+		},
+		{
+			"name": "Web Template",
+			"path": "template"
+		},
+		{
+			"name": "Root",
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.exclude": {
+			"**/.vscode": true,
+			"**/linux": true,
+			"**/macos": true,
+			"**/windows": true,
+			"**/raylib": true,
+			"**/emsdk": true,
+			"**/.gitmodules": true,
+			"**/objects": true
+		}
+	}
+}

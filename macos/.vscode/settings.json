@@ -1,0 +1,25 @@
+{
+    "terminal.integrated.profiles.osx": {
+        "bash": {
+            "path": "bash",
+            "icon": "terminal-bash"
+        },
+        "zsh": {
+            "path": "zsh",
+            "icon": "terminal-bash"  // Optional icon
+        },
+        "fish": {
+            "path": "fish",
+            "icon": "terminal-bash"  // Optional icon
+        },
+        "tmux": {
+            "path": "tmux",
+            "icon": "terminal-tmux"
+        },
+        "pwsh": {
+            "path": "pwsh",
+            "icon": "terminal-powershell"
+        }
+    },
+    "terminal.integrated.defaultProfile.osx": "zsh" // Set the default terminal profile
+}
