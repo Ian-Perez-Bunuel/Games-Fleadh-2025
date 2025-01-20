@@ -1,7 +1,5 @@
-#include "raylib.h"
-#include "stdio.h"
-#include "../include/Globals.h"
 #include "../include/game.h"
+#include "../include/Globals.h"
 
 Game::Game()
 {
@@ -15,11 +13,13 @@ Game::~Game()
 
 void Game::update() 
 {
-
+    player.move();
 }
 
 void Game::draw() 
 {
     DrawText("Hello, Raylib Starter Kit!", 190, 180, 20, DARKBLUE);
+
+    player.draw();
 }
 
