@@ -1,6 +1,7 @@
 #include "raylib.h"
 #include "stdio.h"
 
+#include "../include/Globals.h"
 #include "../include/game.h"
 
 // Specific include for build_web
@@ -8,18 +9,16 @@
 #include <emscripten/emscripten.h>
 #endif
 
-const int screenWidth = 800;
-const int screenHeight = 600;
 
-void GameLoop(void);
+
+void run();
+// Initialise Game
+Game game;
 
 int main(void)
 {
 
-    InitWindow(screenWidth, screenHeight, "Raylib StarterKit GPPI");
-
-    // Initialise Game
-    InitGame();
+    InitWindow(SCREEN_SIZE, SCREEN_SIZE, "Raylib StarterKit GPPI");
 
     // For web builds, do not use WindowShouldClose
     // see https://github.com/raysan5/raylib/wiki/Working-for-Web-(HTML5)#41-avoid-raylib-whilewindowshouldclose-loop
@@ -31,12 +30,9 @@ int main(void)
     while (!WindowShouldClose()) // Detect window close button or ESC key
     {
         // Call GameLoop
-        GameLoop();
+        run();
     }
 #endif
-
-    // Free resources
-    CloseGame();
 
     CloseWindow();
 
@@ -46,26 +42,16 @@ int main(void)
 int counter = 0;
 char message[11];
 
-void GameLoop(void)
+void run()
 {
-    BeginDrawing();
-
     // Update Game Data
     // Should be outside BeginDrawing(); and EndDrawing();
-    UpdateGame();
+    game.update();
 
-    ClearBackground(RAYWHITE);
-    DrawText("Welcome to Raylib", 190, 200, 20, LIGHTGRAY);
-    DrawText("Gameplay Programming I", 190, 220, 20, LIGHTGRAY);
+    BeginDrawing();
+    ClearBackground(BLACK);
 
-    // Update the counter message
-    sprintf(message, "%d", counter);
-    DrawText(message, 190, 240, 20, LIGHTGRAY);
-
-    // Draw the Game Objects
-    DrawGame();
-
-    counter++;
+    game.draw();
 
     EndDrawing();
 }

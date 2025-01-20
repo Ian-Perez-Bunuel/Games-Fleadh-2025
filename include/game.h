@@ -1,9 +1,17 @@
 #ifndef GAME_H
 #define GAME_H
 
-void InitGame();
-void UpdateGame();
-void DrawGame();
-void CloseGame();
+class Game
+{
+public:
+    Game();
+    ~Game();
+
+    void update();
+    void draw();
+
+private:
+
+};
 
 #endif // GAME_H

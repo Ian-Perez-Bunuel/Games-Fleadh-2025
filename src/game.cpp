@@ -1,19 +1,25 @@
 #include "raylib.h"
 #include "stdio.h"
+#include "../include/Globals.h"
 #include "../include/game.h"
 
-void InitGame() {
+Game::Game()
+{
     printf("Game Initialized!\n");
 }
 
-void UpdateGame() {
-    DrawText("Game Updating...", 190, 260, 20, DARKBLUE);
+Game::~Game()
+{
+    // Use to free resources
 }
 
-void DrawGame() {
+void Game::update() 
+{
+
+}
+
+void Game::draw() 
+{
     DrawText("Hello, Raylib Starter Kit!", 190, 180, 20, DARKBLUE);
 }
 
-void CloseGame() {
-    printf("Game Closed!\n");
-}
