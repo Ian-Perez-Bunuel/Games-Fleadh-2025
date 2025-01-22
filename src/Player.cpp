@@ -1,4 +1,5 @@
 #include "../include/Player.h"
+#include "../include/Globals.h"
 
 Player::Player()
 {
@@ -24,6 +25,9 @@ void Player::move()
     {
         velocity.x += SPEED;
     }
+
+    velocity.x *= 0.95f;
+    velocity.y *= 0.95f;
     
     // Make sure the player doesnt go too fast
     capSpeed();
