@@ -10,7 +10,7 @@ class Player
 public:
     Player();
 
-    void move();
+    void update();
     void draw();
 
 private:
@@ -20,9 +20,15 @@ private:
 
     void screenWrapping();
 
+    // Grapple
+    void shootGrapple();
+    void releaseGrapple();
+    bool grappleActive = false;
+    Vector2 grappleAnchor;
+
     // Movement
+    void move();
     void capSpeed();
-    void dampingMovement();
     const float SPEED = 0.25;
     const int MAX_SPEED = 6;
     Vector2 velocity;

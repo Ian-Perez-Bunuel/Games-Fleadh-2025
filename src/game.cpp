@@ -13,13 +13,27 @@ Game::~Game()
 
 void Game::update() 
 {
-    player.move();
+    player.update();
+
+    for (int i = 0; i < amount; i++)
+    {
+        objects[i].update();
+    }
+
+    if (IsMouseButtonPressed(1))
+    {
+        objects.push_back(Object(GetMousePosition()));
+        amount++;
+    }
 }
 
 void Game::draw() 
 {
     DrawText("Hello, Raylib Starter Kit!", 190, 180, 20, DARKBLUE);
 
-    player.draw();
+    for (int i = 0; i < amount; i++)
+    {
+        objects[i].draw();
+    }
 }
 

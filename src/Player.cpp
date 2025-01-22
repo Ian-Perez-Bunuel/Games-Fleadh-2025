@@ -43,6 +43,23 @@ void Player::move()
     position.y += velocity.y;
 }
 
+void Player::shootGrapple()
+{
+    if (IsMouseButtonPressed(0))
+    {
+        grappleActive = true;
+        grappleAnchor = GetMousePosition();
+    }   
+}
+
+void Player::releaseGrapple()
+{
+    if (IsMouseButtonReleased(0))
+    {
+        grappleActive = false;
+    }  
+}
+
 void Player::screenWrapping()
 {   
     // X coords wrapping
@@ -89,4 +106,17 @@ void Player::capSpeed()
 void Player::draw()
 {
     DrawCircleV(position, RADIUS, BLUE);
+    
+    if (grappleActive)
+    {
+        DrawLineV(position, grappleAnchor, GREEN);
+    }
+}
+
+void Player::update()
+{
+    shootGrapple();
+    releaseGrapple();
+    
+    move();
 }
