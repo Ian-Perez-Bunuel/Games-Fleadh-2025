@@ -15,19 +15,11 @@ void Game::update()
 {
     input();
 
-    for (Projectile& projectile : projectiles)
-    {
-        // Check if theyre colliding
-        for (Planet planet : planets)
-        {
-            if (CircleCollisions(planet.getGravityRadius(), projectile.getRadius(), planet.getPos(), projectile.getPos()))
-            {
-                projectile.moveToPlanet(planet.getGravity(), planet.getPos());
-            }
-        }
+    player.update();
 
-        // Move projectiles
-        projectile.move();
+    for (int i = 0; i < currentObjectAmount; i++)
+    {
+        objects[i]->update();
     }
 }
 
@@ -35,27 +27,38 @@ void Game::draw()
 {
     DrawText("Hello, Raylib Starter Kit!", 190, 180, 20, DARKBLUE);
 
-    for (Planet e : planets)
+    player.draw();
+
+    for (int i = 0; i < currentObjectAmount; i++)
     {
-        e.draw();
-    }
-    for (Projectile e : projectiles)
-    {
-        e.draw();
+        objects[i]->draw();
     }
 }
 
 void Game::input()
 {
-    // Spawn a planet
-    if (IsMouseButtonReleased(0))
+    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
     {
-        planets.push_back(Planet(GetMousePosition()));
+        if (!player.isGrappleActive())
+        {
+            for (int i = 0; i < currentObjectAmount; i++)
+            {
+                if (CheckCollisionPointCircle(GetMousePosition(), objects[i]->getPos(), objects[i]->getRadius()))
+                {
+                    player.shootGrapple(objects[i]);
+                }
+            }
+        }
+        else
+        {
+            player.releaseGrapple();
+        }
     }
-    // Spawn a projectile
-    if (IsMouseButtonReleased(1))
+
+    if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT))
     {
-        projectiles.push_back(Projectile(GetMousePosition()));
+        objects.push_back(std::make_shared<Object>(GetMousePosition()));
+        currentObjectAmount++;
     }
 }
 
