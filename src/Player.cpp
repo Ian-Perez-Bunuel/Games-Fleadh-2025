@@ -26,8 +26,12 @@ void Player::move()
         velocity.x += SPEED;
     }
 
-    velocity.x *= 0.95f;
-    velocity.y *= 0.95f;
+    // If no movement keys pressed
+    if (!IsKeyDown(KEY_W) && !IsKeyDown(KEY_A) && !IsKeyDown(KEY_S) && !IsKeyDown(KEY_D))
+    {
+        velocity.x *= 0.9f;
+        velocity.y *= 0.9f;
+    }
     
     // Make sure the player doesnt go too fast
     capSpeed();
