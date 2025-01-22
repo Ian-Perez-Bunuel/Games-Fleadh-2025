@@ -24,10 +24,9 @@ private:
     void capSpeed();
     void dampingMovement();
     const float SPEED = 0.25;
-    const int MAX_SPEED = 8;
-    Vector2 acceleration = {0.0f, 0.0f};
+    const int MAX_SPEED = 6;
     Vector2 velocity;
-    const float FRICTION = 0.5f;
+    const float FRICTION = 0.9f;
 
 
 };

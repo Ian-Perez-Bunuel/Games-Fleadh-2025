@@ -29,8 +29,8 @@ void Player::move()
     // If no movement keys pressed
     if (!IsKeyDown(KEY_W) && !IsKeyDown(KEY_A) && !IsKeyDown(KEY_S) && !IsKeyDown(KEY_D))
     {
-        velocity.x *= 0.9f;
-        velocity.y *= 0.9f;
+        velocity.x *= FRICTION;
+        velocity.y *= FRICTION;
     }
     
     // Make sure the player doesnt go too fast
@@ -70,23 +70,19 @@ void Player::capSpeed()
     if (velocity.x > MAX_SPEED)
     {
         velocity.x = MAX_SPEED;
-        printf("%13.3f", velocity.x);
     }
     else if (velocity.x < -MAX_SPEED)
     {
         velocity.x = -MAX_SPEED;
-        printf("%13.3f", velocity.x);
     }
 
     if (velocity.y > MAX_SPEED)
     {
         velocity.y = MAX_SPEED;
-        printf("%13.3f", velocity.y);
     }
     else if (velocity.y < -MAX_SPEED)
     {
         velocity.y = -MAX_SPEED;
-        printf("%13.3f", velocity.y);
     }
 }
 
