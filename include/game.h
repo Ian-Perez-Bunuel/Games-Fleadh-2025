@@ -3,8 +3,11 @@
 
 #include "raylib.h"
 #include "stdio.h"
+#include <vector>
+#include <math.h>
 
-#include "../include/Player.h"
+#include "../include/Planet.h"
+#include "../include/Projectile.h"
 
 class Game
 {
@@ -16,9 +19,13 @@ public:
     void draw();
 
 private:
+    void input();
+    
 
-    Player player;
+    bool CircleCollisions(int t_r1, int t_r2, Vector2 pos1, Vector2 pos2);
 
+    std::vector<Planet> planets;
+    std::vector<Projectile> projectiles;
 };
 
 #endif // GAME_H
