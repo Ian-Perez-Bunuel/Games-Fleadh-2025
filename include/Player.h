@@ -31,7 +31,11 @@ private:
     // Grapple
     void updateGrapple();
     bool grappleActive = false;
+    float grappleDist = 0;
+    const int MAX_GRAPPLE_DIST = 250;
     std::shared_ptr<Object> grappledObject;
+    // Color
+    Color grappleColor = GREEN;
 
     // Movement
     void move();
@@ -41,7 +45,7 @@ private:
     Vector2 velocity;
     const float FRICTION = 0.9f;
 
-
+    float pointToPointDist(Vector2 t_p1, Vector2 t_p2) { return sqrt(((t_p2.x - t_p1.x) * (t_p2.x - t_p1.x)) + ((t_p2.y - t_p1.y) * (t_p2.y - t_p1.y))); }
 };
 
 #endif // PLAYER_H

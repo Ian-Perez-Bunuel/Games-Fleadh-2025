@@ -45,17 +45,37 @@ void Player::move()
 
 void Player::shootGrapple(std::shared_ptr<Object> t_target)
 {
-    grappleActive = true;
-    grappledObject = t_target; 
+    float distToTarget = pointToPointDist(position, t_target->getPos());
+
+    //if (distToTarget < MAX_GRAPPLE_DIST)
+    //{
+        grappleActive = true;
+        grappledObject = t_target; 
+
+        // Set distance of target grappled
+        grappleDist = distToTarget;
+    //}
 }
 
 void Player::updateGrapple()
 {
+    float distFromGrappledObject = pointToPointDist(position, grappledObject->getPos());
+    if (distFromGrappledObject > grappleDist)
+    {
+        grappledObject->restrainDist(grappleDist, position);
+
+        grappleColor = RED;
+    }
+    else
+    {
+        grappleColor = GREEN;
+    }
 }
 
 void Player::releaseGrapple()
 {
     grappleActive = false;
+    grappleColor = GREEN;
 }
 
 void Player::screenWrapping()
@@ -64,19 +84,23 @@ void Player::screenWrapping()
     if (position.x < -RADIUS)
     {
         position.x = SCREEN_SIZE + RADIUS;
+        grappleActive = false;
     }
     else if (position.x > SCREEN_SIZE + RADIUS)
     {
         position.x = -RADIUS;
+        grappleActive = false;
     }
     // X coords wrapping
     if (position.y < -RADIUS)
     {
         position.y = SCREEN_SIZE + RADIUS;
+        grappleActive = false;
     }
     else if (position.y > SCREEN_SIZE + RADIUS)
     {
         position.y = -RADIUS;
+        grappleActive = false;
     }
 }
 
@@ -107,11 +131,16 @@ void Player::draw()
     
     if (grappleActive)
     {
-        DrawLineV(position, grappledObject->getPos(), GREEN);
+        DrawLineV(position, grappledObject->getPos(), grappleColor);
     }
 }
 
 void Player::update()
 {    
     move();
+
+    if (grappleActive)
+    {
+        updateGrapple();
+    }
 }
