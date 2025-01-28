@@ -47,14 +47,14 @@ void Player::shootGrapple(std::shared_ptr<Object> t_target)
 {
     float distToTarget = pointToPointDist(position, t_target->getPos());
 
-    //if (distToTarget < MAX_GRAPPLE_DIST)
-    //{
+    if (distToTarget < MAX_GRAPPLE_DIST)
+    {
         grappleActive = true;
         grappledObject = t_target; 
 
         // Set distance of target grappled
         grappleDist = distToTarget;
-    //}
+    }
 }
 
 void Player::updateGrapple()
@@ -62,7 +62,7 @@ void Player::updateGrapple()
     float distFromGrappledObject = pointToPointDist(position, grappledObject->getPos());
     if (distFromGrappledObject > grappleDist)
     {
-        grappledObject->restrainDist(grappleDist, position);
+        grappledObject->dragging(position);
 
         grappleColor = RED;
     }
@@ -74,6 +74,7 @@ void Player::updateGrapple()
 
 void Player::releaseGrapple()
 {
+    grappledObject->released();
     grappleActive = false;
     grappleColor = GREEN;
 }

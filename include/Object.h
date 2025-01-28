@@ -2,6 +2,7 @@
 #include "stdio.h"
 #include <math.h>
 
+
 class Object
 {
 public:
@@ -13,14 +14,18 @@ public:
     Vector2 getPos() { return position; }
     int getRadius() { return RADIUS; }
 
-    void restrainDist(float t_dist, Vector2 t_anchorPos);
+    void dragging(Vector2 t_anchorPos);
+    void released();
 
 private:
     const int RADIUS = 20;
 
     Vector2 position;
-    Vector2 velocity;
 
+    // Physics
+    float mass = 10;
+    float speed = 3.5f;
+    Vector2 velocity;
 
 
     float vectorLenght(Vector2 t_a, Vector2 t_b) { return (sqrt((t_b.x - t_a.x) * (t_b.x - t_a.x) + (t_b.y - t_a.y) * (t_b.y - t_a.y))); }
