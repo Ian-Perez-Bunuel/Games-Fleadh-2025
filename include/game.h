@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "../include/Player.h"
+#include "../include/Controller.h"
 
 
 class Game
@@ -19,6 +20,9 @@ public:
 
 private:
     void input();
+    void keyboardMouseInput();
+    void controllerInput();
+    Controller controller;
     
     Player player;
     

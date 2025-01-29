@@ -37,6 +37,11 @@ void Game::draw()
 
 void Game::input()
 {
+    controllerInput();
+}
+
+void Game::keyboardMouseInput()
+{
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
     {
         if (!player.isGrappleActive())
@@ -62,7 +67,10 @@ void Game::input()
     }
 }
 
-
+void Game::controllerInput()
+{
+    controller.getAllInputs();
+}
 
 bool Game::CircleCollisions(int t_r1, int t_r2, Vector2 pos1, Vector2 pos2)
 {
