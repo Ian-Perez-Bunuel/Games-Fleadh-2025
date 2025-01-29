@@ -38,13 +38,15 @@ void Game::draw()
 void Game::input()
 {
     controllerInput();
+
+    mouseInput();
 }
 
-void Game::keyboardMouseInput()
+void Game::mouseInput()
 {
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
     {
-        if (!player.isGrappleActive())
+        if (!player.getGrapple().isActive())
         {
             for (int i = 0; i < currentObjectAmount; i++)
             {

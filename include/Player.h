@@ -6,7 +6,7 @@
 #include <math.h>
 #include <memory>
 
-#include "../include/Object.h"
+#include "../include/Grapple.h"
 
 class Player
 {
@@ -16,10 +16,12 @@ public:
     void update(Vector2 t_stickDir);
     void draw();
 
-    // Grapple
-    bool isGrappleActive() { return grappleActive; }
-    void shootGrapple(std::shared_ptr<Object> t_target);
-    void releaseGrapple();
+    Vector2& getPos() { return position; }
+
+    // Grapple commands
+    Grapple getGrapple() { return grapple; }
+    void shootGrapple(std::shared_ptr<Object> t_target) { grapple.shoot(t_target, this->position); }
+    void releaseGrapple() { grapple.release(); }
 
 private:
     const int RADIUS = 20;
@@ -27,15 +29,6 @@ private:
     Vector2 position;
 
     void screenWrapping();
-
-    // Grapple
-    void updateGrapple();
-    bool grappleActive = false;
-    float grappleDist = 0;
-    const int MAX_GRAPPLE_DIST = 250;
-    std::shared_ptr<Object> grappledObject;
-    // Color
-    Color grappleColor = GREEN;
 
     // Movement
     void move();
@@ -46,7 +39,7 @@ private:
     Vector2 velocity;
     const float FRICTION = 0.9f;
 
-    float pointToPointDist(Vector2 t_p1, Vector2 t_p2) { return sqrt(((t_p2.x - t_p1.x) * (t_p2.x - t_p1.x)) + ((t_p2.y - t_p1.y) * (t_p2.y - t_p1.y))); }
+    Grapple grapple;
 };
 
 #endif // PLAYER_H

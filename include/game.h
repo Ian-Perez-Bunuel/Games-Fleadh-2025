@@ -20,7 +20,7 @@ public:
 
 private:
     void input();
-    void keyboardMouseInput();
+    void mouseInput();
     void controllerInput();
     Controller controller;
     
