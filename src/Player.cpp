@@ -43,6 +43,27 @@ void Player::move()
     position.y += velocity.y;
 }
 
+void Player::controllerMovement(Vector2 t_stickDir)
+{
+    velocity.x += t_stickDir.x;
+    velocity.y += t_stickDir.y;
+
+    if (t_stickDir.x == 0 && t_stickDir.y == 0)
+    {
+        velocity.x *= FRICTION;
+        velocity.y *= FRICTION;
+    }
+
+    // Make sure the player doesnt go too fast
+    capSpeed();
+
+    // Player can now travel from one side to the other using the borders
+    screenWrapping();
+
+    position.x += velocity.x;
+    position.y += velocity.y;
+}
+
 void Player::shootGrapple(std::shared_ptr<Object> t_target)
 {
     float distToTarget = pointToPointDist(position, t_target->getPos());
@@ -136,9 +157,16 @@ void Player::draw()
     }
 }
 
-void Player::update()
-{    
-    move();
+void Player::update(Vector2 t_stickDir)
+{   
+    if (IsGamepadAvailable(0))
+    {
+        controllerMovement(t_stickDir);
+    }
+    else
+    {
+        move();
+    }
 
     if (grappleActive)
     {

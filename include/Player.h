@@ -13,7 +13,7 @@ class Player
 public:
     Player();
 
-    void update();
+    void update(Vector2 t_stickDir);
     void draw();
 
     // Grapple
@@ -39,6 +39,7 @@ private:
 
     // Movement
     void move();
+    void controllerMovement(Vector2 t_stickDir);
     void capSpeed();
     const float SPEED = 0.25;
     const int MAX_SPEED = 6;

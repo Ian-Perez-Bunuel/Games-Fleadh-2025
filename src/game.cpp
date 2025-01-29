@@ -15,7 +15,7 @@ void Game::update()
 {
     input();
 
-    player.update();
+    player.update(controller.getLeftStickDir());
 
     for (int i = 0; i < currentObjectAmount; i++)
     {

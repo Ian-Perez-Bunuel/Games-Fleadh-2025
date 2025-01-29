@@ -33,6 +33,14 @@ class Controller
 public:
     void getAllInputs();
 
+    // Get info on triggers
+    float getLeftDepth() { return leftTrigger; }
+    float getRightDepth() { return rightTrigger; }
+
+    // Get info on sticks
+    Vector2 getLeftStickDir() { return leftStick; }
+    Vector2 getRightStickDir() { return rightStick; }
+
     Buttons buttons;
 
 private:
@@ -42,14 +50,19 @@ private:
     
     int gamepad = 0; // which gamepad being used
 
+    // Trigger depth
     float leftTrigger = 0;
     float rightTrigger = 0;
+
+    // Stick Direction
+    Vector2 leftStick = { 0.0f, 0.0f };
+    Vector2 rightStick = { 0.0f, 0.0f };
     
     // Set axis deadzones
-    const float LEFT_STICK_DEADZONE_X = 0.1f;
-    const float LEFT_STICK_DEADZONE_Y = 0.1f;
-    const float RIGHT_LEFT_STICK_DEADZONE_X = 0.1f;
-    const float RIGHT_LEFT_STICK_DEADZONE_Y = 0.1f;
+    const float LEFT_STICK_DEADZONE_X = 0.2f;
+    const float LEFT_STICK_DEADZONE_Y = 0.2f;
+    const float RIGHT_STICK_DEADZONE_X = 0.2f;
+    const float RIGHT_STICK_DEADZONE_Y = 0.2f;
     const float LEFT_TRIGGER_DEADZONE = -0.9f;
     const float RIGHT_TRIGGER_DEADZONE = -0.9f;
 };

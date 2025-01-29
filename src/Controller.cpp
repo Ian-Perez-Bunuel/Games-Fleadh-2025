@@ -64,14 +64,41 @@ void Controller::getButtonInput()
         buttons.rightBumper = true;
     }
 }
+
 void Controller::getTriggerInput()
 {
     // Check if bumpers are pressed
-    leftTrigger = GetGamepadAxisMovement(gamepad, GAMEPAD_AXIS_LEFT_TRIGGER);
-    rightTrigger = GetGamepadAxisMovement(gamepad, GAMEPAD_AXIS_RIGHT_TRIGGER);
+    leftTrigger = GetGamepadAxisMovement(gamepad, GAMEPAD_AXIS_LEFT_TRIGGER);   // Gamepad button 10
+    rightTrigger = GetGamepadAxisMovement(gamepad, GAMEPAD_AXIS_RIGHT_TRIGGER); // Gamepad button 12
+
+    // Calculate deadzones
+    if (leftTrigger < LEFT_TRIGGER_DEADZONE) 
+    {
+        leftTrigger = -1.0f;
+    }
+    if (rightTrigger < RIGHT_TRIGGER_DEADZONE) 
+    {
+        rightTrigger = -1.0f;
+    }
 }
 
 void Controller::getStickInput()
 {
-    
+    // Left stick
+    // Axis 0 = X   // Left: -1.0, Right: 1.0
+    // Axis 1 = Y   // Up: -1.0, Down: 1.0
+    leftStick.x = GetGamepadAxisMovement(gamepad, 0);
+    leftStick.y = GetGamepadAxisMovement(gamepad, 1);
+
+    // Right stick
+    // Axis 2 = X   // Left: -1.0, Right: 1.0
+    // Axis 3 = Y   // Up: -1.0, Down: 1.0
+    rightStick.x = GetGamepadAxisMovement(gamepad, 2);
+    rightStick.y = GetGamepadAxisMovement(gamepad, 3);
+
+    // Force deadzones
+    if (leftStick.x > -LEFT_STICK_DEADZONE_X && leftStick.x < LEFT_STICK_DEADZONE_X) leftStick.x = 0.0f;
+    if (leftStick.y > -LEFT_STICK_DEADZONE_Y && leftStick.y < LEFT_STICK_DEADZONE_Y) leftStick.y = 0.0f;
+    if (rightStick.x > -RIGHT_STICK_DEADZONE_X && rightStick.x < RIGHT_STICK_DEADZONE_X) rightStick.x = 0.0f;
+    if (rightStick.y > -RIGHT_STICK_DEADZONE_Y && rightStick.y < RIGHT_STICK_DEADZONE_Y) rightStick.y = 0.0f;
 }
