@@ -12,11 +12,24 @@ void Controller::getAllInputs()
     {
         if (TextFindIndex(TextToLower(GetGamepadName(gamepad)), XBOX_ALIAS_1) > -1 || TextFindIndex(TextToLower(GetGamepadName(gamepad)), XBOX_ALIAS_2) > -1)
         {
+            updateCursor();
+
             getButtonInput();
             getStickInput();   
             getTriggerInput();
         }
     }
+}
+
+void Controller::drawCursor()
+{
+    DrawCircleLinesV(cursorPos, CURSOR_RADIUS, BLUE); 
+}
+
+void Controller::updateCursor()
+{
+    cursorPos.x += rightStick.x * 10;
+    cursorPos.y += rightStick.y * 10;
 }
 
 void Controller::getButtonInput()
@@ -75,10 +88,20 @@ void Controller::getTriggerInput()
     if (leftTrigger < LEFT_TRIGGER_DEADZONE) 
     {
         leftTrigger = -1.0f;
+        leftTriggerPressed = false;
+    }
+    else
+    {
+        leftTriggerPressed = true;
     }
     if (rightTrigger < RIGHT_TRIGGER_DEADZONE) 
     {
         rightTrigger = -1.0f;
+        rightTriggerPressed = false;
+    }
+    else
+    {
+        rightTriggerPressed = true;
     }
 }
 

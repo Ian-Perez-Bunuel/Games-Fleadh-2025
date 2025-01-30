@@ -43,6 +43,14 @@ public:
 
     Buttons buttons;
 
+    // Cursor
+    Vector2 getCursorPos() { return cursorPos; }
+    int getCursorRadius() { return CURSOR_RADIUS; }
+    void drawCursor();
+
+    bool getLeftTrigger() { return leftTriggerPressed; }
+    bool getRightTrigger() { return rightTriggerPressed; }
+
 private:
     void getButtonInput();
     void getTriggerInput();
@@ -53,10 +61,17 @@ private:
     // Trigger depth
     float leftTrigger = 0;
     float rightTrigger = 0;
+    bool leftTriggerPressed = false;
+    bool rightTriggerPressed = false;
 
     // Stick Direction
     Vector2 leftStick = { 0.0f, 0.0f };
     Vector2 rightStick = { 0.0f, 0.0f };
+
+    // Cursor
+    void updateCursor();
+    Vector2 cursorPos  = { 400.0f, 400.0f};
+    const int CURSOR_RADIUS = 40;
     
     // Set axis deadzones
     const float LEFT_STICK_DEADZONE_X = 0.2f;

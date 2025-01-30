@@ -33,13 +33,24 @@ void Game::draw()
     {
         objects[i]->draw();
     }
+
+    // Controller cursor
+    if (IsGamepadAvailable(0))
+    {
+        controller.drawCursor();
+    }
 }
 
 void Game::input()
 {
-    controllerInput();
-
-    mouseInput();
+    //if (IsGamepadAvailable(0))
+    //{
+        controllerInput();
+    //}
+    //else
+    //{
+        mouseInput();
+    //}
 }
 
 void Game::mouseInput()
@@ -72,16 +83,42 @@ void Game::mouseInput()
 void Game::controllerInput()
 {
     controller.getAllInputs();
+
+    // Player grapple
+    if (controller.getLeftTrigger())
+    {
+        printf("pressed");
+        for (int i = 0; i < currentObjectAmount; i++)
+        {
+            if (CheckCollisionCircles(controller.getCursorPos(), controller.getCursorRadius(), objects[i]->getPos(), objects[i]->getRadius()))
+            {
+                player.shootGrapple(objects[i]);
+            }
+        }
+    }
+    else
+    {
+        if (player.getGrapple().isActive())
+        {
+            player.releaseGrapple();
+        }
+    }
+
+    if (controller.getRightTrigger())
+    {
+        objects.push_back(std::make_shared<Object>(controller.getCursorPos()));
+        currentObjectAmount++;
+    }
 }
 
 bool Game::CircleCollisions(int t_r1, int t_r2, Vector2 pos1, Vector2 pos2)
 {
     // Calculate the squared distance between the two positions
-    double distanceSquared = std::pow(pos2.x - pos1.x, 2) + std::pow(pos2.y - pos1.y, 2);
+    double distanceSquared = pow(pos2.x - pos1.x, 2) + pow(pos2.y - pos1.y, 2);
     
     // Calculate the squared sum of the radii
     int radiusSum = t_r1 + t_r2;
-    double radiusSumSquared = std::pow(radiusSum, 2);
+    double radiusSumSquared = pow(radiusSum, 2);
     
     // Check if the distance squared is less than or equal to the squared radius sum
     return distanceSquared <= radiusSumSquared;
