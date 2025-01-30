@@ -19,7 +19,7 @@ void Game::update()
 
     for (int i = 0; i < currentObjectAmount; i++)
     {
-        objects[i]->update();
+        objects[i]->update(controller.getRightStickDir());
     }
 }
 
@@ -85,9 +85,8 @@ void Game::controllerInput()
     controller.getAllInputs();
 
     // Player grapple
-    if (controller.getLeftTrigger())
+    if (IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_TRIGGER_2))
     {
-        printf("pressed");
         for (int i = 0; i < currentObjectAmount; i++)
         {
             if (CheckCollisionCircles(controller.getCursorPos(), controller.getCursorRadius(), objects[i]->getPos(), objects[i]->getRadius()))
@@ -104,7 +103,7 @@ void Game::controllerInput()
         }
     }
 
-    if (controller.getRightTrigger())
+    if (IsGamepadButtonDown(0, GAMEPAD_BUTTON_RIGHT_TRIGGER_2))
     {
         objects.push_back(std::make_shared<Object>(controller.getCursorPos()));
         currentObjectAmount++;

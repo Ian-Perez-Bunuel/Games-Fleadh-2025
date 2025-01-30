@@ -114,11 +114,11 @@ void Player::draw()
     grapple.draw();
 }
 
-void Player::update(Vector2 t_stickDir)
+void Player::update(Vector2 t_leftStickDir)
 {   
     if (IsGamepadAvailable(0))
     {
-        controllerMovement(t_stickDir);
+        controllerMovement(t_leftStickDir);
     }
     else
     {

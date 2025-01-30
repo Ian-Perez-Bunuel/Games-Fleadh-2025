@@ -38,42 +38,34 @@ void Controller::getButtonInput()
         // Check if button if an input is given
     if (IsGamepadButtonDown(gamepad, GAMEPAD_BUTTON_MIDDLE_RIGHT))
     {
-        printf("Start Pressed");
         buttons.start = true;
     }
     if (IsGamepadButtonDown(gamepad, GAMEPAD_BUTTON_MIDDLE_LEFT))
     {
-        printf("Select Pressed");
         buttons.select = true;
     }
     if (IsGamepadButtonDown(gamepad, GAMEPAD_BUTTON_RIGHT_FACE_LEFT))
     {
-        printf("X Pressed");
         buttons.X = true;
     }
     if (IsGamepadButtonDown(gamepad, GAMEPAD_BUTTON_RIGHT_FACE_DOWN)) 
     {
-        printf("A Pressed");
         buttons.A = true;
     }
     if (IsGamepadButtonDown(gamepad, GAMEPAD_BUTTON_RIGHT_FACE_RIGHT))
     {
-        printf("B Pressed");
         buttons.B = true;
     }
     if (IsGamepadButtonDown(gamepad, GAMEPAD_BUTTON_RIGHT_FACE_UP))
     {
-        printf("Y Pressed");
         buttons.Y = true;
     }
     if (IsGamepadButtonDown(gamepad, GAMEPAD_BUTTON_LEFT_TRIGGER_1))
     {
-        printf("LEFT_TRIGGER");
         buttons.leftBumper = true;
     }
     if (IsGamepadButtonDown(gamepad, GAMEPAD_BUTTON_RIGHT_TRIGGER_1))
     {
-        printf("RIGHT_TRIGGER");
         buttons.rightBumper = true;
     }
 }
@@ -88,20 +80,10 @@ void Controller::getTriggerInput()
     if (leftTrigger < LEFT_TRIGGER_DEADZONE) 
     {
         leftTrigger = -1.0f;
-        leftTriggerPressed = false;
-    }
-    else
-    {
-        leftTriggerPressed = true;
     }
     if (rightTrigger < RIGHT_TRIGGER_DEADZONE) 
     {
         rightTrigger = -1.0f;
-        rightTriggerPressed = false;
-    }
-    else
-    {
-        rightTriggerPressed = true;
     }
 }
 

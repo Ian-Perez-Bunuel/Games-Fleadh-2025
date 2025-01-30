@@ -8,13 +8,14 @@ class Object
 public:
     Object(Vector2 t_pos = {0.0, 0.0});
 
-    void update();
+    void update(Vector2 t_stickDir);
     void draw();
 
     Vector2 getPos() { return position; }
     int getRadius() { return RADIUS; }
 
-    void dragging(Vector2 t_anchorPos);
+    void dragging(Vector2 t_anchorPos, float t_dist);
+    void stickControl(Vector2 t_stickDir);
     void released();
 
 private:

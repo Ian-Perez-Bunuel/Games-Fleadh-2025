@@ -48,9 +48,6 @@ public:
     int getCursorRadius() { return CURSOR_RADIUS; }
     void drawCursor();
 
-    bool getLeftTrigger() { return leftTriggerPressed; }
-    bool getRightTrigger() { return rightTriggerPressed; }
-
 private:
     void getButtonInput();
     void getTriggerInput();
@@ -61,8 +58,6 @@ private:
     // Trigger depth
     float leftTrigger = 0;
     float rightTrigger = 0;
-    bool leftTriggerPressed = false;
-    bool rightTriggerPressed = false;
 
     // Stick Direction
     Vector2 leftStick = { 0.0f, 0.0f };

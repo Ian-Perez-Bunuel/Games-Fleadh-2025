@@ -4,8 +4,9 @@ Object::Object(Vector2 t_pos) : position(t_pos)
 {
 }
 
-void Object::update()
+void Object::update(Vector2 t_stickDir)
 {
+	stickControl(t_stickDir);
 	position.x += velocity.x * GetFrameTime();
 	position.y += velocity.y * GetFrameTime();
 }
@@ -15,36 +16,40 @@ void Object::draw()
     DrawCircleV(position, RADIUS, RED);
 }
 
-void Object::dragging(Vector2 t_anchorPos)
+void Object::dragging(Vector2 t_anchorPos, float t_dist)
 {
-	// Variables
-	float lenght = 0.0f;
-	Vector2 heading = {0.0f, 0.0f};
+	// // Variables
+	// float lenght = 0.0f;
+	// Vector2 heading = {0.0f, 0.0f};
 
 
-	heading.x = (t_anchorPos.x) - position.x;
-	heading.y = (t_anchorPos.y) - position.y;
-	lenght = sqrtf((heading.x * heading.x) + (heading.y * heading.y)); // find the distance
+	// heading.x = (t_anchorPos.x) - position.x;
+	// heading.y = (t_anchorPos.y) - position.y;
+	// lenght = sqrtf((heading.x * heading.x) + (heading.y * heading.y)); // find the distance
 
-	heading.x = heading.x / lenght;
-	heading.y = heading.y / lenght;
-	heading.x = heading.x * (lenght * 1.5f); // change speed to the actual speed
-	heading.y = heading.y * (lenght * 1.5f); // change speed to the actual speed
-	velocity = heading;
+	// heading.x = heading.x / lenght;
+	// heading.y = heading.y / lenght;
+	// heading.x = heading.x * (lenght * 1.5f); // change speed to the actual speed
+	// heading.y = heading.y * (lenght * 1.5f); // change speed to the actual speed
+	// velocity = heading;
 
-	// velocity.x *= speed / lenght;
-	// velocity.y *= speed / lenght;
+	// position.x += velocity.x * GetFrameTime();
+	// position.y += velocity.y * GetFrameTime();
 
-	position.x += velocity.x * GetFrameTime();
-	position.y += velocity.y * GetFrameTime();
 	// Rigid dist restriction
-    // position = scaleVectorLenght(t_anchorPos, position, t_dist);
+    position = scaleVectorLenght(t_anchorPos, position, t_dist);
+}
+
+void Object::stickControl(Vector2 t_stickDir)
+{
+	velocity.x += t_stickDir.x * 30;
+	velocity.y += t_stickDir.y * 30;
 }
 
 void Object::released()
 {
-	velocity.x *= 2.5f;
-	velocity.y *= 2.5f;
+	//velocity.x *= 2.5f;
+	//velocity.y *= 2.5f;
 }
 
 Vector2 Object::scaleVectorLenght(Vector2 t_startPoint, Vector2 t_endPoint, int t_distance)

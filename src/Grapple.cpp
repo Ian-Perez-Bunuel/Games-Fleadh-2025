@@ -28,7 +28,7 @@ void Grapple::update()
     float distFromGrappledObject = pointToPointDist(*userPos, grappledObject->getPos());
     if (distFromGrappledObject > length)
     {
-        grappledObject->dragging(*userPos);
+        grappledObject->dragging(*userPos, length);
 
         color = RED;
     }
