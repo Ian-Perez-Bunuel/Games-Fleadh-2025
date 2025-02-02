@@ -116,14 +116,8 @@ void Player::draw()
 
 void Player::update(Vector2 t_leftStickDir)
 {   
-    if (IsGamepadAvailable(0))
-    {
-        controllerMovement(t_leftStickDir);
-    }
-    else
-    {
-        move();
-    }
+    controllerMovement(t_leftStickDir);
+    move();
 
     if (grapple.isActive())
     {

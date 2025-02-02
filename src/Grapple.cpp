@@ -10,6 +10,7 @@ void Grapple::shoot(std::shared_ptr<Object> t_target, Vector2& t_userPos)
     {
         active = true;
         grappledObject = t_target; 
+        grappledObject->grab(*userPos);
 
         // Set distance of target grappled
         length = distToTarget;
@@ -25,17 +26,7 @@ void Grapple::release()
 
 void Grapple::update()
 {
-    float distFromGrappledObject = pointToPointDist(*userPos, grappledObject->getPos());
-    if (distFromGrappledObject > length)
-    {
-        grappledObject->dragging(*userPos, length);
-
-        color = RED;
-    }
-    else
-    {
-        color = GREEN;
-    }
+    grappledObject->held(*userPos, length);
 }
 void Grapple::draw()
 {

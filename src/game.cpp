@@ -19,7 +19,7 @@ void Game::update()
 
     for (int i = 0; i < currentObjectAmount; i++)
     {
-        objects[i]->update(controller.getRightStickDir());
+        objects[i]->update();
     }
 }
 
@@ -45,7 +45,7 @@ void Game::input()
 {
     //if (IsGamepadAvailable(0))
     //{
-        controllerInput();
+        //controllerInput();
     //}
     //else
     //{
@@ -55,19 +55,19 @@ void Game::input()
 
 void Game::mouseInput()
 {
-    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+    if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
     {
-        if (!player.getGrapple().isActive())
+        for (int i = 0; i < currentObjectAmount; i++)
         {
-            for (int i = 0; i < currentObjectAmount; i++)
+            if (CheckCollisionPointCircle(GetMousePosition(), objects[i]->getPos(), objects[i]->getRadius()))
             {
-                if (CheckCollisionPointCircle(GetMousePosition(), objects[i]->getPos(), objects[i]->getRadius()))
-                {
-                    player.shootGrapple(objects[i]);
-                }
+                player.shootGrapple(objects[i]);
             }
         }
-        else
+    }
+    else
+    {
+        if (player.getGrapple().isActive())
         {
             player.releaseGrapple();
         }
