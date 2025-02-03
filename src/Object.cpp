@@ -22,48 +22,49 @@ void Object::grab(Vector2 t_anchorPos)
 {
 	if (!grabbed)
 	{
-		angle = atan2(position.y - t_anchorPos.y, position.x - t_anchorPos.x);
+		angle = radiansToDegrees(atan2(position.y - t_anchorPos.y, position.x - t_anchorPos.x));
 		grabbed = true;
 	}
 }
 
 void Object::held(Vector2 t_anchorPos, float t_dist)
 {
-	angle += speed * GetFrameTime();
 	if (grabbed)
 	{
+		angle += speed * GetFrameTime();
+		if (anchorDist < 0.0f)
+		{
+			anchorDist = t_dist;
+		}	
+
+		// Restrict angle
+		if (angle >= 360)
+		{
+			angle = 0;
+
+			if (speed < MAX_SPEED)
+			{
+				speed *= 1.25;
+			}
+		}
+
+		// Get the distance from the anchor to the object
+		// float distance = sqrt(pow((t_anchorPos.x - position.x), 2) + pow((t_anchorPos.y - position.y), 2));
+
 		// Rigid dist restriction
-    	position.x = t_anchorPos.x + t_dist * cos(angle);
-		position.y = t_anchorPos.y + t_dist * sin(angle);
+		position.x = t_anchorPos.x + anchorDist * cos(degreesToRadians(angle));
+		position.y = t_anchorPos.y + anchorDist * sin(degreesToRadians(angle));
 	}
-
-	// Aim line
-	// Compute direction vector from anchor to object
-        float dx = position.x - t_anchorPos.x;
-        float dy = position.y - t_anchorPos.y;
-
-        // Compute perpendicular direction (-dy, dx)
-        Vector2 perpDir = { -dy, dx };
-
-        // Normalize the perpendicular vector
-        float length = sqrt(perpDir.x * perpDir.x + perpDir.y * perpDir.y);
-        perpDir.x = (perpDir.x / length) * lineLength;
-        perpDir.y = (perpDir.y / length) * lineLength;
-
-        // Compute start and end points of the perpendicular line
-        Vector2 lineStart = { position.x, position.y };
-        Vector2 lineEnd = { position.x + perpDir.x, position.y + perpDir.y };
-
-		velocity.x = perpDir.x / 100 * speed + 1;
-		velocity.y = perpDir.y / 100 * speed + 1;
-
-		DrawLineV(lineStart, lineEnd, RED);
 }
 
 
-void Object::released()
+void Object::released(Vector2 t_releaseDir)
 {
 	grabbed = false;
-	//velocity.x *= 2.5f;
-	//velocity.y *= 2.5f;
+
+	velocity.x = t_releaseDir.x - position.x;
+	velocity.y = t_releaseDir.y - position.y;
+
+	velocity.x *= 0.05 * (speed / MAX_SPEED);
+	velocity.y *= 0.05 * (speed / MAX_SPEED);
 }

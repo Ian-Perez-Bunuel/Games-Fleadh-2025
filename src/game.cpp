@@ -43,19 +43,25 @@ void Game::draw()
 
 void Game::input()
 {
-    //if (IsGamepadAvailable(0))
-    //{
-        //controllerInput();
-    //}
-    //else
-    //{
+    if (IsGamepadAvailable(0))
+    {
+        controllerInput();
+    }
+    else
+    {
         mouseInput();
-    //}
+    }
 }
 
 void Game::mouseInput()
 {
     if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
+    {
+        player.releaseGrapple(GetMousePosition());
+    }
+
+    // Used to grab objects
+    if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT))
     {
         for (int i = 0; i < currentObjectAmount; i++)
         {
@@ -65,15 +71,8 @@ void Game::mouseInput()
             }
         }
     }
-    else
-    {
-        if (player.getGrapple().isActive())
-        {
-            player.releaseGrapple();
-        }
-    }
 
-    if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT))
+    if (IsKeyPressed(KEY_SPACE))
     {
         objects.push_back(std::make_shared<Object>(GetMousePosition()));
         currentObjectAmount++;
@@ -84,26 +83,24 @@ void Game::controllerInput()
 {
     controller.getAllInputs();
 
-    // Player grapple
     if (IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_TRIGGER_2))
+    {
+        player.releaseGrapple(GetMousePosition());
+    }
+
+    // Used to grab objects
+    if (IsGamepadButtonDown(0, GAMEPAD_BUTTON_RIGHT_TRIGGER_2))
     {
         for (int i = 0; i < currentObjectAmount; i++)
         {
-            if (CheckCollisionCircles(controller.getCursorPos(), controller.getCursorRadius(), objects[i]->getPos(), objects[i]->getRadius()))
+            if (CheckCollisionPointCircle(controller.getCursorPos(), objects[i]->getPos(), objects[i]->getRadius()))
             {
                 player.shootGrapple(objects[i]);
             }
         }
     }
-    else
-    {
-        if (player.getGrapple().isActive())
-        {
-            player.releaseGrapple();
-        }
-    }
 
-    if (IsGamepadButtonDown(0, GAMEPAD_BUTTON_RIGHT_TRIGGER_2))
+    if (IsGamepadButtonDown(0, GAMEPAD_BUTTON_RIGHT_FACE_DOWN))
     {
         objects.push_back(std::make_shared<Object>(controller.getCursorPos()));
         currentObjectAmount++;

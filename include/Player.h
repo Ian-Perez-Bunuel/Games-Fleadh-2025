@@ -21,7 +21,7 @@ public:
     // Grapple commands
     Grapple getGrapple() { return grapple; }
     void shootGrapple(std::shared_ptr<Object> t_target) { grapple.shoot(t_target, this->position); }
-    void releaseGrapple() { grapple.release(); }
+    void releaseGrapple(Vector2 t_releaseDir) { grapple.release(t_releaseDir); }
 
 private:
     const int RADIUS = 20;

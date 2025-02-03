@@ -9,29 +9,39 @@ void Grapple::shoot(std::shared_ptr<Object> t_target, Vector2& t_userPos)
     if (distToTarget < MAX_LENGTH)
     {
         active = true;
-        grappledObject = t_target; 
-        grappledObject->grab(*userPos);
 
-        // Set distance of target grappled
-        length = distToTarget;
+        t_target->grab(*userPos);
+
+        grappledObjects.push_back(t_target); 
     }
 }
 
-void Grapple::release()
+void Grapple::release(Vector2 t_releaseDir)
 {
-    grappledObject->released();
+    for (std::shared_ptr<Object>& object : grappledObjects)
+    {
+        object->released(t_releaseDir);
+    }
+    grappledObjects.clear();
     active = false;
     color = GREEN;
 }
 
 void Grapple::update()
 {
-    grappledObject->held(*userPos, length);
+    for (std::shared_ptr<Object>& object : grappledObjects)
+    {
+        float distToTarget = pointToPointDist(*userPos, object->getPos());
+        object->held(*userPos, distToTarget);
+    }
 }
 void Grapple::draw()
 {
     if (active)
     {
-        DrawLineV(*userPos, grappledObject->getPos(), color);
+        for (std::shared_ptr<Object>& object : grappledObjects)
+        {
+            DrawLineV(*userPos, object->getPos(), color);
+        }
     }
 }

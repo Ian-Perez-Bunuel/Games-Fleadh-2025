@@ -16,7 +16,7 @@ public:
 
     void grab(Vector2 t_anchorPos);
     void held(Vector2 t_anchorPos, float t_dist);
-    void released();
+    void released(Vector2 t_releaseDir);
 
 private:
     const int RADIUS = 20;
@@ -28,10 +28,11 @@ private:
 
     // Physics
     float mass = 10;
-    float speed = 4.0f;
-    float rotationSpeed = 450;
+    float speed = 150.0f;
+    const int MAX_SPEED = 260;
     Vector2 velocity;
+    float anchorDist = -1.0f;
 
-    // Aim line
-    int lineLength = 150;
+    float radiansToDegrees(float t_radians) { return t_radians * (180/3.14f); }
+    float degreesToRadians(float t_degrees) { return t_degrees * (3.14f / 180); }
 };
