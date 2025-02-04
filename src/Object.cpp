@@ -1,7 +1,12 @@
 #include "../include/Object.h"
+#include <random>
 
 Object::Object(Vector2 t_pos) : position(t_pos)
 {
+	texture = LoadTexture("../resources/object.png");
+	radius = (rand() % 30) + 10;
+	mass = radius * 2;
+	speed -= mass;
 }
 
 void Object::update()
@@ -15,7 +20,7 @@ void Object::update()
 
 void Object::draw()
 {
-    DrawCircleV(position, RADIUS, RED);
+    DrawCircleV(position, radius, RED);
 }
 
 void Object::grab(Vector2 t_anchorPos)

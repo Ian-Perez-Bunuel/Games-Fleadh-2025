@@ -6,20 +6,21 @@
 class Object
 {
 public:
-    Object(Vector2 t_pos = {0.0, 0.0});
+    Object(Vector2 t_pos = {0.0f, 0.0f});
 
     void update();
     void draw();
 
     Vector2 getPos() { return position; }
-    int getRadius() { return RADIUS; }
+    int getRadius() { return radius; }
 
     void grab(Vector2 t_anchorPos);
     void held(Vector2 t_anchorPos, float t_dist);
     void released(Vector2 t_releaseDir);
 
 private:
-    const int RADIUS = 20;
+    int radius = 20;
+    Texture2D texture;
 
     bool grabbed = false;
     float angle = 0.0f;
