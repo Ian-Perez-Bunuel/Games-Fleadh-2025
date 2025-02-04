@@ -34,6 +34,9 @@ private:
     Vector2 velocity;
     float anchorDist = -1.0f;
 
+    // Shaders
+    Shader glowShader;
+
     float radiansToDegrees(float t_radians) { return t_radians * (180/3.14f); }
     float degreesToRadians(float t_degrees) { return t_degrees * (3.14f / 180); }
 };

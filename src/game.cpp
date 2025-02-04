@@ -1,6 +1,7 @@
 #include "../include/game.h"
 #include "../include/Globals.h"
 
+
 Game::Game()
 {
     printf("Game Initialized!\n");
@@ -27,8 +28,8 @@ void Game::draw()
 {
     DrawText("Hello, Raylib Starter Kit!", 190, 180, 20, DARKBLUE);
 
-    player.draw();
 
+    player.draw();
     for (int i = 0; i < currentObjectAmount; i++)
     {
         objects[i]->draw();
