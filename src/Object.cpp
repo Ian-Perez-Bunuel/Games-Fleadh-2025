@@ -3,7 +3,7 @@
 
 Object::Object(Vector2 t_pos) : position(t_pos)
 {
-	texture = LoadTexture("../resources/object.png");
+	texture = LoadTexture("resources/object.png");
 	radius = (rand() % 30) + 10;
 	mass = radius * 2;
 	speed -= mass;
@@ -21,6 +21,7 @@ void Object::update()
 void Object::draw()
 {
     DrawCircleV(position, radius, RED);
+	DrawTextureEx(texture, {position.x - radius, position.y - radius}, 0, radius / 400.0f, WHITE);
 }
 
 void Object::grab(Vector2 t_anchorPos)
