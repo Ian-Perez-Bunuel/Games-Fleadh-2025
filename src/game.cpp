@@ -1,15 +1,45 @@
 #include "../include/game.h"
 #include "../include/Globals.h"
 
+#define GLSL_VERSION 330
 
 Game::Game()
 {
     printf("Game Initialized!\n");
 }
 
+void Game::initialize()
+{
+    // Shader
+	blurHorizontal = LoadShader(0, "resources/Shaders/glowHorizontal.fs");
+    blurVertical = LoadShader(0, "resources/Shaders/glowVertical.fs");
+    combineShader = LoadShader(0, "resources/Shaders/combine.fs");
+    // textures
+    targetScene = LoadRenderTexture(SCREEN_SIZE, SCREEN_SIZE);
+    targetBlur1 = LoadRenderTexture(SCREEN_SIZE, SCREEN_SIZE);
+    targetBlur2 = LoadRenderTexture(SCREEN_SIZE, SCREEN_SIZE);
+
+    float resolution = SCREEN_SIZE;
+
+    // Uniforms
+    SetShaderValue(blurHorizontal, GetShaderLocation(blurHorizontal, "resolution"), &resolution, SHADER_UNIFORM_FLOAT);
+    SetShaderValue(blurHorizontal, GetShaderLocation(blurHorizontal, "radius"), &glowRadius, SHADER_UNIFORM_FLOAT);
+
+    SetShaderValue(blurVertical, GetShaderLocation(blurVertical, "resolution"), &resolution, SHADER_UNIFORM_FLOAT);
+    SetShaderValue(blurVertical, GetShaderLocation(blurVertical, "radius"), &glowRadius, SHADER_UNIFORM_FLOAT);
+
+    SetShaderValue(combineShader, GetShaderLocation(combineShader, "intensity"), &glowIntensity, SHADER_UNIFORM_FLOAT);
+}
+
 Game::~Game()
 {
     // Use to free resources
+    UnloadShader(blurHorizontal);
+    UnloadShader(blurVertical);
+    UnloadShader(combineShader);
+    UnloadRenderTexture(targetScene);
+    UnloadRenderTexture(targetBlur1);
+    UnloadRenderTexture(targetBlur2);
 }
 
 void Game::update() 
@@ -28,12 +58,38 @@ void Game::draw()
 {
     DrawText("Hello, Raylib Starter Kit!", 190, 180, 20, DARKBLUE);
 
+    // First Pass : Get starting scene
+    BeginTextureMode(targetScene);
+        for (int i = 0; i < currentObjectAmount; i++)
+        {
+            objects[i]->draw();
+        }
+        player.draw();
+    EndTextureMode();
 
-    player.draw();
-    for (int i = 0; i < currentObjectAmount; i++)
-    {
-        objects[i]->draw();
-    }
+    // Second Pass : Apply Horizontal Blur
+    BeginTextureMode(targetBlur1);
+        BeginShaderMode(blurHorizontal);
+            DrawTextureRec(targetScene.texture, {0, 0, SCREEN_SIZE, -SCREEN_SIZE}, {0, 0}, WHITE);
+        EndShaderMode();
+    EndTextureMode();
+
+    // Third Pass: Apply Vertical Blur
+    BeginTextureMode(targetBlur2);
+        BeginShaderMode(blurVertical);
+            DrawTextureRec(targetBlur1.texture, {0, 0, SCREEN_SIZE, -SCREEN_SIZE}, {0, 0}, WHITE);
+        EndShaderMode();
+    EndTextureMode();
+
+    // Final Pass: Combine Glow with Original Scene
+    BeginShaderMode(combineShader);
+        DrawTextureRec(targetScene.texture, {0, 0, SCREEN_SIZE, -SCREEN_SIZE}, {0, 0}, WHITE);
+        BeginBlendMode(BLEND_ADDITIVE);
+            DrawTextureRec(targetBlur2.texture, {0, 0, SCREEN_SIZE, -SCREEN_SIZE}, {0, 0}, WHITE);
+        EndBlendMode();
+    EndShaderMode();
+
+    
 
     // Controller cursor
     if (IsGamepadAvailable(0))
@@ -77,6 +133,30 @@ void Game::mouseInput()
     {
         objects.push_back(std::make_shared<Object>(GetMousePosition()));
         currentObjectAmount++;
+    }
+
+    if (IsKeyPressed(KEY_UP))
+    {
+        glowRadius++;
+        SetShaderValue(blurHorizontal, GetShaderLocation(blurVertical, "radius"), &glowRadius, SHADER_UNIFORM_FLOAT);
+        SetShaderValue(blurVertical, GetShaderLocation(blurVertical, "radius"), &glowRadius, SHADER_UNIFORM_FLOAT);
+    }
+    else if (IsKeyPressed(KEY_DOWN))
+    {
+        glowRadius--;
+        SetShaderValue(blurHorizontal, GetShaderLocation(blurVertical, "radius"), &glowRadius, SHADER_UNIFORM_FLOAT);
+        SetShaderValue(blurVertical, GetShaderLocation(blurVertical, "radius"), &glowRadius, SHADER_UNIFORM_FLOAT);
+    }
+
+    if (IsKeyPressed(KEY_LEFT))
+    {
+        glowIntensity--;
+        SetShaderValue(combineShader, GetShaderLocation(combineShader, "intensity"), &glowIntensity, SHADER_UNIFORM_FLOAT);
+    }
+    else if (IsKeyPressed(KEY_RIGHT))
+    {
+        glowIntensity++;
+        SetShaderValue(combineShader, GetShaderLocation(combineShader, "intensity"), &glowIntensity, SHADER_UNIFORM_FLOAT);
     }
 }
 

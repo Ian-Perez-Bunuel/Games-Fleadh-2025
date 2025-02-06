@@ -15,6 +15,7 @@ public:
     Game();
     ~Game();
 
+    void initialize();
     void update();
     void draw();
 
@@ -32,6 +33,17 @@ private:
     static const int MAX_OBJECTS;
     int currentObjectAmount;
     std::vector<std::shared_ptr<Object>> objects;
+
+    // Shaders
+    float glowRadius = 6.0f;
+    float glowIntensity = 1.5f;
+    Shader blurHorizontal;
+    Shader blurVertical;
+    Shader combineShader;
+    // Render textures for multi pass shaders
+    RenderTexture2D targetScene;
+    RenderTexture2D targetBlur1;
+    RenderTexture2D targetBlur2;
 };
 
 #endif // GAME_H

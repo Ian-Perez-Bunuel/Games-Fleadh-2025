@@ -1,8 +1,6 @@
 #include "../include/Object.h"
 #include <random>
 
-#define GLSL_VERSION 330
-
 
 Object::Object(Vector2 t_pos) : position(t_pos)
 {
@@ -10,9 +8,6 @@ Object::Object(Vector2 t_pos) : position(t_pos)
 	radius = (rand() % 30) + 10;
 	mass = radius * 2;
 	speed -= mass;
-
-	// Shader
-	glowShader = LoadShader(0, TextFormat("resources/Shaders/glow.fs", GLSL_VERSION));
 }
 
 void Object::update()
@@ -26,11 +21,8 @@ void Object::update()
 
 void Object::draw()
 {
-    DrawCircleV(position, radius, RED);
-	// Render generated texture using selected postprocessing shader
-    BeginShaderMode(glowShader);
+    // DrawCircleV(position, radius, RED);
 	DrawTextureEx(texture, {position.x - radius, position.y - radius}, 0, radius / 400.0f, WHITE);
-	EndShaderMode();
 }
 
 void Object::grab(Vector2 t_anchorPos)

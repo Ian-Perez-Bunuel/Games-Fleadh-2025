@@ -19,6 +19,7 @@ int main(void)
 {
 
     InitWindow(SCREEN_SIZE, SCREEN_SIZE, "Raylib StarterKit GPPI");
+    game.initialize();
 
     // For web builds, do not use WindowShouldClose
     // see https://github.com/raysan5/raylib/wiki/Working-for-Web-(HTML5)#41-avoid-raylib-whilewindowshouldclose-loop
@@ -49,7 +50,8 @@ void run()
     game.update();
 
     BeginDrawing();
-    ClearBackground(BLACK);
+    
+    ClearBackground(RED);
 
     game.draw();
 
