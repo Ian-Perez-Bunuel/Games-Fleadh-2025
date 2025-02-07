@@ -22,5 +22,5 @@ void main()
         sum += texture(texture0, fragTexCoord + vec2(offset, 0.0)) * weight[abs(i)];
     }
 
-    finalColor = sum;
+    finalColor = sum ;
 }

@@ -35,8 +35,8 @@ private:
     std::vector<std::shared_ptr<Object>> objects;
 
     // Shaders
-    float glowRadius = 6.0f;
-    float glowIntensity = 1.5f;
+    float glowRadius = 14.0f;
+    float glowIntensity = 5.0f;
     Shader blurHorizontal;
     Shader blurVertical;
     Shader combineShader;

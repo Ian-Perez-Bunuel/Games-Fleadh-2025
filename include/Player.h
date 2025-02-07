@@ -24,7 +24,7 @@ public:
     void releaseGrapple(Vector2 t_releaseDir) { grapple.release(t_releaseDir); }
 
 private:
-    const int RADIUS = 20;
+    const int RADIUS = 50;
 
     Vector2 position;
 

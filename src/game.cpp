@@ -19,7 +19,12 @@ void Game::initialize()
     targetBlur1 = LoadRenderTexture(SCREEN_SIZE, SCREEN_SIZE);
     targetBlur2 = LoadRenderTexture(SCREEN_SIZE, SCREEN_SIZE);
 
-    float resolution = SCREEN_SIZE  *2;
+    // Set texture filtering to smooth (GL_LINEAR)
+    SetTextureFilter(targetScene.texture, TEXTURE_FILTER_BILINEAR);
+    SetTextureFilter(targetBlur1.texture, TEXTURE_FILTER_BILINEAR);
+    SetTextureFilter(targetBlur2.texture, TEXTURE_FILTER_BILINEAR);
+
+    float resolution = SCREEN_SIZE * 5;
 
     // Uniforms
     SetShaderValue(blurHorizontal, GetShaderLocation(blurHorizontal, "resolution"), &resolution, SHADER_UNIFORM_FLOAT);
@@ -60,6 +65,7 @@ void Game::draw()
 
     // First Pass : Get starting scene
     BeginTextureMode(targetScene);
+        ClearBackground(BLANK);
         for (int i = 0; i < currentObjectAmount; i++)
         {
             objects[i]->draw();
@@ -69,22 +75,29 @@ void Game::draw()
 
     // Second Pass : Apply Horizontal Blur
     BeginTextureMode(targetBlur1);
+        ClearBackground(BLANK);
+        BeginBlendMode(BLEND_ALPHA_PREMULTIPLY);
         BeginShaderMode(blurHorizontal);
             DrawTextureRec(targetScene.texture, {0, 0, SCREEN_SIZE, -SCREEN_SIZE}, {0, 0}, WHITE);
         EndShaderMode();
+        EndBlendMode();
     EndTextureMode();
 
     // Third Pass: Apply Vertical Blur
     BeginTextureMode(targetBlur2);
+        ClearBackground(BLANK);
+        BeginBlendMode(BLEND_ALPHA_PREMULTIPLY);
         BeginShaderMode(blurVertical);
             DrawTextureRec(targetBlur1.texture, {0, 0, SCREEN_SIZE, -SCREEN_SIZE}, {0, 0}, WHITE);
         EndShaderMode();
+        EndBlendMode();
     EndTextureMode();
 
     // Final Pass: Combine Glow with Original Scene
     BeginShaderMode(combineShader);
-        DrawTextureRec(targetScene.texture, {0, 0, SCREEN_SIZE, -SCREEN_SIZE}, {0, 0}, WHITE);
+        ClearBackground(BLANK);
         BeginBlendMode(BLEND_ADDITIVE);
+            DrawTextureRec(targetScene.texture, {0, 0, SCREEN_SIZE, -SCREEN_SIZE}, {0, 0}, WHITE);
             DrawTextureRec(targetBlur2.texture, {0, 0, SCREEN_SIZE, -SCREEN_SIZE}, {0, 0}, WHITE);
         EndBlendMode();
     EndShaderMode();
@@ -138,13 +151,13 @@ void Game::mouseInput()
     if (IsKeyPressed(KEY_UP))
     {
         glowRadius++;
-        SetShaderValue(blurHorizontal, GetShaderLocation(blurVertical, "radius"), &glowRadius, SHADER_UNIFORM_FLOAT);
+        SetShaderValue(blurHorizontal, GetShaderLocation(blurHorizontal, "radius"), &glowRadius, SHADER_UNIFORM_FLOAT);
         SetShaderValue(blurVertical, GetShaderLocation(blurVertical, "radius"), &glowRadius, SHADER_UNIFORM_FLOAT);
     }
     else if (IsKeyPressed(KEY_DOWN))
     {
         glowRadius--;
-        SetShaderValue(blurHorizontal, GetShaderLocation(blurVertical, "radius"), &glowRadius, SHADER_UNIFORM_FLOAT);
+        SetShaderValue(blurHorizontal, GetShaderLocation(blurHorizontal, "radius"), &glowRadius, SHADER_UNIFORM_FLOAT);
         SetShaderValue(blurVertical, GetShaderLocation(blurVertical, "radius"), &glowRadius, SHADER_UNIFORM_FLOAT);
     }
 
