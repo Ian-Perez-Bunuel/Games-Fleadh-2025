@@ -10,9 +10,13 @@ uniform float radius;
 void main()
 {
     vec4 sum = vec4(0.0);
-    float weight[5] = float[](0.227027, 0.1945946, 0.1216216, 0.054054, 0.016216);
+    float weight[15] = float[](
+        0.196482, 0.186211, 0.166007, 0.139559, 0.109818, 
+        0.079647, 0.05195, 0.029042, 0.012959, 0.004877,
+        0.001382, 0.000267, 0.000031, 0.000002, 0.0000001
+    );
 
-    for (int i = -4; i <= 4; i++)
+    for (int i = -7; i <= 7; i++)
     {
         float offset = float(i) / resolution * radius;
         sum += texture(texture0, fragTexCoord + vec2(offset, 0.0)) * weight[abs(i)];

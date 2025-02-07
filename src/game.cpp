@@ -19,7 +19,7 @@ void Game::initialize()
     targetBlur1 = LoadRenderTexture(SCREEN_SIZE, SCREEN_SIZE);
     targetBlur2 = LoadRenderTexture(SCREEN_SIZE, SCREEN_SIZE);
 
-    float resolution = SCREEN_SIZE;
+    float resolution = SCREEN_SIZE  *2;
 
     // Uniforms
     SetShaderValue(blurHorizontal, GetShaderLocation(blurHorizontal, "resolution"), &resolution, SHADER_UNIFORM_FLOAT);

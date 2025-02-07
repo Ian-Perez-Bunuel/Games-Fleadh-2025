@@ -12,9 +12,9 @@ void main()
     vec4 sceneColor = texture(originalScene, fragTexCoord);
     vec4 glowColor = texture(blurredGlow, fragTexCoord) * intensity;
 
-    // Screen Blending: Avoids excessive stacking of opacity
-    finalColor = 1.0 - ((1.0 - sceneColor) * (1.0 - glowColor));
+    // HDR-style blending for more realistic light spread
+    finalColor = 1.0 - exp(-sceneColor - glowColor);
 
-    // Optional: If too bright, mix with the original
-    finalColor = mix(sceneColor, finalColor, 0.6);
+    // Ensure glow is balanced and not too strong
+    finalColor = mix(sceneColor, finalColor, 0.7);
 }
