@@ -18,7 +18,7 @@ Game game;
 int main(void)
 {
 
-    InitWindow(SCREEN_SIZE, SCREEN_SIZE, "Raylib StarterKit GPPI");
+    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Raylib StarterKit GPPI");
     game.initialize();
 
     // For web builds, do not use WindowShouldClose

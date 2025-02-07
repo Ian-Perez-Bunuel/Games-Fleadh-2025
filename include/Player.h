@@ -12,6 +12,7 @@ class Player
 {
 public:
     Player();
+    void initialize();
 
     void update(Vector2 t_stickDir);
     void draw();
@@ -19,12 +20,12 @@ public:
     Vector2& getPos() { return position; }
 
     // Grapple commands
-    Grapple getGrapple() { return grapple; }
-    void shootGrapple(std::shared_ptr<Object> t_target) { grapple.shoot(t_target, this->position); }
-    void releaseGrapple(Vector2 t_releaseDir) { grapple.release(t_releaseDir); }
+    void shootGrapple(std::shared_ptr<Object> t_target);
+    void releaseGrapple(Vector2 t_releaseDir);
 
 private:
-    const int RADIUS = 50;
+    const int RADIUS = 30;
+    Texture2D texture;
 
     Vector2 position;
 
@@ -39,7 +40,10 @@ private:
     Vector2 velocity;
     const float FRICTION = 0.9f;
 
-    Grapple grapple;
+    static const int GRAPPLE_AMOUNT = 8;
+    Grapple grapples[GRAPPLE_AMOUNT];
+
+    float pointToPointDist(Vector2 t_p1, Vector2 t_p2) { return sqrt(((t_p2.x - t_p1.x) * (t_p2.x - t_p1.x)) + ((t_p2.y - t_p1.y) * (t_p2.y - t_p1.y))); }
 };
 
 #endif // PLAYER_H

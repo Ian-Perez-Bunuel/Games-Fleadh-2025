@@ -8,6 +8,8 @@ Object::Object(Vector2 t_pos) : position(t_pos)
 	radius = (rand() % 30) + 10;
 	mass = radius * 2;
 	speed -= mass;
+
+	color = WHITE;
 }
 
 void Object::update()
@@ -22,7 +24,7 @@ void Object::update()
 void Object::draw()
 {
     // DrawCircleV(position, radius, RED);
-	DrawTextureEx(texture, {position.x - radius, position.y - radius}, 0, radius / 400.0f, WHITE);
+	DrawTextureEx(texture, {position.x - radius, position.y - radius}, 0, radius / 400.0f, color);
 }
 
 void Object::grab(Vector2 t_anchorPos)
@@ -32,6 +34,8 @@ void Object::grab(Vector2 t_anchorPos)
 		angle = radiansToDegrees(atan2(position.y - t_anchorPos.y, position.x - t_anchorPos.x));
 		grabbed = true;
 	}
+
+	color = YELLOW;
 }
 
 void Object::held(Vector2 t_anchorPos, float t_dist)
@@ -49,6 +53,7 @@ void Object::held(Vector2 t_anchorPos, float t_dist)
 		{
 			angle = 0;
 
+			// increase speed after rotation
 			if (speed < MAX_SPEED)
 			{
 				speed *= 1.25;
@@ -74,4 +79,6 @@ void Object::released(Vector2 t_releaseDir)
 
 	velocity.x *= 0.05 * (speed / MAX_SPEED);
 	velocity.y *= 0.05 * (speed / MAX_SPEED);
+
+	//color = WHITE;
 }

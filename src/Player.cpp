@@ -1,9 +1,13 @@
 #include "../include/Player.h"
 #include "../include/Globals.h"
-
 Player::Player()
 {
     position = {100, 100};
+}
+
+void Player::initialize()
+{
+    texture = LoadTexture("resources/Art/player.png");
 }
 
 void Player::move()
@@ -69,18 +73,18 @@ void Player::screenWrapping()
     // X coords wrapping
     if (position.x < -RADIUS)
     {
-        position.x = SCREEN_SIZE + RADIUS;
+        position.x = SCREEN_WIDTH + RADIUS;
     }
-    else if (position.x > SCREEN_SIZE + RADIUS)
+    else if (position.x > SCREEN_WIDTH + RADIUS)
     {
         position.x = -RADIUS;
     }
     // X coords wrapping
     if (position.y < -RADIUS)
     {
-        position.y = SCREEN_SIZE + RADIUS;
+        position.y = SCREEN_HEIGHT + RADIUS;
     }
-    else if (position.y > SCREEN_SIZE + RADIUS)
+    else if (position.y > SCREEN_HEIGHT + RADIUS)
     {
         position.y = -RADIUS;
     }
@@ -109,9 +113,46 @@ void Player::capSpeed()
 
 void Player::draw()
 {
-    DrawCircleV(position, RADIUS, BLUE);
+    for (int i = 0; i < GRAPPLE_AMOUNT; i++)
+    {
+        grapples[i].draw(); 
+    }
 
-    grapple.draw();
+    // DrawCircleV(position, RADIUS, BLUE);
+    DrawTextureEx(texture, {position.x - RADIUS, position.y - RADIUS}, 0, 0.07f, WHITE);
+}
+
+void Player::shootGrapple(std::shared_ptr<Object> t_target)
+{
+    int closestGrappleIndex = -1;
+    float lowestDist = 0.0f;
+
+    for (int i = 0; i < GRAPPLE_AMOUNT; i++)
+    {
+        // Check which is the closest
+        float dist = pointToPointDist(grapples[i].getStartPoint(), t_target->getPos());
+
+        if (!grapples[i].isActive())
+        {
+            if (dist > lowestDist) // > becasuse it works idk
+            {
+                lowestDist = dist;
+                closestGrappleIndex = i;
+            }
+        }
+    }
+    if (closestGrappleIndex >= 0)
+    {
+        grapples[closestGrappleIndex].shoot(t_target);
+    }
+}
+
+void Player::releaseGrapple(Vector2 t_releaseDir)
+{
+    for (int i = 0; i < GRAPPLE_AMOUNT; i++)
+    {
+        grapples[i].release(t_releaseDir);
+    }
 }
 
 void Player::update(Vector2 t_leftStickDir)
@@ -119,8 +160,23 @@ void Player::update(Vector2 t_leftStickDir)
     controllerMovement(t_leftStickDir);
     move();
 
-    if (grapple.isActive())
+    Vector2 pointOnCir;
+    for (int angle = 0; angle < 360; angle += 360 / GRAPPLE_AMOUNT)
     {
-        grapple.update();
+        // Convert degrees to radians
+        float radians = angle * (PI / 180.0f);
+
+        // Get evenly spaced point on the circle
+        pointOnCir.x = position.x + (RADIUS * cos(radians));
+        pointOnCir.y = position.y + (RADIUS * sin(radians));
+
+        // Assign to the corresponding grapple slot
+        grapples[angle / (360 / GRAPPLE_AMOUNT)].setStartPos(pointOnCir, this->position);
+    }
+
+
+    for (int i = 0; i < GRAPPLE_AMOUNT; i++)
+    {
+        grapples[i].update();
     }
 }

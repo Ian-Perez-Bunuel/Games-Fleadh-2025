@@ -20,6 +20,8 @@ public:
     void draw();
 
 private:
+    void initializeShaders();
+
     void input();
     void mouseInput();
     void controllerInput();
@@ -34,12 +36,16 @@ private:
     int currentObjectAmount;
     std::vector<std::shared_ptr<Object>> objects;
 
+    Texture2D background;
+    Texture2D enemy;
+
     // Shaders
-    float glowRadius = 14.0f;
-    float glowIntensity = 5.0f;
+    float glowRadius = 10.0f;
+    float glowIntensity = 0.5f;
     Shader blurHorizontal;
     Shader blurVertical;
     Shader combineShader;
+    Shader crtShader;
     // Render textures for multi pass shaders
     RenderTexture2D targetScene;
     RenderTexture2D targetBlur1;

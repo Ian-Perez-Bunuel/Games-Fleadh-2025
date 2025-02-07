@@ -21,7 +21,6 @@ public:
 private:
     int radius = 20;
     Texture2D texture;
-    Rectangle sourceRect = { 0, 0, 0.1, 0.1 };
 
     bool grabbed = false;
     float angle = 0.0f;
@@ -34,6 +33,8 @@ private:
     const int MAX_SPEED = 260;
     Vector2 velocity;
     float anchorDist = -1.0f;
+
+    Color color;
 
     float radiansToDegrees(float t_radians) { return t_radians * (180/3.14f); }
     float degreesToRadians(float t_degrees) { return t_degrees * (3.14f / 180); }
