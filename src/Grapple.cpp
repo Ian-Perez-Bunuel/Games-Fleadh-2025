@@ -76,6 +76,10 @@ void Grapple::update()
         aimTimer();
     }
 
+    // Settings for aggression level
+    states[0].amplitude = 20 * (aggression * 0.7f);
+    states[0].speed = 5 * (aggression * 0.5f);
+
     updateSpline();
 
     if (grappledObject != nullptr)

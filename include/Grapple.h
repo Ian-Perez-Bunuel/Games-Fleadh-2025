@@ -9,7 +9,7 @@
 struct State
 {
     int frequency;
-    int amplitude;
+    float amplitude;
     int speed;
     int thickness;
 };
@@ -20,6 +20,7 @@ class Grapple
 public:
     Grapple();
     void setStartPos(Vector2 t_startPos, Vector2& t_userPos);
+    void setAggressionLevel(int t_aggression) { aggression = t_aggression + 1; }
 
     void shoot(std::shared_ptr<Object> t_target);
     void release(Vector2 t_releaseDir);
@@ -36,10 +37,12 @@ private:
     std::shared_ptr<Object> grappledObject;
     Vector2* userPos;
 
-    const int RANGE = 400;
+    const int RANGE = 800;
     static const int ORBIT_LENGTH = 250.0f;
     const int GRAPPLE_LENGTH = ORBIT_LENGTH + 100;
     const int IDLE_LENGTH = 110;
+
+    int aggression = 0;
 
     // Spline
     void updateSpline();

@@ -40,6 +40,8 @@ private:
     Vector2 velocity;
     const float FRICTION = 0.9f;
 
+    void setGrapplePos();
+    void setGrappleAgression();
     static const int GRAPPLE_AMOUNT = 8;
     Grapple grapples[GRAPPLE_AMOUNT];
 

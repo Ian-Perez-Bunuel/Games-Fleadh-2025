@@ -155,11 +155,8 @@ void Player::releaseGrapple(Vector2 t_releaseDir)
     }
 }
 
-void Player::update(Vector2 t_leftStickDir)
-{   
-    controllerMovement(t_leftStickDir);
-    move();
-
+void Player::setGrapplePos()
+{
     int currentGrapple = 0;
     // Top grapples
     for (float angle = 45; angle <= 135; angle += 30.0f)
@@ -191,6 +188,36 @@ void Player::update(Vector2 t_leftStickDir)
         grapples[currentGrapple].setStartPos(pointOnCir, this->position);
         currentGrapple++;
     }
+}
+
+void Player::setGrappleAgression()
+{
+    int amountOfActiveGrapples = 0;
+    // Find the amount that are active
+    for (int i = 0; i < GRAPPLE_AMOUNT; i++)
+    {
+        if (grapples[i].isActive())
+        {
+            amountOfActiveGrapples++;
+        }
+    }
+
+    for (int i = 0; i < GRAPPLE_AMOUNT; i++)
+    {
+        if (!grapples[i].isActive())
+        {
+            grapples[i].setAggressionLevel(amountOfActiveGrapples);
+        }
+    }
+}
+
+void Player::update(Vector2 t_leftStickDir)
+{   
+    controllerMovement(t_leftStickDir);
+    move();
+    setGrapplePos();
+
+    setGrappleAgression();
     
 
 
