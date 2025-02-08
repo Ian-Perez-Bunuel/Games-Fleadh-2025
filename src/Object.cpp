@@ -29,11 +29,10 @@ void Object::draw()
 	DrawTextureEx(texture, {position.x - radius, position.y - radius}, 0, radius / 400.0f, color);
 }
 
-void Object::grab(Vector2 t_anchorPos)
+void Object::grab()
 {
 	if (!grabbed)
 	{
-		angle = radiansToDegrees(atan2(position.y - t_anchorPos.y, position.x - t_anchorPos.x));
 		grabbed = true;
 	}
 
@@ -75,10 +74,14 @@ void Object::held(Vector2 t_anchorPos, float t_dist)
 {
     if (grabbed)
     {
-        if (moveToRotationArea(t_anchorPos, t_dist))
-        {
-            correctDist = true;
-        }
+        if (moveToRotationArea(t_anchorPos, t_dist)) 
+		{
+			float currentDist = pointToPointDist(t_anchorPos, position);
+			position.x = t_anchorPos.x + t_dist * (position.x - t_anchorPos.x) / currentDist;
+			position.y = t_anchorPos.y + t_dist * (position.y - t_anchorPos.y) / currentDist;
+			correctDist = true;
+		}
+		
 
         if (correctDist)
         {
@@ -104,6 +107,10 @@ void Object::held(Vector2 t_anchorPos, float t_dist)
             position.x = (1 - lerpFactor) * position.x + lerpFactor * (t_anchorPos.x + t_dist * cos(degreesToRadians(angle)));
             position.y = (1 - lerpFactor) * position.y + lerpFactor * (t_anchorPos.y + t_dist * sin(degreesToRadians(angle)));
         }
+		else
+		{
+			angle = radiansToDegrees(atan2(position.y - t_anchorPos.y, position.x - t_anchorPos.x));
+		}
     }
 }
 

@@ -63,7 +63,7 @@ void Grapple::aimTimer()
         aiming = false;
 
         active = true;
-        grappledObject->grab(*userPos);
+        grappledObject->grab();
 
         currentState = 2; // Grabbing
     }

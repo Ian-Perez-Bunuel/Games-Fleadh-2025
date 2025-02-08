@@ -14,7 +14,7 @@ public:
     Vector2 getPos() { return position; }
     int getRadius() { return radius; }
 
-    void grab(Vector2 t_anchorPos);
+    void grab();
     void held(Vector2 t_anchorPos, float t_dist);
     void released(Vector2 t_releaseDir);
 
@@ -28,7 +28,7 @@ private:
 
     bool grabbed = false;
     bool correctDist = false;
-    float angle = 0.0f;
+    float angle = -1.0f;
 
     Vector2 position;
 
