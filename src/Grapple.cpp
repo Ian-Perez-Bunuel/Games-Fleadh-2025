@@ -1,11 +1,12 @@
 #include "../include/Grapple.h"
+#include <random>
 
 Grapple::Grapple()
 {   
     // Idle
-    states[0].amplitude = 20;
+    states[0].amplitude = 20 + (-5 + (rand() % 18));
     states[0].frequency = 60;
-    states[0].speed = 5;
+    states[0].speed = 5 + (-2 + (rand() % 11));
     states[0].thickness = 3;
     // Aiming
     states[1].amplitude = 90;
@@ -17,6 +18,12 @@ Grapple::Grapple()
     states[2].frequency = 60;
     states[2].speed = 5;
     states[2].thickness = 5;
+
+    originalAmp = states[0].amplitude;
+    originalSpeed = states[0].speed;
+
+    printf("%13.3f", originalAmp);
+
 }
 
 void Grapple::setStartPos(Vector2 t_startPos, Vector2& t_userPos)
@@ -63,10 +70,20 @@ void Grapple::aimTimer()
         aiming = false;
 
         active = true;
-        grappledObject->grab();
+        if (!grappledObject->checkGrabbed())
+        {
+            grappledObject->grab();
+        }
 
         currentState = 2; // Grabbing
     }
+}
+
+void Grapple::updateAggression()
+{
+    // Settings for aggression level
+    states[0].amplitude = originalAmp * (aggression / 2.0f);
+    states[0].speed = originalSpeed * (aggression / 2.0f);
 }
 
 void Grapple::update()
@@ -76,9 +93,7 @@ void Grapple::update()
         aimTimer();
     }
 
-    // Settings for aggression level
-    states[0].amplitude = 20 * (aggression * 0.7f);
-    states[0].speed = 5 * (aggression * 0.5f);
+    updateAggression();
 
     updateSpline();
 

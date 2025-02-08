@@ -38,11 +38,15 @@ private:
     Vector2* userPos;
 
     const int RANGE = 800;
-    static const int ORBIT_LENGTH = 250.0f;
+    static const int ORBIT_LENGTH = 200.0f;
     const int GRAPPLE_LENGTH = ORBIT_LENGTH + 100;
     const int IDLE_LENGTH = 110;
 
+    // Aggression
+    void updateAggression();
     int aggression = 0;
+    float originalAmp = 0;
+    int originalSpeed = 0;
 
     // Spline
     void updateSpline();

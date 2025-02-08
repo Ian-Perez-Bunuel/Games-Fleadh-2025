@@ -13,6 +13,7 @@ public:
 
     Vector2 getPos() { return position; }
     int getRadius() { return radius; }
+    bool checkGrabbed() { return grabbed; }
 
     void grab();
     void held(Vector2 t_anchorPos, float t_dist);

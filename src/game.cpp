@@ -6,6 +6,8 @@
 Game::Game()
 {
     printf("Game Initialized!\n");
+
+    srand(time(nullptr));
 }
 
 void Game::initialize()
