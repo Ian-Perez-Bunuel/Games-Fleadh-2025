@@ -3,17 +3,25 @@
 
 #include "../include/Globals.h"
 #include "../include/game.h"
+#include "../include/MainMenu.h"
 
 // Specific include for build_web
 #if defined(WEB_BUILD)
 #include <emscripten/emscripten.h>
 #endif
 
+enum class Scene
+{
+    MAIN_MENU,
+    GAME
+};
 
+static Scene currentScene = Scene::GAME;
 
 void run();
 // Initialise Game
 Game game;
+MainMenu mainMenu;
 
 int main(void)
 {
@@ -52,14 +60,24 @@ char message[11];
 void run()
 {
     // Update Game Data
-    // Should be outside BeginDrawing(); and EndDrawing();
-    game.update();
-
-    BeginDrawing();
+    switch (currentScene)
+    {
+    case Scene::GAME:
+        game.update();
+        BeginDrawing();
     
-    ClearBackground(RED);
+        ClearBackground(BLACK);
+        game.draw();
+        EndDrawing();
+        break; 
 
-    game.draw();
-
-    EndDrawing();
+    case Scene::MAIN_MENU:
+        mainMenu.update();
+        BeginDrawing();
+    
+        ClearBackground(BLACK);
+        mainMenu.draw();
+        EndDrawing();
+        break; 
+    }
 }
