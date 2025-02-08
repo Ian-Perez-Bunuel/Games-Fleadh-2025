@@ -19,10 +19,15 @@ public:
     void released(Vector2 t_releaseDir);
 
 private:
+    bool moveToRotationArea(Vector2 t_anchorPos, float t_targetDist);
+
+    void checkForSpeedIncrease();
+
     int radius = 20;
     Texture2D texture;
 
     bool grabbed = false;
+    bool correctDist = false;
     float angle = 0.0f;
 
     Vector2 position;
@@ -36,6 +41,7 @@ private:
 
     Color color;
 
+    float pointToPointDist(Vector2 t_p1, Vector2 t_p2) { return sqrt(((t_p2.x - t_p1.x) * (t_p2.x - t_p1.x)) + ((t_p2.y - t_p1.y) * (t_p2.y - t_p1.y))); }
     float radiansToDegrees(float t_radians) { return t_radians * (180/3.14f); }
     float degreesToRadians(float t_degrees) { return t_degrees * (3.14f / 180); }
 };
