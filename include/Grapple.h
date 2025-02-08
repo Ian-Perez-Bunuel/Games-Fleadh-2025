@@ -36,9 +36,10 @@ private:
     std::shared_ptr<Object> grappledObject;
     Vector2* userPos;
 
-    const int MAX_LENGTH = 400;
+    const int RANGE = 400;
+    static const int ORBIT_LENGTH = 250.0f;
+    const int GRAPPLE_LENGTH = ORBIT_LENGTH + 100;
     const int IDLE_LENGTH = 110;
-    float length = 0.0f;
 
     // Spline
     void updateSpline();
@@ -48,7 +49,7 @@ private:
     State states[3];
     int currentState = 0;
 
-    Color color = YELLOW;
+    Color color = {255, 228, 44, 255};
 
     void aimTimer();
     bool aiming = false;

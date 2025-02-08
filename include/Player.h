@@ -24,7 +24,7 @@ public:
     void releaseGrapple(Vector2 t_releaseDir);
 
 private:
-    const int RADIUS = 30;
+    const int RADIUS = 33;
     Texture2D texture;
 
     Vector2 position;

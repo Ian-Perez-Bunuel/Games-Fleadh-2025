@@ -29,7 +29,7 @@ void Grapple::shoot(std::shared_ptr<Object> t_target)
 {
     float distToTarget = pointToPointDist(*userPos, t_target->getPos());
 
-    if (distToTarget < MAX_LENGTH)
+    if (distToTarget < RANGE)
     {
         aiming = true;
         grappledObject = t_target;
@@ -62,9 +62,6 @@ void Grapple::aimTimer()
         aimClock = 0;
         aiming = false;
 
-        float distToTarget = pointToPointDist(*userPos, grappledObject->getPos());
-        length = distToTarget;
-
         active = true;
         grappledObject->grab(*userPos);
 
@@ -83,8 +80,8 @@ void Grapple::update()
 
     if (grappledObject != nullptr)
     {
-        float distToTarget = pointToPointDist(*userPos, grappledObject->getPos());
-        grappledObject->held(*userPos, distToTarget);
+        // float distToTarget = pointToPointDist(*userPos, grappledObject->getPos());
+        grappledObject->held(*userPos, ORBIT_LENGTH);
     }
 }
 
@@ -104,7 +101,7 @@ void Grapple::updateSpline()
         float distFromCenter;
         if (active)
         {
-            distFromCenter = 0.9f - (float)i / (NUM_POINTS - 1);
+            distFromCenter = 0.88f - (float)i / (NUM_POINTS - 1);
         }
         else
         {
@@ -123,8 +120,8 @@ void Grapple::updateSpline()
             dx = cosf(rotatingAngle);  // X direction
             dy = sinf(rotatingAngle);  // Y direction
 
-            float x = userPos->x + distFromCenter * (length + 50) * dx;  // Spread out along the angle
-            float y = userPos->y + distFromCenter * (length + 50) * dy + waveOffset;
+            float x = userPos->x + distFromCenter * (GRAPPLE_LENGTH + 50) * dx;  // Spread out along the angle
+            float y = userPos->y + distFromCenter * (GRAPPLE_LENGTH + 50) * dy + waveOffset;
             points[i] = { x, y };
         }
         else
