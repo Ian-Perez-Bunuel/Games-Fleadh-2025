@@ -37,7 +37,7 @@ private:
     Vector2* userPos;
 
     const int MAX_LENGTH = 400;
-    const int IDLE_LENGTH = 120;
+    const int IDLE_LENGTH = 110;
     float length = 0.0f;
 
     // Spline

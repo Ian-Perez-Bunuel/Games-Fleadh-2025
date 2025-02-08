@@ -17,6 +17,12 @@ Game game;
 
 int main(void)
 {
+    // Get the monitor's resolution
+    SCREEN_WIDTH = GetMonitorWidth(0);
+    SCREEN_HEIGHT = GetMonitorHeight(0);
+
+    // Set window flags before InitWindow (required for fullscreen to work properly)
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_WINDOW_UNDECORATED | FLAG_FULLSCREEN_MODE);
 
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Raylib StarterKit GPPI");
     game.initialize();

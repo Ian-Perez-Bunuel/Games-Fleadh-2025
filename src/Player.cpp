@@ -118,8 +118,8 @@ void Player::draw()
         grapples[i].draw(); 
     }
 
-    // DrawCircleV(position, RADIUS, BLUE);
-    DrawTextureEx(texture, {position.x - RADIUS, position.y - RADIUS}, 0, 0.07f, WHITE);
+    //DrawCircleLinesV(position, RADIUS, YELLOW);
+    DrawTextureEx(texture, {position.x - RADIUS, position.y - RADIUS}, 0, 0.075f, WHITE);
 }
 
 void Player::shootGrapple(std::shared_ptr<Object> t_target)
@@ -160,9 +160,11 @@ void Player::update(Vector2 t_leftStickDir)
     controllerMovement(t_leftStickDir);
     move();
 
-    Vector2 pointOnCir;
-    for (int angle = 0; angle < 360; angle += 360 / GRAPPLE_AMOUNT)
+    int currentGrapple = 0;
+    // Top grapples
+    for (float angle = 45; angle <= 135; angle += 30.0f)
     {
+        Vector2 pointOnCir;
         // Convert degrees to radians
         float radians = angle * (PI / 180.0f);
 
@@ -171,8 +173,25 @@ void Player::update(Vector2 t_leftStickDir)
         pointOnCir.y = position.y + (RADIUS * sin(radians));
 
         // Assign to the corresponding grapple slot
-        grapples[angle / (360 / GRAPPLE_AMOUNT)].setStartPos(pointOnCir, this->position);
+        grapples[currentGrapple].setStartPos(pointOnCir, this->position);
+        currentGrapple++;
     }
+    // Bottom
+    for (float angle = 236; angle < 315; angle += 22.5f)
+    {
+        Vector2 pointOnCir;
+        // Convert degrees to radians
+        float radians = angle * (PI / 180.0f);
+
+        // Get evenly spaced point on the circle
+        pointOnCir.x = position.x + (RADIUS * cos(radians));
+        pointOnCir.y = position.y + (RADIUS * sin(radians));
+
+        // Assign to the corresponding grapple slot
+        grapples[currentGrapple].setStartPos(pointOnCir, this->position);
+        currentGrapple++;
+    }
+    
 
 
     for (int i = 0; i < GRAPPLE_AMOUNT; i++)

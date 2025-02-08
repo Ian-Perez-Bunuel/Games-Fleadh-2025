@@ -34,8 +34,8 @@ void Game::initializeShaders()
     SetTextureFilter(targetBlur1.texture, TEXTURE_FILTER_BILINEAR);
     SetTextureFilter(targetBlur2.texture, TEXTURE_FILTER_BILINEAR);
 
-    Vector2 resolutionForBlur = {SCREEN_WIDTH * 5, SCREEN_HEIGHT * 5};
-    Vector2 resolutionForCRT = {SCREEN_WIDTH, SCREEN_HEIGHT};
+    Vector2 resolutionForBlur = {(float)SCREEN_WIDTH * 5, (float)SCREEN_HEIGHT * 5};
+    Vector2 resolutionForCRT = {(float)SCREEN_WIDTH, (float)SCREEN_HEIGHT};
 
     // Uniforms
     SetShaderValue(blurHorizontal, GetShaderLocation(blurHorizontal, "resolution"), &resolutionForBlur.x, SHADER_UNIFORM_FLOAT);
@@ -93,7 +93,7 @@ void Game::draw()
         ClearBackground(BLANK);
         BeginBlendMode(BLEND_ALPHA_PREMULTIPLY);
         BeginShaderMode(blurHorizontal);
-            DrawTextureRec(targetScene.texture, {0, 0, SCREEN_WIDTH, -SCREEN_HEIGHT}, {0, 0}, WHITE);
+            DrawTextureRec(targetScene.texture, {0, 0, (float)SCREEN_WIDTH, (float)-SCREEN_HEIGHT}, {0, 0}, WHITE);
         EndShaderMode();
         EndBlendMode();
     EndTextureMode();
@@ -103,7 +103,7 @@ void Game::draw()
         ClearBackground(BLANK);
         BeginBlendMode(BLEND_ALPHA_PREMULTIPLY);
         BeginShaderMode(blurVertical);
-            DrawTextureRec(targetBlur1.texture, {0, 0, SCREEN_WIDTH, -SCREEN_HEIGHT}, {0, 0}, WHITE);
+            DrawTextureRec(targetBlur1.texture, {0, 0, (float)SCREEN_WIDTH, (float)-SCREEN_HEIGHT}, {0, 0}, WHITE);
         EndShaderMode();
         EndBlendMode();
     EndTextureMode();
@@ -112,12 +112,17 @@ void Game::draw()
     BeginShaderMode(combineShader);
         ClearBackground(BLANK);
 
-        // Draw Stuff that isnt affected by blur here:
+        // Draw the background and unaffected elements normally
         DrawTextureEx(background, {0, 0}, 0, 1.0, WHITE);
-        
+    
+        // First, draw the normal scene
+        BeginBlendMode(BLEND_ALPHA);
+            DrawTextureRec(targetScene.texture, {0, 0, (float)SCREEN_WIDTH, (float)-SCREEN_HEIGHT}, {0, 0}, WHITE);
+        EndBlendMode();
+
+        // Then, add the glow effect on top using additive blending
         BeginBlendMode(BLEND_ADDITIVE);
-            DrawTextureRec(targetBlur2.texture, {0, 0, SCREEN_WIDTH, -SCREEN_HEIGHT}, {0, 0}, WHITE);
-            DrawTextureRec(targetScene.texture, {0, 0, SCREEN_WIDTH, -SCREEN_HEIGHT}, {0, 0}, WHITE);
+            DrawTextureRec(targetBlur2.texture, {0, 0, (float)SCREEN_WIDTH, (float)-SCREEN_HEIGHT}, {0, 0}, WHITE);
         EndBlendMode();
     EndShaderMode();
 

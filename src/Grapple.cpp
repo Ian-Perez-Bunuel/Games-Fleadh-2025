@@ -3,7 +3,7 @@
 Grapple::Grapple()
 {   
     // Idle
-    states[0].amplitude = 30;
+    states[0].amplitude = 20;
     states[0].frequency = 60;
     states[0].speed = 5;
     states[0].thickness = 3;
@@ -101,9 +101,19 @@ void Grapple::updateSpline()
     // Generate sine wave points to simulate a string-like movement
     for (int i = 1; i < NUM_POINTS; i++) 
     {  // Start from 1 to keep userPos fixed
-        float t = 1.0f - (float)i / (NUM_POINTS - 1);
-        float damping = 1.0f - expf(-t * 0.3f);
-        float waveOffset = states[currentState].amplitude * damping * sinf(states[currentState].frequency * t * 2 * PI - (GetTime() * states[currentState].speed) + t * 5.0f);
+        float distFromCenter;
+        if (active)
+        {
+            distFromCenter = 0.9f - (float)i / (NUM_POINTS - 1);
+        }
+        else
+        {
+            distFromCenter = 1.35f - (float)i / (NUM_POINTS - 1);
+        }
+
+
+        float damping = 1.0f - expf(-distFromCenter * 0.3f);
+        float waveOffset = states[currentState].amplitude * damping * sinf(states[currentState].frequency * distFromCenter * 2 * PI - (GetTime() * states[currentState].speed) + distFromCenter * 5.0f);
 
         if (active)
         {
@@ -113,8 +123,8 @@ void Grapple::updateSpline()
             dx = cosf(rotatingAngle);  // X direction
             dy = sinf(rotatingAngle);  // Y direction
 
-            float x = userPos->x + t * (length + 50) * dx;  // Spread out along the angle
-            float y = userPos->y + t * (length + 50) * dy + waveOffset;
+            float x = userPos->x + distFromCenter * (length + 50) * dx;  // Spread out along the angle
+            float y = userPos->y + distFromCenter * (length + 50) * dy + waveOffset;
             points[i] = { x, y };
         }
         else
@@ -122,8 +132,8 @@ void Grapple::updateSpline()
             dx = cosf(angleRad);  // X direction
             dy = sinf(angleRad);  // Y direction
 
-            float x = startPos.x + t * IDLE_LENGTH * dx;  // Spread out along the angle
-            float y = startPos.y + t * IDLE_LENGTH * dy + waveOffset;
+            float x = startPos.x + distFromCenter * IDLE_LENGTH * dx;  // Spread out along the angle
+            float y = startPos.y + distFromCenter * IDLE_LENGTH * dy + waveOffset;
             points[i] = { x, y };
         }
     }
