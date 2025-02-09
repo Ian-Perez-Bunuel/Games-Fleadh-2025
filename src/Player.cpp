@@ -122,15 +122,16 @@ void Player::draw()
     DrawTextureEx(texture, {position.x - RADIUS, position.y - RADIUS}, 0, 1.08f, WHITE);
 }
 
-void Player::shootGrapple(std::shared_ptr<Object> t_target)
+void Player::shootGrapple(std::shared_ptr<Object> t_object)
 {
     int closestGrappleIndex = -1;
     float lowestDist = 0.0f;
 
+
     for (int i = 0; i < GRAPPLE_AMOUNT; i++)
     {
-        // Check which is the closest
-        float dist = pointToPointDist(grapples[i].getStartPoint(), t_target->getPos());
+        // Check which is the closest grapple
+        float dist = pointToPointDist(grapples[i].getStartPoint(), t_object->getPos());
 
         if (!grapples[i].isActive())
         {
@@ -143,7 +144,7 @@ void Player::shootGrapple(std::shared_ptr<Object> t_target)
     }
     if (closestGrappleIndex >= 0)
     {
-        grapples[closestGrappleIndex].shoot(t_target);
+        grapples[closestGrappleIndex].shoot(t_object);
     }
 }
 

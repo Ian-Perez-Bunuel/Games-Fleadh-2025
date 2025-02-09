@@ -18,6 +18,8 @@ void Game::initialize()
     // Sprites
     background = LoadTexture("resources/Art/background.png");
     enemy = LoadTexture("resources/Art/enemy.png");
+
+    reticle = LoadTexture("resources/Art/target.png");
 }
 void Game::initializeShaders()
 {
@@ -62,9 +64,28 @@ Game::~Game()
     UnloadRenderTexture(targetBlur2);
 }
 
+void Game::findClosestObject()
+{
+    float lowestDist = 100000.0f;
+
+    if (currentObjectAmount > 0)
+    {
+        for (std::shared_ptr<Object> o : objects)
+        {
+            float distToObject = pointToPointDist(player.getPos(), o->getPos());
+            if (distToObject < lowestDist && !o->checkGrabbed())
+            {
+                closestObjectToPlayer = o;
+            }
+        }
+    }
+}
+
 void Game::update() 
 {
     input();
+
+    findClosestObject();
 
     player.update(controller.getLeftStickDir());
 
@@ -87,6 +108,12 @@ void Game::draw()
             objects[i]->draw();
         }
         player.draw();
+
+        if (currentObjectAmount > 0 && !closestObjectToPlayer->checkGrabbed())
+        {
+            DrawTextureEx(reticle, {closestObjectToPlayer->getPos().x - 25, closestObjectToPlayer->getPos().y - 25}, 0, 1.25f, WHITE);
+        }
+
     EndTextureMode();
 
 
@@ -159,13 +186,7 @@ void Game::mouseInput()
     // Used to grab objects
     if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT))
     {
-        for (int i = 0; i < currentObjectAmount; i++)
-        {
-            if (CheckCollisionPointCircle(GetMousePosition(), objects[i]->getPos(), objects[i]->getRadius()))
-            {
-                player.shootGrapple(objects[i]);
-            }
-        }
+        player.shootGrapple(closestObjectToPlayer);
     }
 
     if (IsKeyPressed(KEY_SPACE))
@@ -187,13 +208,7 @@ void Game::controllerInput()
     // Used to grab objects
     if (IsGamepadButtonDown(0, GAMEPAD_BUTTON_RIGHT_TRIGGER_2))
     {
-        for (int i = 0; i < currentObjectAmount; i++)
-        {
-            if (CheckCollisionPointCircle(controller.getCursorPos(), objects[i]->getPos(), objects[i]->getRadius()))
-            {
-                player.shootGrapple(objects[i]);
-            }
-        }
+        player.shootGrapple(closestObjectToPlayer);
     }
 
     if (IsGamepadButtonDown(0, GAMEPAD_BUTTON_RIGHT_FACE_DOWN))

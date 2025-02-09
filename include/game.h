@@ -27,7 +27,12 @@ private:
     void controllerInput();
     Controller controller;
     
+    void findClosestObject();
     Player player;
+    std::shared_ptr<Object> closestObjectToPlayer;
+
+    // Reticle
+    Texture2D reticle;
 
     
     bool CircleCollisions(int t_r1, int t_r2, Vector2 pos1, Vector2 pos2);
@@ -50,6 +55,8 @@ private:
     RenderTexture2D targetScene;
     RenderTexture2D targetBlur1;
     RenderTexture2D targetBlur2;
+
+    float pointToPointDist(Vector2 t_p1, Vector2 t_p2) { return sqrt(((t_p2.x - t_p1.x) * (t_p2.x - t_p1.x)) + ((t_p2.y - t_p1.y) * (t_p2.y - t_p1.y))); }
 };
 
 #endif // GAME_H

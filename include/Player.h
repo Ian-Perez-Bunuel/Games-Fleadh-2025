@@ -20,7 +20,7 @@ public:
     Vector2& getPos() { return position; }
 
     // Grapple commands
-    void shootGrapple(std::shared_ptr<Object> t_target);
+    void shootGrapple(std::shared_ptr<Object> t_object);
     void releaseGrapple(Vector2 t_releaseDir);
 
 private:
