@@ -1,5 +1,6 @@
 #include "../include/Grapple.h"
 #include <random>
+#include "../include/SceneCamera.h"
 
 Grapple::Grapple()
 {   
@@ -22,8 +23,8 @@ Grapple::Grapple()
     originalAmp = states[0].amplitude;
     originalSpeed = states[0].speed;
 
-    printf("%13.3f", originalAmp);
-
+    //  Set particle colors
+    particleSpawnpoint.addColor(YELLOW);
 }
 
 void Grapple::setStartPos(Vector2 t_startPos, Vector2& t_userPos)
@@ -76,6 +77,18 @@ void Grapple::aimTimer()
         }
 
         currentState = 2; // Grabbing
+
+        // Set Particle Values
+        float dirAngle = atan2f(grappledObject->getPos().y - userPos->y, grappledObject->getPos().x - userPos->x);
+        Vector2 particlePos;
+        particlePos.x = userPos->x + ORBIT_LENGTH * cos(dirAngle);
+        particlePos.y = userPos->y + ORBIT_LENGTH * sin(dirAngle);
+
+        SceneCamera::screenShake(SceneCamera::SMALL_SHAKE, 30);
+
+        dirAngle = radiansToDegrees(dirAngle); // Change to degrees
+        particleSpawnpoint.setValues(particlePos, 15, dirAngle + 90);
+        particleSpawnpoint.spawn();
     }
 }
 
@@ -102,6 +115,8 @@ void Grapple::update()
         // float distToTarget = pointToPointDist(*userPos, grappledObject->getPos());
         grappledObject->held(*userPos, ORBIT_LENGTH);
     }
+
+    particleSpawnpoint.update();
 }
 
 void Grapple::updateSpline()
@@ -153,7 +168,6 @@ void Grapple::updateSpline()
             points[i] = { x, y };
         }
     }
-
 }
 
 void Grapple::draw()
@@ -164,6 +178,8 @@ void Grapple::draw()
     // }
 
     DrawSplineCatmullRom(points, NUM_POINTS, states[currentState].thickness, color);
+
+    particleSpawnpoint.draw();
 }
 
 

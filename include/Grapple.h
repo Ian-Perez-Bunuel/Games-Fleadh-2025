@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "../include/Object.h"
+#include "../include/ParticleSpawner.h"
 
 struct State
 {
@@ -62,6 +63,9 @@ private:
     bool aiming = false;
     const int AIM_DURATION = 60 * 0.2; // 0.2 seconds
     int aimClock = 0;
+
+    // Particles
+    ParticleSpawner particleSpawnpoint;
 
     float degreesToRadians(float t_degrees) { return t_degrees * (3.14f / 180); }
     float radiansToDegrees(float t_radians) { return t_radians * (180/3.14f); }

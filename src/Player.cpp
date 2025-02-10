@@ -1,5 +1,5 @@
 #include "../include/Player.h"
-#include "../include/Globals.h"
+
 Player::Player()
 {
     position = {100, 100};
@@ -40,8 +40,6 @@ void Player::move()
     // Make sure the player doesnt go too fast
     capSpeed();
 
-    // Player can now travel from one side to the other using the borders
-    screenWrapping();
 
     position.x += velocity.x;
     position.y += velocity.y;
@@ -61,34 +59,11 @@ void Player::controllerMovement(Vector2 t_stickDir)
     // Make sure the player doesnt go too fast
     capSpeed();
 
-    // Player can now travel from one side to the other using the borders
-    screenWrapping();
 
     position.x += velocity.x;
     position.y += velocity.y;
 }
 
-void Player::screenWrapping()
-{   
-    // X coords wrapping
-    if (position.x < -RADIUS)
-    {
-        position.x = SCREEN_WIDTH + RADIUS;
-    }
-    else if (position.x > SCREEN_WIDTH + RADIUS)
-    {
-        position.x = -RADIUS;
-    }
-    // X coords wrapping
-    if (position.y < -RADIUS)
-    {
-        position.y = SCREEN_HEIGHT + RADIUS;
-    }
-    else if (position.y > SCREEN_HEIGHT + RADIUS)
-    {
-        position.y = -RADIUS;
-    }
-}
 
 void Player::capSpeed()
 {

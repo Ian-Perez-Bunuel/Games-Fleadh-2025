@@ -58,7 +58,7 @@ bool Object::moveToRotationArea(Vector2 t_anchorPos, float t_targetDist)
     }
 
     // Smooth movement towards the target distance using easing
-    float moveSpeed = 8.0f * GetFrameTime(); // Lower speed for smoother transition
+    float moveSpeed = 10.0f * GetFrameTime(); // Lower speed for smoother transition
     float newDist = currentDist + (t_targetDist - currentDist) * (1 - exp(-moveSpeed));
 
     // Update position smoothly

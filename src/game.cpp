@@ -20,6 +20,9 @@ void Game::initialize()
     enemy = LoadTexture("resources/Art/enemy.png");
 
     reticle = LoadTexture("resources/Art/target.png");
+
+    // Camera initializing
+    SceneCamera::initialize();
 }
 void Game::initializeShaders()
 {
@@ -84,6 +87,7 @@ void Game::findClosestObject()
 void Game::update() 
 {
     input();
+    SceneCamera::update();
 
     findClosestObject();
 
@@ -99,9 +103,25 @@ void Game::draw()
 {
     DrawText("Hello, Raylib Starter Kit!", 190, 180, 20, DARKBLUE);
 
+    
+    drawWithGlow();
+
+
+    // Controller cursor
+    if (IsGamepadAvailable(0))
+    {
+        controller.drawCursor();
+    }
+}
+
+void Game::drawWithGlow()
+{
     // First Pass : Get starting scene
     BeginTextureMode(targetScene);
         ClearBackground(BLANK);
+
+        // BeginMode2D(SceneCamera::camera);
+
         DrawTextureEx(enemy, {100, 100}, 0, 0.1, WHITE);
         for (int i = 0; i < currentObjectAmount; i++)
         {
@@ -113,6 +133,8 @@ void Game::draw()
         {
             DrawTextureEx(reticle, {closestObjectToPlayer->getPos().x - 25, closestObjectToPlayer->getPos().y - 25}, 0, 1.25f, WHITE);
         }
+
+        EndMode2D();
 
     EndTextureMode();
 
@@ -141,8 +163,10 @@ void Game::draw()
     BeginShaderMode(combineShader);
         ClearBackground(BLANK);
 
+        BeginMode2D(SceneCamera::camera);
+
         // Draw the background and unaffected elements normally
-        DrawTextureEx(background, {0, 0}, 0, 1.0, WHITE);
+        drawWithoutGlow();
     
         // First, draw the normal scene
         BeginBlendMode(BLEND_ALPHA);
@@ -153,15 +177,15 @@ void Game::draw()
         BeginBlendMode(BLEND_ADDITIVE);
             DrawTextureRec(targetBlur2.texture, {0, 0, (float)SCREEN_WIDTH, (float)-SCREEN_HEIGHT}, {0, 0}, WHITE);
         EndBlendMode();
+
+        EndMode2D();
+
     EndShaderMode();
+}
 
-
-
-    // Controller cursor
-    if (IsGamepadAvailable(0))
-    {
-        controller.drawCursor();
-    }
+void Game::drawWithoutGlow()
+{
+    DrawTextureEx(background, {0, 0}, 0, 1.0, WHITE);
 }
 
 void Game::input()
@@ -180,7 +204,7 @@ void Game::mouseInput()
 {
     if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
     {
-        player.releaseGrapple(GetMousePosition());
+        player.releaseGrapple( GetScreenToWorld2D(GetMousePosition(), SceneCamera::camera));
     }
 
     // Used to grab objects
@@ -191,7 +215,7 @@ void Game::mouseInput()
 
     if (IsKeyPressed(KEY_SPACE))
     {
-        objects.push_back(std::make_shared<Object>(GetMousePosition()));
+        objects.push_back(std::make_shared<Object>( GetScreenToWorld2D(GetMousePosition(), SceneCamera::camera)));
         currentObjectAmount++;
     }
 }
@@ -202,7 +226,7 @@ void Game::controllerInput()
 
     if (IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_TRIGGER_2))
     {
-        player.releaseGrapple(GetMousePosition());
+        player.releaseGrapple( GetScreenToWorld2D(GetMousePosition(), SceneCamera::camera));
     }
 
     // Used to grab objects

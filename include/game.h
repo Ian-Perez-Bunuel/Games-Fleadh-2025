@@ -7,6 +7,7 @@
 
 #include "../include/Player.h"
 #include "../include/Controller.h"
+#include "../include/SceneCamera.h"
 
 
 class Game
@@ -21,6 +22,9 @@ public:
 
 private:
     void initializeShaders();
+
+    void drawWithGlow();
+    void drawWithoutGlow();
 
     void input();
     void mouseInput();

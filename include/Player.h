@@ -29,8 +29,6 @@ private:
 
     Vector2 position;
 
-    void screenWrapping();
-
     // Movement
     void move();
     void controllerMovement(Vector2 t_stickDir);
