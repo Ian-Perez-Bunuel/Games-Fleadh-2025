@@ -1,6 +1,7 @@
 #include "../include/Grapple.h"
 #include <random>
 #include "../include/SceneCamera.h"
+#include <iostream>
 
 Grapple::Grapple()
 {   
