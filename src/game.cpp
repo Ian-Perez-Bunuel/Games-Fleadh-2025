@@ -19,9 +19,9 @@ void Game::initialize()
     enemy = LoadTexture("resources/Art/Planet.png");
 
     reticle = LoadTexture("resources/Art/target.png");
+
+    planetSelector.init();
     
-    Vector2 centerPos = {200.0f, 200.0f};
-    planetCard = std::make_shared<PlanetCard>(centerPos, enemy, "More asteroids\n\nLaser Attacks\n");
 
     // Camera initializing
     SceneCamera::initialize();
@@ -99,6 +99,11 @@ void Game::update()
     for (int i = 0; i < currentObjectAmount; i++)
     {
         objects[i]->update();
+    }
+
+    if (planetSelector.isActive())
+    {
+        planetSelector.transition();
     }
 
     findClosestObject();
@@ -187,8 +192,10 @@ void Game::drawWithoutGlow()
 {
     DrawTextureEx(background, {0, 0}, 0, 1.0, WHITE);
 
-    if (IsKeyDown(KEY_M))
-        planetCard->draw();
+    if (planetSelector.isActive())
+    {
+        planetSelector.draw();
+    }
 }
 
 void Game::input()
@@ -220,6 +227,11 @@ void Game::mouseInput()
     {
         objects.push_back(std::make_shared<Object>( GetScreenToWorld2D(GetMousePosition(), SceneCamera::camera)));
         currentObjectAmount++;
+    }
+
+    if (IsKeyPressed(KEY_M))
+    {
+        planetSelector.activate();
     }
 }
 

@@ -41,6 +41,17 @@
         "xiosbase": "cpp",
         "xlocale": "cpp",
         "xlocinfo": "cpp",
-        "xlocnum": "cpp"
+        "xlocnum": "cpp",
+        "bit": "cpp",
+        "charconv": "cpp",
+        "format": "cpp",
+        "iostream": "cpp",
+        "istream": "cpp",
+        "locale": "cpp",
+        "ostream": "cpp",
+        "xlocbuf": "cpp",
+        "xlocmes": "cpp",
+        "xlocmon": "cpp",
+        "xloctime": "cpp"
     }
 }

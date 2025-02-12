@@ -99,27 +99,30 @@ void Player::draw()
 
 void Player::shootGrapple(std::shared_ptr<Object> t_object)
 {
-    int closestGrappleIndex = -1;
-    float lowestDist = 0.0f;
-
-
-    for (int i = 0; i < GRAPPLE_AMOUNT; i++)
+    if (!t_object->checkGrabbed())
     {
-        // Check which is the closest grapple
-        float dist = pointToPointDist(grapples[i].getStartPoint(), t_object->getPos());
+        int closestGrappleIndex = -1;
+        float lowestDist = 0.0f;
 
-        if (!grapples[i].isActive())
+
+        for (int i = 0; i < GRAPPLE_AMOUNT; i++)
         {
-            if (dist > lowestDist) // > becasuse it works idk
+            // Check which is the closest grapple
+            float dist = pointToPointDist(grapples[i].getStartPoint(), t_object->getPos());
+
+            if (!grapples[i].isActive())
             {
-                lowestDist = dist;
-                closestGrappleIndex = i;
+                if (dist > lowestDist) // > becasuse it works idk
+                {
+                    lowestDist = dist;
+                    closestGrappleIndex = i;
+                }
             }
         }
-    }
-    if (closestGrappleIndex >= 0)
-    {
+        if (closestGrappleIndex >= 0)
+        {
         grapples[closestGrappleIndex].shoot(t_object);
+        }
     }
 }
 

@@ -15,3 +15,10 @@ void PlanetCard::draw()
     DrawTextureEx(planet, {position.x + 125, position.y + 75}, 0, 0.1f, WHITE);
     DrawTextEx(font, description.c_str(), {position.x + 25, position.y + 325}, 15, 2, WHITE);
 }
+
+void PlanetCard::moveTo(Vector2 t_targetPos, float t_speed)
+{
+    // Linear interpolation (LERP) for smooth movement
+    position.x += (t_targetPos.x - position.x) * t_speed * GetFrameTime();
+    position.y += (t_targetPos.y - position.y) * t_speed * GetFrameTime();
+}
