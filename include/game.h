@@ -4,10 +4,12 @@
 #include "raylib.h"
 #include "stdio.h"
 #include <vector>
+#include <memory>
 
 #include "../include/Player.h"
 #include "../include/Controller.h"
 #include "../include/SceneCamera.h"
+#include "../include/PlanetCard.h"
 
 
 class Game
@@ -59,6 +61,11 @@ private:
     RenderTexture2D targetScene;
     RenderTexture2D targetBlur1;
     RenderTexture2D targetBlur2;
+
+
+    // Planet Card
+    std::shared_ptr<PlanetCard> planetCard;
+
 
     float pointToPointDist(Vector2 t_p1, Vector2 t_p2) { return sqrt(((t_p2.x - t_p1.x) * (t_p2.x - t_p1.x)) + ((t_p2.y - t_p1.y) * (t_p2.y - t_p1.y))); }
 };

@@ -94,7 +94,7 @@ void Player::draw()
     }
 
     //DrawCircleV(position, RADIUS, BLUE);
-    DrawTextureEx(texture, {position.x - RADIUS, position.y - RADIUS}, 0, 1.08f, WHITE);
+    DrawTextureEx(texture, {position.x - RADIUS, position.y - RADIUS}, 0, 1.0f, WHITE);
 }
 
 void Player::shootGrapple(std::shared_ptr<Object> t_object)

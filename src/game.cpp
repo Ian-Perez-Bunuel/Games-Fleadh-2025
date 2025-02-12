@@ -1,7 +1,6 @@
 #include "../include/game.h"
 #include "../include/Globals.h"
 
-#define GLSL_VERSION 330
 
 Game::Game()
 {
@@ -17,9 +16,12 @@ void Game::initialize()
     player.initialize();
     // Sprites
     background = LoadTexture("resources/Art/background.png");
-    enemy = LoadTexture("resources/Art/enemy.png");
+    enemy = LoadTexture("resources/Art/Planet.png");
 
     reticle = LoadTexture("resources/Art/target.png");
+    
+    Vector2 centerPos = {200.0f, 200.0f};
+    planetCard = std::make_shared<PlanetCard>(centerPos, enemy, "More asteroids\n\nLaser Attacks\n");
 
     // Camera initializing
     SceneCamera::initialize();
@@ -69,16 +71,18 @@ Game::~Game()
 
 void Game::findClosestObject()
 {
-    float lowestDist = 100000.0f;
-
+    
     if (currentObjectAmount > 0)
     {
-        for (std::shared_ptr<Object> o : objects)
+        float lowestDist = 100000.0f;
+
+        for (int i = 0; i < currentObjectAmount; i++)
         {
-            float distToObject = pointToPointDist(player.getPos(), o->getPos());
-            if (distToObject < lowestDist && !o->checkGrabbed())
+            float distToObject = pointToPointDist(objects[i]->getPos(), player.getPos());
+            if (distToObject < lowestDist && !objects[i]->checkGrabbed())
             {
-                closestObjectToPlayer = o;
+                lowestDist = distToObject;
+                closestObjectToPlayer = objects[i];
             }
         }
     }
@@ -89,14 +93,15 @@ void Game::update()
     input();
     SceneCamera::update();
 
-    findClosestObject();
-
+    
     player.update(controller.getLeftStickDir());
-
+    
     for (int i = 0; i < currentObjectAmount; i++)
     {
         objects[i]->update();
     }
+
+    findClosestObject();
 }
 
 void Game::draw() 
@@ -120,9 +125,6 @@ void Game::drawWithGlow()
     BeginTextureMode(targetScene);
         ClearBackground(BLANK);
 
-        // BeginMode2D(SceneCamera::camera);
-
-        DrawTextureEx(enemy, {100, 100}, 0, 0.1, WHITE);
         for (int i = 0; i < currentObjectAmount; i++)
         {
             objects[i]->draw();
@@ -133,8 +135,6 @@ void Game::drawWithGlow()
         {
             DrawTextureEx(reticle, {closestObjectToPlayer->getPos().x - 25, closestObjectToPlayer->getPos().y - 25}, 0, 1.25f, WHITE);
         }
-
-        EndMode2D();
 
     EndTextureMode();
 
@@ -186,6 +186,9 @@ void Game::drawWithGlow()
 void Game::drawWithoutGlow()
 {
     DrawTextureEx(background, {0, 0}, 0, 1.0, WHITE);
+
+    if (IsKeyDown(KEY_M))
+        planetCard->draw();
 }
 
 void Game::input()
