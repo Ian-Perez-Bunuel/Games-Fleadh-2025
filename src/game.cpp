@@ -69,25 +69,6 @@ Game::~Game()
     UnloadRenderTexture(targetBlur2);
 }
 
-void Game::findClosestObject()
-{
-    
-    if (currentObjectAmount > 0)
-    {
-        float lowestDist = 100000.0f;
-
-        for (int i = 0; i < currentObjectAmount; i++)
-        {
-            float distToObject = pointToPointDist(objects[i]->getPos(), player.getPos());
-            if (distToObject < lowestDist && !objects[i]->checkGrabbed())
-            {
-                lowestDist = distToObject;
-                closestObjectToPlayer = objects[i];
-            }
-        }
-    }
-}
-
 void Game::update() 
 {
     input();
@@ -96,17 +77,14 @@ void Game::update()
     
     player.update(controller.getLeftStickDir());
     
-    for (int i = 0; i < currentObjectAmount; i++)
-    {
-        objects[i]->update();
-    }
+    objectManager.update();
 
     if (planetSelector.isActive())
     {
         planetSelector.transition();
     }
 
-    findClosestObject();
+    closestObjectToPlayer = objectManager.findClosestToPlayer(player);
 }
 
 void Game::draw() 
@@ -130,13 +108,11 @@ void Game::drawWithGlow()
     BeginTextureMode(targetScene);
         ClearBackground(BLANK);
 
-        for (int i = 0; i < currentObjectAmount; i++)
-        {
-            objects[i]->draw();
-        }
+        objectManager.draw();
+        
         player.draw();
 
-        if (currentObjectAmount > 0 && !closestObjectToPlayer->checkGrabbed())
+        if (closestObjectToPlayer != nullptr)
         {
             DrawTextureEx(reticle, {closestObjectToPlayer->getPos().x - 25, closestObjectToPlayer->getPos().y - 25}, 0, 1.25f, WHITE);
         }
@@ -225,8 +201,7 @@ void Game::mouseInput()
 
     if (IsKeyPressed(KEY_SPACE))
     {
-        objects.push_back(std::make_shared<Object>( GetScreenToWorld2D(GetMousePosition(), SceneCamera::camera)));
-        currentObjectAmount++;
+        objectManager.setObjects();
     }
 
     if (IsKeyPressed(KEY_M))
@@ -252,8 +227,7 @@ void Game::controllerInput()
 
     if (IsGamepadButtonDown(0, GAMEPAD_BUTTON_RIGHT_FACE_DOWN))
     {
-        objects.push_back(std::make_shared<Object>(controller.getCursorPos()));
-        currentObjectAmount++;
+        objectManager.setObjects();
     }
 }
 

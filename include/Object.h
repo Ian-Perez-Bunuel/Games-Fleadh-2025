@@ -1,12 +1,18 @@
+#pragma once
+
 #include "raylib.h"
 #include "stdio.h"
 #include <math.h>
 
 
+static const int SMALL = 10;
+static const int MEDIUM = 15;
+static const int LARGE = 30;
+
 class Object
 {
 public:
-    Object(Vector2 t_pos = {0.0f, 0.0f});
+    Object(Vector2 t_pos = {0.0f, 0.0f}, int t_size = 10);
 
     void update();
     void draw();
@@ -14,15 +20,19 @@ public:
     Vector2 getPos() { return position; }
     int getRadius() { return radius; }
     bool checkGrabbed() { return grabbed; }
-
+    
     void grab();
     void held(Vector2 t_anchorPos, float t_dist);
     void released(Vector2 t_releaseDir);
+    
 
 private:
     bool moveToRotationArea(Vector2 t_anchorPos, float t_targetDist);
 
     void checkForSpeedIncrease();
+
+    void loop();
+
 
     int radius = 20;
     Texture2D texture;
@@ -31,7 +41,7 @@ private:
     bool correctDist = false;
     float angle = -1.0f;
 
-    Vector2 position;
+    Vector2 position = {0.0f, 0.0f};
 
     // Physics
     float mass = 10;

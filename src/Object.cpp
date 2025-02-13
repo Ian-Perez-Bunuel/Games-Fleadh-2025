@@ -1,11 +1,12 @@
 #include "../include/Object.h"
 #include <random>
+#include "../include/Globals.h"
 
 
-Object::Object(Vector2 t_pos) : position(t_pos)
+Object::Object(Vector2 t_pos, int t_size) : position(t_pos)
 {
 	texture = LoadTexture("resources/Art/object.png");
-	radius = (rand() % 30) + 10;
+	radius = t_size;
 	mass = radius * 2;
 	speed -= mass;
 
@@ -20,6 +21,8 @@ void Object::update()
 	{
 		position.x += velocity.x;
 		position.y += velocity.y;
+
+		loop();
 	}
 }
 
@@ -127,6 +130,15 @@ void Object::checkForSpeedIncrease()
 		{
 			speed *= 1.05f; // Adjust acceleration factor as needed
 		}
+	}
+}
+
+void Object::loop()
+{
+	if (position.x > SCREEN_WIDTH + radius)
+	{
+		position.x = -radius;
+		position.y = rand() % SCREEN_HEIGHT;
 	}
 }
 

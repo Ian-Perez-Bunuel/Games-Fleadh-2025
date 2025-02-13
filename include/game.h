@@ -6,10 +6,10 @@
 #include <vector>
 #include <memory>
 
-#include "../include/Player.h"
 #include "../include/Controller.h"
 #include "../include/SceneCamera.h"
 #include "../include/PlanetSelector.h"
+#include "../include/ObjectManager.h"
 
 
 class Game
@@ -33,7 +33,6 @@ private:
     void controllerInput();
     Controller controller;
     
-    void findClosestObject();
     Player player;
     std::shared_ptr<Object> closestObjectToPlayer;
 
@@ -43,9 +42,7 @@ private:
     
     bool CircleCollisions(int t_r1, int t_r2, Vector2 pos1, Vector2 pos2);
 
-    static const int MAX_OBJECTS;
-    int currentObjectAmount;
-    std::vector<std::shared_ptr<Object>> objects;
+    ObjectManager objectManager;
 
     Texture2D background;
     Texture2D enemy;
@@ -63,8 +60,6 @@ private:
     RenderTexture2D targetBlur2;
 
     PlanetSelector planetSelector;
-
-    float pointToPointDist(Vector2 t_p1, Vector2 t_p2) { return sqrt(((t_p2.x - t_p1.x) * (t_p2.x - t_p1.x)) + ((t_p2.y - t_p1.y) * (t_p2.y - t_p1.y))); }
 };
 
 #endif // GAME_H
