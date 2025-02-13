@@ -3,21 +3,23 @@
 #include "../include/Globals.h"
 
 
-Object::Object(Vector2 t_pos, int t_size) : position(t_pos)
+Object::Object(Vector2 t_pos, int t_size, int dirAngle) : position(t_pos)
 {
 	texture = LoadTexture("resources/Art/object.png");
 	radius = t_size;
 	mass = radius * 2;
-	speed -= mass;
+	rotationSpeed -= mass;
 
-	velocity = {2, 0};
+	velocity = {cos(degreesToRadians(dirAngle)) * speed, sin(degreesToRadians(dirAngle)) * speed};
+
+	active = true;
 
 	color = WHITE;
 }
 
 void Object::update()
 {
-	if (!grabbed)
+	if (!grabbed && active)
 	{
 		position.x += velocity.x;
 		position.y += velocity.y;
@@ -28,8 +30,11 @@ void Object::update()
 
 void Object::draw()
 {
-    // DrawCircleV(position, radius, RED);
-	DrawTextureEx(texture, {position.x - radius, position.y - radius}, 0, radius / 400.0f, color);
+	if (active)
+	{
+		// DrawCircleV(position, radius, RED);
+		DrawTextureEx(texture, {position.x - radius, position.y - radius}, 0, radius / 400.0f, color);
+	}
 }
 
 void Object::grab()
@@ -61,8 +66,8 @@ bool Object::moveToRotationArea(Vector2 t_anchorPos, float t_targetDist)
     }
 
     // Smooth movement towards the target distance using easing
-    float moveSpeed = 10.0f * GetFrameTime(); // Lower speed for smoother transition
-    float newDist = currentDist + (t_targetDist - currentDist) * (1 - exp(-moveSpeed));
+    float moverotationSpeed = 10.0f * GetFrameTime(); // Lower rotationSpeed for smoother transition
+    float newDist = currentDist + (t_targetDist - currentDist) * (1 - exp(-moverotationSpeed));
 
     // Update position smoothly
     position.x = t_anchorPos.x + newDist * direction.x;
@@ -92,16 +97,16 @@ void Object::held(Vector2 t_anchorPos, float t_dist)
             {
                 anchorDist = t_dist;
 
-                // Compute initial speed from velocity magnitude
-                float initialSpeed = sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
-                speed = initialSpeed; // Start with object's velocity magnitude
+                // Compute initial rotationSpeed from velocity magnitude
+                float initialrotationSpeed = sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
+                rotationSpeed = initialrotationSpeed; // Start with object's velocity magnitude
             }
 
-            // Smoothly interpolate speed from initial speed to MAX_SPEED
+            // Smoothly interpolate rotationSpeed from initial rotationSpeed to MAX_ROTATION_SPEED
             float easingFactor = 0.2f; 
-            speed += (MAX_SPEED - speed) * (1 - exp(-easingFactor * GetFrameTime()));
+            rotationSpeed += (MAX_ROTATION_SPEED - rotationSpeed) * (1 - exp(-easingFactor * GetFrameTime()));
 
-            angle += speed * GetFrameTime();
+            angle += rotationSpeed * GetFrameTime();
 
             checkForSpeedIncrease();
 
@@ -125,10 +130,10 @@ void Object::checkForSpeedIncrease()
 	{
 		angle -= 360.0f;
 
-		// Slightly increase speed upon full rotation
-		if (speed < MAX_SPEED)
+		// Slightly increase rotationSpeed upon full rotation
+		if (rotationSpeed < MAX_ROTATION_SPEED)
 		{
-			speed *= 1.05f; // Adjust acceleration factor as needed
+			rotationSpeed *= 1.05f; // Adjust acceleration factor as needed
 		}
 	}
 }
@@ -142,6 +147,27 @@ void Object::loop()
 	}
 }
 
+bool Object::checkObjectCollisions(std::shared_ptr<Object> t_otherObject)
+{
+	if (!active || !t_otherObject->isActive())
+	{
+		return false;
+	}
+
+	float dist = pointToPointDist(position, t_otherObject->getPos());
+	if (dist < radius + t_otherObject->getRadius())
+	{	
+		return true;
+	}
+
+	return false;
+}
+
+void Object::destroy()
+{
+	active = false;
+}
+
 
 void Object::released(Vector2 t_releaseDir)
 {
@@ -151,10 +177,10 @@ void Object::released(Vector2 t_releaseDir)
 	velocity.x = t_releaseDir.x - position.x;
 	velocity.y = t_releaseDir.y - position.y;
 	
-	velocity.x *= 0.05 * (speed / MAX_SPEED);
-	velocity.y *= 0.05 * (speed / MAX_SPEED);
+	velocity.x *= 0.05 * (rotationSpeed / MAX_ROTATION_SPEED);
+	velocity.y *= 0.05 * (rotationSpeed / MAX_ROTATION_SPEED);
 	
-	speed = 0;
+	rotationSpeed = 0;
 
 	correctDist = false;
 }

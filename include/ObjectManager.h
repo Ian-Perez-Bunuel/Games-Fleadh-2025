@@ -18,7 +18,15 @@ public:
     void update();
 
 private:
+
+    static const int SMALL;
+    static const int MEDIUM;
+    static const int LARGE;
+    
     std::vector<std::shared_ptr<Object>> objects;
+
+    void checkCollisions();
+    void splitObject(std::shared_ptr<Object> t_destroyedObject);
 
     float pointToPointDist(Vector2 t_p1, Vector2 t_p2) { return sqrt(((t_p2.x - t_p1.x) * (t_p2.x - t_p1.x)) + ((t_p2.y - t_p1.y) * (t_p2.y - t_p1.y))); }
 };

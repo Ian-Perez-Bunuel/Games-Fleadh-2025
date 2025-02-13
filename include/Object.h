@@ -3,16 +3,14 @@
 #include "raylib.h"
 #include "stdio.h"
 #include <math.h>
+#include <memory>
 
 
-static const int SMALL = 10;
-static const int MEDIUM = 15;
-static const int LARGE = 30;
 
 class Object
 {
 public:
-    Object(Vector2 t_pos = {0.0f, 0.0f}, int t_size = 10);
+    Object(Vector2 t_pos = {0.0f, 0.0f}, int t_size = 10, int dirAngle = 0);
 
     void update();
     void draw();
@@ -20,10 +18,14 @@ public:
     Vector2 getPos() { return position; }
     int getRadius() { return radius; }
     bool checkGrabbed() { return grabbed; }
+    bool isActive() { return active; }
     
     void grab();
     void held(Vector2 t_anchorPos, float t_dist);
     void released(Vector2 t_releaseDir);
+
+    bool checkObjectCollisions(std::shared_ptr<Object> t_otherObject);
+    void destroy();
     
 
 private:
@@ -33,6 +35,7 @@ private:
 
     void loop();
 
+    bool active = false;
 
     int radius = 20;
     Texture2D texture;
@@ -45,8 +48,9 @@ private:
 
     // Physics
     float mass = 10;
-    float speed = 150.0f;
-    const int MAX_SPEED = 260;
+    float speed = 2.0f;
+    float rotationSpeed = 150.0f;
+    const int MAX_ROTATION_SPEED = 260;
     Vector2 velocity;
     float anchorDist = -1.0f;
 
