@@ -91,6 +91,8 @@ void ObjectManager::splitObject()
     {
         for (std::weak_ptr<Object>& splittingObject : objectsToSplit)
         {
+            int randAngleOffset = (rand() % 20) - 10;
+
             switch (splittingObject.lock()->getRadius())
             {
                 case SMALL:
@@ -99,14 +101,14 @@ void ObjectManager::splitObject()
                 case MEDIUM:
                 for (int i = 0; i < 4; i++)
                 {
-                    objects.push_back(std::make_shared<Object>(texture, splittingObject.lock()->getPos(), SMALL, i * 90));
+                    objects.push_back(std::make_shared<Object>(texture, splittingObject.lock()->getPos(), SMALL, i * (90 + randAngleOffset)));
                 }
                 break;
 
             case LARGE:
                 for (int i = 0; i < 4; i++)
                 {
-                    objects.push_back(std::make_shared<Object>(texture, splittingObject.lock()->getPos(), MEDIUM, i * 90));
+                    objects.push_back(std::make_shared<Object>(texture, splittingObject.lock()->getPos(), MEDIUM, i * (90 + randAngleOffset)));
                 }
                 break;
     
