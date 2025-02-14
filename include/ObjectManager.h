@@ -18,15 +18,16 @@ public:
     void update();
 
 private:
-
+    Texture2D texture;
     static const int SMALL;
     static const int MEDIUM;
     static const int LARGE;
     
     std::vector<std::shared_ptr<Object>> objects;
+    std::vector<std::weak_ptr<Object>> objectsToSplit;
 
     void checkCollisions();
-    void splitObject(std::shared_ptr<Object> t_destroyedObject);
+    void splitObject();
 
     float pointToPointDist(Vector2 t_p1, Vector2 t_p2) { return sqrt(((t_p2.x - t_p1.x) * (t_p2.x - t_p1.x)) + ((t_p2.y - t_p1.y) * (t_p2.y - t_p1.y))); }
 };

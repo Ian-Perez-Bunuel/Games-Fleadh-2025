@@ -1,6 +1,7 @@
 #include "../include/ObjectManager.h"
 #include "../include/Globals.h"
 
+
 const int ObjectManager::SMALL = 15;
 const int ObjectManager::MEDIUM = 25;
 const int ObjectManager::LARGE = 45;
@@ -8,6 +9,7 @@ const int ObjectManager::LARGE = 45;
 
 void ObjectManager::setObjects()
 {
+    texture = LoadTexture("resources/Art/object.png");
     objects.clear();
 
     for (int i = 0; i < 50; i++)
@@ -17,13 +19,13 @@ void ObjectManager::setObjects()
         switch (randSize)
         {
         case 0:
-            objects.push_back(std::make_shared<Object>(position, SMALL));
+            objects.push_back(std::make_shared<Object>(texture, position, SMALL));
             break;
         case 1:
-            objects.push_back(std::make_shared<Object>(position, MEDIUM));
+            objects.push_back(std::make_shared<Object>(texture, position,  MEDIUM));
             break;
         case 2:
-            objects.push_back(std::make_shared<Object>(position, LARGE));
+            objects.push_back(std::make_shared<Object>(texture, position, LARGE));
             break;
         }
     }
@@ -49,18 +51,18 @@ std::shared_ptr<Object> ObjectManager::findClosestToPlayer(Player t_player)
 
 void ObjectManager::checkCollisions()
 {
-    for (std::size_t currentObject = 0; currentObject < objects.size(); currentObject++)
+    for (std::shared_ptr<Object>& currentObject : objects)
     {
         // If the object is grabbed skip the rest of this loop
-        if (objects[currentObject]->checkGrabbed() || !objects[currentObject]->isActive())
+        if (currentObject->checkGrabbed() || !currentObject->isActive() || !currentObject->checkCollidable())
         {
             continue;
         }
 
-        for (std::size_t otherObject = 0; otherObject < objects.size(); otherObject++)
+        for (std::shared_ptr<Object>& otherObject : objects)
         {
             // If the object is grabbed skip the rest of the function
-            if (objects[otherObject]->checkGrabbed() || !objects[otherObject]->isActive())
+            if (otherObject->checkGrabbed() || !otherObject->isActive() || !otherObject->checkCollidable())
             {
                 continue;
             }
@@ -68,44 +70,53 @@ void ObjectManager::checkCollisions()
             // If its not the same object
             if (currentObject != otherObject)
             {
-                if (objects[currentObject]->checkObjectCollisions(objects[otherObject]))
+                if (currentObject->checkObjectCollisions(otherObject))
                 {
-                    splitObject(objects[currentObject]);
-                    splitObject(objects[otherObject]);
-
-                    objects[currentObject]->destroy();
-                    objects[otherObject]->destroy();
+                    objectsToSplit.push_back(currentObject);
+                    objectsToSplit.push_back(otherObject);
+                    
+                    currentObject->destroy();
+                    otherObject->destroy();
                 }
             }
         }
     }
+    
+    splitObject();
 }
 
-void ObjectManager::splitObject(std::shared_ptr<Object> t_destroyedObject)
+void ObjectManager::splitObject()
 {
-    printf("SPLIT");
-    switch (t_destroyedObject->getRadius())
+    if (objectsToSplit.size() > 0)
     {
-    case SMALL:
-        break;
-
-    case MEDIUM:
-        for (int i = 0; i < 4; i++)
+        for (std::weak_ptr<Object>& splittingObject : objectsToSplit)
         {
-            objects.push_back(std::make_shared<Object>(t_destroyedObject->getPos(), SMALL, i * 90));
-        }
-        break;
+            switch (splittingObject.lock()->getRadius())
+            {
+                case SMALL:
+                    break;
+                
+                case MEDIUM:
+                for (int i = 0; i < 4; i++)
+                {
+                    objects.push_back(std::make_shared<Object>(texture, splittingObject.lock()->getPos(), SMALL, i * 90));
+                }
+                break;
 
-    case LARGE:
-        for (int i = 0; i < 4; i++)
-        {
-            objects.push_back(std::make_shared<Object>(t_destroyedObject->getPos(), MEDIUM, i * 90));
-        }
-        break;
+            case LARGE:
+                for (int i = 0; i < 4; i++)
+                {
+                    objects.push_back(std::make_shared<Object>(texture, splittingObject.lock()->getPos(), MEDIUM, i * 90));
+                }
+                break;
     
-    default:
-        break;
+            default:
+            break;
+            }
+        }
     }
+
+    objectsToSplit.clear();
 }
 
 
@@ -124,6 +135,6 @@ void ObjectManager::update()
     {
         object->update();
 
-        checkCollisions();
     }
+    checkCollisions();
 }

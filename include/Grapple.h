@@ -5,7 +5,6 @@
 #include <vector>
 
 #include "../include/Object.h"
-#include "../include/ParticleSpawner.h"
 
 struct State
 {

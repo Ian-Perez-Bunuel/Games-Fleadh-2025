@@ -1,11 +1,12 @@
 #include "../include/Object.h"
 #include <random>
+#include "../include/SceneCamera.h"
 #include "../include/Globals.h"
 
 
-Object::Object(Vector2 t_pos, int t_size, int dirAngle) : position(t_pos)
+Object::Object(Texture2D& t_texture, Vector2 t_pos, int t_size, int dirAngle) 
+	: texture(t_texture), position(t_pos)
 {
-	texture = LoadTexture("resources/Art/object.png");
 	radius = t_size;
 	mass = radius * 2;
 	rotationSpeed -= mass;
@@ -15,6 +16,8 @@ Object::Object(Vector2 t_pos, int t_size, int dirAngle) : position(t_pos)
 	active = true;
 
 	color = WHITE;
+
+	particleSpawner.addColor(color);
 }
 
 void Object::update()
@@ -24,8 +27,12 @@ void Object::update()
 		position.x += velocity.x;
 		position.y += velocity.y;
 
+		invinsabilityCheck();
+
 		loop();
 	}
+
+	particleSpawner.update();
 }
 
 void Object::draw()
@@ -35,6 +42,7 @@ void Object::draw()
 		// DrawCircleV(position, radius, RED);
 		DrawTextureEx(texture, {position.x - radius, position.y - radius}, 0, radius / 400.0f, color);
 	}
+	particleSpawner.draw();
 }
 
 void Object::grab()
@@ -166,6 +174,25 @@ bool Object::checkObjectCollisions(std::shared_ptr<Object> t_otherObject)
 void Object::destroy()
 {
 	active = false;
+
+	particleSpawner.setValues(position, 360, 0);
+	particleSpawner.spawn();
+
+	SceneCamera::screenShake(SceneCamera::SMALL_SHAKE, 10);
+}
+
+void Object::invinsabilityCheck()
+{
+	if (invincibilityTimer < INVINCIBILITY_DURATION && !collidable)
+	{
+		invincibilityTimer++;
+	}		
+	else
+	{
+		collidable = true;
+
+		invincibilityTimer = 0;
+	}
 }
 
 
