@@ -15,7 +15,7 @@ Object::Object(Texture2D& t_texture, Vector2 t_pos, int t_size, int dirAngle)
 
 	active = true;
 
-	color = WHITE;
+	color = BLUE;
 
 	particleSpawner.addColor(color);
 }
@@ -39,7 +39,7 @@ void Object::draw()
 {
 	if (active)
 	{
-		DrawCircleV(position, radius, RED);
+		// DrawCircleV(position, radius, RED);
 		DrawTextureEx(texture, {position.x - radius, position.y - radius}, 0, radius / 460.0f, color);
 	}
 	particleSpawner.draw();

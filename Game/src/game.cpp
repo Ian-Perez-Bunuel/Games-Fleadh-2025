@@ -72,7 +72,7 @@ Game::~Game()
 void Game::update() 
 {
     input();
-    SceneCamera::update();
+    // SceneCamera::update();
 
     
     player.update(controller.getLeftStickDir());

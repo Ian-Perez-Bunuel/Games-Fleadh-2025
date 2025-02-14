@@ -1,7 +1,7 @@
 #include "../include/SceneCamera.h"
 #include <random>
 #include "../include/Globals.h"
-
+// Orthogonal
 Camera2D SceneCamera::camera;
 
 float SceneCamera::shakeIntensity = 0.0f;
