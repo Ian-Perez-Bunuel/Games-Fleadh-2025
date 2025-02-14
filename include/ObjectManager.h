@@ -22,6 +22,8 @@ private:
     static const int SMALL;
     static const int MEDIUM;
     static const int LARGE;
+
+    const int OBJECT_AMOUNT = 20;
     
     std::vector<std::shared_ptr<Object>> objects;
     std::vector<std::weak_ptr<Object>> objectsToSplit;

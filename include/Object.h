@@ -30,15 +30,15 @@ public:
     void destroy();
 
     
-    
 private:
     bool moveToRotationArea(Vector2 t_anchorPos, float t_targetDist);
     
     void checkForSpeedIncrease();
     void invinsabilityCheck();
 
+    
     void loop();
-
+    
     bool active = false;
 
     // Invinsability

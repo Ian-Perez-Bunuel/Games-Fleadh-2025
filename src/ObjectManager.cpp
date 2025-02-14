@@ -12,7 +12,7 @@ void ObjectManager::setObjects()
     texture = LoadTexture("resources/Art/object.png");
     objects.clear();
 
-    for (int i = 0; i < 50; i++)
+    for (int i = 0; i < OBJECT_AMOUNT; i++)
     {
         Vector2 position = {(float)(rand() % SCREEN_WIDTH), (float)(rand() % SCREEN_HEIGHT)};
         int randSize = rand() % 3;

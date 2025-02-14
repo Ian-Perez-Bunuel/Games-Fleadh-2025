@@ -39,8 +39,8 @@ void Object::draw()
 {
 	if (active)
 	{
-		// DrawCircleV(position, radius, RED);
-		DrawTextureEx(texture, {position.x - radius, position.y - radius}, 0, radius / 400.0f, color);
+		DrawCircleV(position, radius, RED);
+		DrawTextureEx(texture, {position.x - radius, position.y - radius}, 0, radius / 460.0f, color);
 	}
 	particleSpawner.draw();
 }
