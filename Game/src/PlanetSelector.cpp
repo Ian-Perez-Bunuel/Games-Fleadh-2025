@@ -4,7 +4,7 @@
 
 void PlanetSelector::init()
 {
-    texture = LoadTexture("resources/Art/Planet.png");
+    texture = LoadTexture("resources/Art/planet2D.png");
 
     for (int i = 0; i < PLANET_AMOUNT; i++)
     {

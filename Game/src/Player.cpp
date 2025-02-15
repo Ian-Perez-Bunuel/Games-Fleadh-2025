@@ -15,11 +15,11 @@ void Player::move()
     // key inputs
     if (IsKeyDown(KEY_W))
     {
-        velocity.y -= SPEED;
+        velocity.y += SPEED;
     }
     else if (IsKeyDown(KEY_S))
     {
-        velocity.y += SPEED;
+        velocity.y -= SPEED;
     } 
     if (IsKeyDown(KEY_A))
     {

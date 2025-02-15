@@ -25,8 +25,8 @@ public:
 private:
     void initializeShaders();
 
-    void drawWithGlow();
-    void drawWithoutGlow();
+    void drawForeground();
+    void drawBackground();
 
     void input();
     void mouseInput();
@@ -44,7 +44,7 @@ private:
 
     ObjectManager objectManager;
 
-    Texture2D background;
+    Texture2D backgroundTexture;
     Texture2D enemy;
 
     // Shaders
@@ -58,6 +58,13 @@ private:
     RenderTexture2D targetScene;
     RenderTexture2D targetBlur1;
     RenderTexture2D targetBlur2;
+
+    const Vector3 MIDDLEGROUND_POS = {0.0f, 0.0f, 1.0f};
+    const Vector3 BACKGROUND_POS = {0.0f, 0.0f, 0.0f};
+    // Billboard Textures
+    RenderTexture2D background;
+    RenderTexture2D middleground;
+    RenderTexture2D foreground;
 
     PlanetSelector planetSelector;
 };

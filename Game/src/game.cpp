@@ -15,7 +15,7 @@ void Game::initialize()
 
     player.initialize();
     // Sprites
-    background = LoadTexture("resources/Art/background.png");
+    backgroundTexture = LoadTexture("resources/Art/background.png");
     enemy = LoadTexture("resources/Art/Planet.png");
 
     reticle = LoadTexture("resources/Art/target.png");
@@ -37,14 +37,24 @@ void Game::initializeShaders()
     targetScene = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
     targetBlur1 = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
     targetBlur2 = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
+    // Scene parts
+    background = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
+    middleground = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
+    foreground = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
 
     // Set texture filtering to smooth (GL_LINEAR)
     SetTextureFilter(targetScene.texture, TEXTURE_FILTER_BILINEAR);
     SetTextureFilter(targetBlur1.texture, TEXTURE_FILTER_BILINEAR);
     SetTextureFilter(targetBlur2.texture, TEXTURE_FILTER_BILINEAR);
 
+    SetTextureFilter(background.texture, TEXTURE_FILTER_BILINEAR);
+    SetTextureFilter(middleground.texture, TEXTURE_FILTER_BILINEAR);
+    SetTextureFilter(foreground.texture, TEXTURE_FILTER_BILINEAR);
+    
+
+    
+
     Vector2 resolutionForBlur = {(float)SCREEN_WIDTH * 5, (float)SCREEN_HEIGHT * 5};
-    Vector2 resolutionForCRT = {(float)SCREEN_WIDTH, (float)SCREEN_HEIGHT};
 
     // Uniforms
     SetShaderValue(blurHorizontal, GetShaderLocation(blurHorizontal, "resolution"), &resolutionForBlur.x, SHADER_UNIFORM_FLOAT);
@@ -54,8 +64,6 @@ void Game::initializeShaders()
     SetShaderValue(blurVertical, GetShaderLocation(blurVertical, "radius"), &glowRadius, SHADER_UNIFORM_FLOAT);
 
     SetShaderValue(combineShader, GetShaderLocation(combineShader, "intensity"), &glowIntensity, SHADER_UNIFORM_FLOAT);
-
-    SetShaderValue(crtShader, GetShaderLocation(crtShader, "resolution"), &resolutionForCRT, SHADER_UNIFORM_FLOAT);
 }
 
 Game::~Game()
@@ -72,7 +80,7 @@ Game::~Game()
 void Game::update() 
 {
     input();
-    // SceneCamera::update();
+    SceneCamera::update();
 
     
     player.update(controller.getLeftStickDir());
@@ -92,7 +100,16 @@ void Game::draw()
     DrawText("Hello, Raylib Starter Kit!", 190, 180, 20, DARKBLUE);
 
     
-    drawWithGlow();
+    drawForeground();
+    drawBackground();
+
+    BeginMode3D(SceneCamera::camera);
+        DrawBillboard(SceneCamera::camera, background.texture, BACKGROUND_POS, 10.0f, WHITE);
+
+        DrawSphereWires(BACKGROUND_POS, 1, 5, 5,  PINK);
+
+        DrawBillboard(SceneCamera::camera, middleground.texture, MIDDLEGROUND_POS, 7.8f, WHITE);
+    EndMode3D();
 
 
     // Controller cursor
@@ -102,7 +119,7 @@ void Game::draw()
     }
 }
 
-void Game::drawWithGlow()
+void Game::drawForeground()
 {
     // First Pass : Get starting scene
     BeginTextureMode(targetScene);
@@ -140,33 +157,29 @@ void Game::drawWithGlow()
         EndBlendMode();
     EndTextureMode();
 
-    // Final Pass: Combine Glow with Original Scene
-    BeginShaderMode(combineShader);
-        ClearBackground(BLANK);
-
-        BeginMode2D(SceneCamera::camera);
-
-        // Draw the background and unaffected elements normally
-        drawWithoutGlow();
+    BeginTextureMode(middleground);
+        // Final Pass: Combine Glow with Original Scene
+        BeginShaderMode(combineShader);
+            ClearBackground(BLANK);
     
-        // First, draw the normal scene
-        BeginBlendMode(BLEND_ALPHA);
-            DrawTextureRec(targetScene.texture, {0, 0, (float)SCREEN_WIDTH, (float)-SCREEN_HEIGHT}, {0, 0}, WHITE);
-        EndBlendMode();
+            // First, draw the normal scene
+            BeginBlendMode(BLEND_ALPHA);
+                DrawTextureRec(targetScene.texture, {0, 0, (float)SCREEN_WIDTH, (float)-SCREEN_HEIGHT}, {0, 0}, WHITE);
+            EndBlendMode();
 
-        // Then, add the glow effect on top using additive blending
-        BeginBlendMode(BLEND_ADDITIVE);
-            DrawTextureRec(targetBlur2.texture, {0, 0, (float)SCREEN_WIDTH, (float)-SCREEN_HEIGHT}, {0, 0}, WHITE);
-        EndBlendMode();
-
-        EndMode2D();
-
-    EndShaderMode();
+            // Then, add the glow effect on top using additive blending
+            BeginBlendMode(BLEND_ADDITIVE);
+                DrawTextureRec(targetBlur2.texture, {0, 0, (float)SCREEN_WIDTH, (float)-SCREEN_HEIGHT}, {0, 0}, WHITE);
+            EndBlendMode();
+            EndShaderMode();
+    EndTextureMode();
 }
 
-void Game::drawWithoutGlow()
+void Game::drawBackground()
 {
-    DrawTextureEx(background, {0, 0}, 0, 1.0, WHITE);
+    BeginTextureMode(background);
+        DrawTextureEx(backgroundTexture, {0, 0}, 0, 1.0, WHITE);
+    EndTextureMode();
 
     if (planetSelector.isActive())
     {
@@ -190,7 +203,7 @@ void Game::mouseInput()
 {
     if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
     {
-        player.releaseGrapple( GetScreenToWorld2D(GetMousePosition(), SceneCamera::camera));
+        player.releaseGrapple(GetMousePosition());
     }
 
     // Used to grab objects
@@ -216,7 +229,7 @@ void Game::controllerInput()
 
     if (IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_TRIGGER_2))
     {
-        player.releaseGrapple( GetScreenToWorld2D(GetMousePosition(), SceneCamera::camera));
+        player.releaseGrapple(GetMousePosition());
     }
 
     // Used to grab objects
