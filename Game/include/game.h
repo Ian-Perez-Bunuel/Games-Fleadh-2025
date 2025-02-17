@@ -10,6 +10,7 @@
 #include "../include/SceneCamera.h"
 #include "../include/PlanetSelector.h"
 #include "../include/ObjectManager.h"
+#include "../include/Projectile.h"
 
 
 class Game
@@ -60,13 +61,27 @@ private:
     RenderTexture2D targetBlur2;
 
     const Vector3 MIDDLEGROUND_POS = {0.0f, 0.0f, 1.0f};
-    const Vector3 BACKGROUND_POS = {0.0f, 0.0f, 0.0f};
+    const Vector3 BACKGROUND_POS = {0.0f, 0.0f, -10.0f};
+    const Vector3 PLANET_POS = {0.0f, 0.0f, -9.0f};
+    
     // Billboard Textures
     RenderTexture2D background;
     RenderTexture2D middleground;
     RenderTexture2D foreground;
 
     PlanetSelector planetSelector;
+
+
+    // Projectile testing
+    std::vector<Projectile> projectiles;
+
+
+    // Normalize to -1 to 1 range
+    float normalizeSigned(float x, float t_min, float t_max) 
+    {
+        return 2 * (x - t_min) / (t_max - t_min) - 1;
+    }
+    Vector3 convertToMiddleCoords(Vector2 t_originalCoords);
 };
 
 #endif // GAME_H

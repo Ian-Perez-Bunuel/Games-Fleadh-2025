@@ -50,7 +50,7 @@ void Game::initializeShaders()
     SetTextureFilter(background.texture, TEXTURE_FILTER_BILINEAR);
     SetTextureFilter(middleground.texture, TEXTURE_FILTER_BILINEAR);
     SetTextureFilter(foreground.texture, TEXTURE_FILTER_BILINEAR);
-    
+
 
     
 
@@ -92,6 +92,14 @@ void Game::update()
         planetSelector.transition();
     }
 
+    for (Projectile& proj : projectiles)
+        {
+            if (proj.isActive())
+            {
+                proj.moveToTarget();
+            }
+        } 
+
     closestObjectToPlayer = objectManager.findClosestToPlayer(player);
 }
 
@@ -104,13 +112,16 @@ void Game::draw()
     drawBackground();
 
     BeginMode3D(SceneCamera::camera);
-        DrawBillboard(SceneCamera::camera, background.texture, BACKGROUND_POS, 10.0f, WHITE);
+        DrawBillboard(SceneCamera::camera, background.texture, BACKGROUND_POS, 18.0f, WHITE);
 
-        DrawSphereWires(BACKGROUND_POS, 1, 5, 5,  PINK);
+        DrawSphereWires(PLANET_POS, 1, 5, 5,  PINK);
+        for (Projectile& proj : projectiles)
+        {
+            proj.draw();
+        }   
 
         DrawBillboard(SceneCamera::camera, middleground.texture, MIDDLEGROUND_POS, 7.8f, WHITE);
     EndMode3D();
-
 
     // Controller cursor
     if (IsGamepadAvailable(0))
@@ -221,6 +232,11 @@ void Game::mouseInput()
     {
         planetSelector.activate();
     }
+
+    if (IsKeyPressed(KEY_F))
+    {
+        projectiles.push_back(Projectile(PLANET_POS, convertToMiddleCoords(player.getPos())));
+    }
 }
 
 void Game::controllerInput()
@@ -255,4 +271,13 @@ bool Game::CircleCollisions(int t_r1, int t_r2, Vector2 pos1, Vector2 pos2)
     
     // Check if the distance squared is less than or equal to the squared radius sum
     return distanceSquared <= radiusSumSquared;
+}
+
+
+Vector3 Game::convertToMiddleCoords(Vector2 t_originalCoords)
+{
+    float normalizedX = normalizeSigned(t_originalCoords.x, 0.0f, SCREEN_WIDTH);
+    float normalizedY = normalizeSigned(t_originalCoords.y, 0.0f, SCREEN_HEIGHT);
+
+    return {normalizedX * 7.05f, normalizedY * 3.8f, MIDDLEGROUND_POS.z};
 }
