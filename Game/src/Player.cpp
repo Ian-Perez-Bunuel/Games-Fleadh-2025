@@ -7,7 +7,7 @@ Player::Player()
 
 void Player::initialize()
 {
-    texture = LoadTexture("resources/Art/player.png");
+    texture = LoadTexture("resources/Art/2D/player.png");
 }
 
 void Player::move()

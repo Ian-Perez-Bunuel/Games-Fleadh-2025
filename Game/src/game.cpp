@@ -15,10 +15,10 @@ void Game::initialize()
 
     player.initialize();
     // Sprites
-    backgroundTexture = LoadTexture("resources/Art/background.png");
-    enemy = LoadTexture("resources/Art/Planet.png");
+    backgroundTexture = LoadTexture("resources/Art/2D/background.png");
+    enemy = LoadTexture("resources/Art/2D/Planet.png");
 
-    reticle = LoadTexture("resources/Art/target.png");
+    reticle = LoadTexture("resources/Art/2D/target.png");
 
     planetSelector.init();
     planet.init(PLANET_POS);
