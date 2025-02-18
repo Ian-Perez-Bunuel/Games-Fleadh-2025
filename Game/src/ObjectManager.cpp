@@ -9,7 +9,8 @@ const int ObjectManager::LARGE = 45;
 
 void ObjectManager::setObjects()
 {
-    texture = LoadTexture("resources/Art/object.png");
+    texture = LoadTexture("resources/Art/asteroidWhite.png");
+
     objects.clear();
 
     for (int i = 0; i < OBJECT_AMOUNT; i++)

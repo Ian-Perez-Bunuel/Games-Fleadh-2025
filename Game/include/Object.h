@@ -21,10 +21,11 @@ public:
     bool checkGrabbed() { return grabbed; }
     bool isActive() { return active; }
     bool checkCollidable() { return collidable; }
+    bool checkToPlanet() { return toPlanet; }
     
     void grab();
     void held(Vector2 t_anchorPos, float t_dist);
-    void released(Vector2 t_releaseDir);
+    void released(Vector2 t_releaseDir, bool t_toPlanet);
 
     bool checkObjectCollisions(std::shared_ptr<Object> t_otherObject);
     void destroy();
@@ -41,6 +42,11 @@ private:
     
     bool active = false;
 
+    // Movement towards planet
+    bool toPlanet = false;
+    Vector2 planetPos;
+    void movementToPlanet();
+
     // Invinsability
     bool collidable = false;
     const int INVINCIBILITY_DURATION = 60 * 0.5;
@@ -54,6 +60,7 @@ private:
     float angle = -1.0f;
 
     Vector2 position = {0.0f, 0.0f};
+    float scale = 460.0f;
 
     // Physics
     float mass = 10;
@@ -62,6 +69,7 @@ private:
     const int MAX_ROTATION_SPEED = 260;
     Vector2 velocity;
     float anchorDist = -1.0f;
+
 
     Color color;
 

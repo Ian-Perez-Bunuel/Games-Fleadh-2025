@@ -46,11 +46,11 @@ void Grapple::shoot(std::shared_ptr<Object> t_target)
     }
 }
 
-void Grapple::release(Vector2 t_releaseDir)
+void Grapple::release(Vector2 t_releaseDir, bool t_toPlanet)
 {
     if (grappledObject)
     {
-        grappledObject->released(t_releaseDir);
+        grappledObject->released(t_releaseDir, t_toPlanet);
     
         grappledObject.reset();
 

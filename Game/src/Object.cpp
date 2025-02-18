@@ -22,7 +22,7 @@ Object::Object(Texture2D& t_texture, Vector2 t_pos, int t_size, int dirAngle)
 
 void Object::update()
 {
-	if (!grabbed && active)
+	if (!grabbed && active && !toPlanet)
 	{
 		position.x += velocity.x;
 		position.y += velocity.y;
@@ -30,6 +30,10 @@ void Object::update()
 		invinsabilityCheck();
 
 		loop();
+	}
+	else if (toPlanet)
+	{
+		movementToPlanet();
 	}
 
 	particleSpawner.update();
@@ -39,8 +43,7 @@ void Object::draw()
 {
 	if (active)
 	{
-		// DrawCircleV(position, radius, RED);
-		DrawTextureEx(texture, {position.x - radius, position.y - radius}, 0, radius / 460.0f, color);
+		DrawTextureEx(texture, {position.x - radius, position.y - radius}, 0, radius / scale, color);
 	}
 	particleSpawner.draw();
 }
@@ -50,9 +53,11 @@ void Object::grab()
 	if (!grabbed)
 	{
 		grabbed = true;
+		color = YELLOW;
+
+		particleSpawner.addColor(YELLOW);
 	}
 
-	color = YELLOW;
 }
 
 bool Object::moveToRotationArea(Vector2 t_anchorPos, float t_targetDist)
@@ -157,7 +162,7 @@ void Object::loop()
 
 bool Object::checkObjectCollisions(std::shared_ptr<Object> t_otherObject)
 {
-	if (!active || !t_otherObject->isActive())
+	if (!active || !t_otherObject->isActive() || toPlanet)
 	{
 		return false;
 	}
@@ -196,10 +201,15 @@ void Object::invinsabilityCheck()
 }
 
 
-void Object::released(Vector2 t_releaseDir)
+void Object::released(Vector2 t_releaseDir, bool t_toPlanet)
 {
 	grabbed = false;
+	toPlanet = t_toPlanet;
 
+	if (toPlanet)
+	{
+		planetPos = t_releaseDir;
+	}
 	
 	velocity.x = t_releaseDir.x - position.x;
 	velocity.y = t_releaseDir.y - position.y;
@@ -210,4 +220,20 @@ void Object::released(Vector2 t_releaseDir)
 	rotationSpeed = 0;
 
 	correctDist = false;
+}
+
+
+void Object::movementToPlanet()
+{
+	position.x += velocity.x;
+	position.y += velocity.y;
+	scale += 20.0f;
+
+	float leeway = 15.0f; // Adjust this value to your desired tolerance
+	if (fabs(position.x - planetPos.x) < leeway && fabs(position.y - planetPos.y) < leeway)
+	{
+	    destroy();
+	    active = false;
+		toPlanet = false;
+	}
 }

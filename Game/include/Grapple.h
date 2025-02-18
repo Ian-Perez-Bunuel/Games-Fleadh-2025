@@ -23,7 +23,7 @@ public:
     void setAggressionLevel(int t_aggression) { aggression = t_aggression + 1; }
 
     void shoot(std::shared_ptr<Object> t_target);
-    void release(Vector2 t_releaseDir);
+    void release(Vector2 t_releaseDir, bool t_toPlanet);
     void update();
     void draw();
 

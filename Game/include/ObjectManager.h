@@ -19,6 +19,11 @@ public:
 
 private:
     Texture2D texture;
+    Texture2D texture1;
+    Texture2D texture2;
+    Texture2D texture3;
+    Texture2D texture4;
+
     static const int SMALL;
     static const int MEDIUM;
     static const int LARGE;

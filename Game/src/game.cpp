@@ -139,6 +139,7 @@ void Game::drawMiddleground()
         {
             DrawTextureEx(reticle, {closestObjectToPlayer->getPos().x - 25, closestObjectToPlayer->getPos().y - 25}, 0, 1.25f, WHITE);
         }
+        
 
     EndTextureMode();
 
@@ -207,11 +208,20 @@ void Game::input()
     }
 }
 
+// Function that checks if the mouse position is inside the circle
+bool isInsideCircle(Vector2 t_mousePos, Vector2 t_circlePos, int t_radius) 
+{
+    int dx = t_mousePos.x - t_circlePos.x;
+    int dy = t_mousePos.y - t_circlePos.y;
+    // Compare the squared distance with the squared radius
+    return (dx * dx + dy * dy) <= (t_radius * t_radius);
+}
+
 void Game::mouseInput()
 {
     if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
     {
-        player.releaseGrapple(mousePos);
+        player.releaseGrapple(mousePos, isInsideCircle(mousePos, {(SCREEN_WIDTH - 150) / 2.0f, (SCREEN_HEIGHT + 75) / 2.0f}, 125));
     }
 
     // Used to grab objects
@@ -242,7 +252,7 @@ void Game::controllerInput()
 
     if (IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_TRIGGER_2))
     {
-        player.releaseGrapple(mousePos);
+        // player.releaseGrapple(mousePos);
     }
 
     // Used to grab objects

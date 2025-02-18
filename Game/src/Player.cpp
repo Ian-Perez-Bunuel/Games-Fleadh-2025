@@ -99,7 +99,7 @@ void Player::draw()
 
 void Player::shootGrapple(std::shared_ptr<Object> t_object)
 {
-    if (!t_object->checkGrabbed())
+    if (!t_object->checkGrabbed() && !t_object->checkToPlanet())
     {
         int closestGrappleIndex = -1;
         float lowestDist = 0.0f;
@@ -126,11 +126,11 @@ void Player::shootGrapple(std::shared_ptr<Object> t_object)
     }
 }
 
-void Player::releaseGrapple(Vector2 t_releaseDir)
+void Player::releaseGrapple(Vector2 t_releaseDir, bool t_toPlanet)
 {
     for (int i = 0; i < GRAPPLE_AMOUNT; i++)
     {
-        grapples[i].release(t_releaseDir);
+        grapples[i].release(t_releaseDir, t_toPlanet);
     }
 }
 
