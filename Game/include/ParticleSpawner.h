@@ -1,3 +1,5 @@
+#pragma once
+
 #include "../include/Particle.h"
 
 class ParticleSpawner
@@ -29,3 +31,4 @@ private:
 
     bool active = false;
 };
+

@@ -1,6 +1,8 @@
 #include "../include/Projectile.h"
 #include <cmath>
 
+#include "../include/Globals.h"
+
 Projectile::Projectile(Vector3 t_pos, Vector3 t_targetPos)
     : position(t_pos), targetPos(t_targetPos)
 {
@@ -9,7 +11,26 @@ Projectile::Projectile(Vector3 t_pos, Vector3 t_targetPos)
 
 void Projectile::draw()
 {
-    DrawSphere(position, radius, RED);
+    if (active)
+    {
+        DrawSphere(position, radius, RED);
+    }
+    else if (explode)
+    {
+        
+    }
+}
+
+void Projectile::update()
+{
+    if (active)
+    {
+        moveToTarget();
+    }
+    else if (explode)
+    {
+        hit();
+    }
 }
 
 void Projectile::moveToTarget()
@@ -42,5 +63,11 @@ void Projectile::moveToTarget()
     if (position.z >= targetPos.z)
     {
         active = false;
+        explode = true;
     }
+}
+
+void Projectile::hit()
+{
+    
 }

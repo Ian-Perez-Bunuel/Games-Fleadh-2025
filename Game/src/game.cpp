@@ -21,7 +21,7 @@ void Game::initialize()
     reticle = LoadTexture("resources/Art/target.png");
 
     planetSelector.init();
-    
+    planet.init(PLANET_POS);
 
     // Camera initializing
     SceneCamera::initialize();
@@ -32,7 +32,6 @@ void Game::initializeShaders()
 	blurHorizontal = LoadShader(0, "resources/Shaders/glowHorizontal.fs");
     blurVertical = LoadShader(0, "resources/Shaders/glowVertical.fs");
     combineShader = LoadShader(0, "resources/Shaders/combine.fs");
-    crtShader = LoadShader(0, "resources/Shaders/crt.fs");
     // textures
     targetScene = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
     targetBlur1 = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -93,28 +92,24 @@ void Game::update()
     }
 
     for (Projectile& proj : projectiles)
-        {
-            if (proj.isActive())
-            {
-                proj.moveToTarget();
-            }
-        } 
+    {
+        proj.update();
+    } 
+
+    planet.update();
 
     closestObjectToPlayer = objectManager.findClosestToPlayer(player);
 }
 
 void Game::draw() 
-{
-    DrawText("Hello, Raylib Starter Kit!", 190, 180, 20, DARKBLUE);
-
-    
-    drawForeground();
+{    
+    drawMiddleground();
     drawBackground();
 
     BeginMode3D(SceneCamera::camera);
-        DrawBillboard(SceneCamera::camera, background.texture, BACKGROUND_POS, 18.0f, WHITE);
+        DrawBillboard(SceneCamera::camera, background.texture, BACKGROUND_POS, 25.0f, WHITE);
 
-        DrawSphereWires(PLANET_POS, 1, 5, 5,  PINK);
+        planet.draw();
         for (Projectile& proj : projectiles)
         {
             proj.draw();
@@ -130,7 +125,7 @@ void Game::draw()
     }
 }
 
-void Game::drawForeground()
+void Game::drawMiddleground()
 {
     // First Pass : Get starting scene
     BeginTextureMode(targetScene);
@@ -200,6 +195,8 @@ void Game::drawBackground()
 
 void Game::input()
 {
+    mousePos = {GetMousePosition().x, SCREEN_HEIGHT - GetMousePosition().y};
+
     if (IsGamepadAvailable(0))
     {
         controllerInput();
@@ -214,7 +211,7 @@ void Game::mouseInput()
 {
     if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
     {
-        player.releaseGrapple(GetMousePosition());
+        player.releaseGrapple(mousePos);
     }
 
     // Used to grab objects
@@ -245,7 +242,7 @@ void Game::controllerInput()
 
     if (IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_TRIGGER_2))
     {
-        player.releaseGrapple(GetMousePosition());
+        player.releaseGrapple(mousePos);
     }
 
     // Used to grab objects
@@ -280,4 +277,12 @@ Vector3 Game::convertToMiddleCoords(Vector2 t_originalCoords)
     float normalizedY = normalizeSigned(t_originalCoords.y, 0.0f, SCREEN_HEIGHT);
 
     return {normalizedX * 7.05f, normalizedY * 3.8f, MIDDLEGROUND_POS.z};
+}
+
+Vector2 Game::convertToGameCoords(Vector2 t_originalCoords)
+{
+    float normalizedX = normalizeSigned(t_originalCoords.x, 0.0f, 7.05f);
+    float normalizedY = normalizeSigned(t_originalCoords.y, 0.0f, 3.8f);
+
+    return {normalizedX * SCREEN_WIDTH, normalizedY * SCREEN_HEIGHT};
 }
