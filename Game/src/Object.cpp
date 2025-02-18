@@ -31,10 +31,6 @@ void Object::update()
 
 		loop();
 	}
-	else if (toPlanet)
-	{
-		movementToPlanet();
-	}
 
 	particleSpawner.update();
 }
@@ -222,8 +218,7 @@ void Object::released(Vector2 t_releaseDir, bool t_toPlanet)
 	correctDist = false;
 }
 
-
-void Object::movementToPlanet()
+void Object::movementToPlanet(Planet& t_planet)
 {
 	position.x += velocity.x;
 	position.y += velocity.y;
@@ -233,6 +228,9 @@ void Object::movementToPlanet()
 	if (fabs(position.x - planetPos.x) < leeway && fabs(position.y - planetPos.y) < leeway)
 	{
 	    destroy();
+
+		t_planet.takeDmg(10);
+
 	    active = false;
 		toPlanet = false;
 	}

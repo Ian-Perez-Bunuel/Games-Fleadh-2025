@@ -12,6 +12,8 @@ public:
     void update();
     void draw();
 
+    void takeDmg(int t_damage);
+
 private:    
     Model model;
 
@@ -22,4 +24,9 @@ private:
     float yaw = 0.0f;
 
     float rotation = 0.0f;
+
+    static const int MAX_HEALTH = 100;
+    int health = MAX_HEALTH;
+
+    Color color;
 };

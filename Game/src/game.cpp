@@ -84,7 +84,7 @@ void Game::update()
     
     player.update(controller.getLeftStickDir());
     
-    objectManager.update();
+    objectManager.update(planet);
 
     if (planetSelector.isActive())
     {
@@ -109,7 +109,7 @@ void Game::draw()
     BeginMode3D(SceneCamera::camera);
         DrawBillboard(SceneCamera::camera, background.texture, BACKGROUND_POS, 25.0f, WHITE);
 
-        planet.draw();
+        // planet.draw();
         for (Projectile& proj : projectiles)
         {
             proj.draw();
@@ -130,6 +130,10 @@ void Game::drawMiddleground()
     // First Pass : Get starting scene
     BeginTextureMode(targetScene);
         ClearBackground(BLANK);
+
+        BeginMode3D(SceneCamera::camera);
+            planet.draw();
+        EndMode3D();
 
         objectManager.draw();
         

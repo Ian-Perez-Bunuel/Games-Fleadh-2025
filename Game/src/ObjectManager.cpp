@@ -132,12 +132,16 @@ void ObjectManager::draw()
     }
 }
 
-void ObjectManager::update()
+void ObjectManager::update(Planet& t_planet)
 {
     for (std::shared_ptr<Object>& object : objects)
     {
         object->update();
 
+        if (object->checkToPlanet())
+	    {
+		    object->movementToPlanet(t_planet);
+	    }
     }
     checkCollisions();
 }

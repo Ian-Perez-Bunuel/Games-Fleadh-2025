@@ -15,7 +15,7 @@ public:
     std::shared_ptr<Object> findClosestToPlayer(Player t_player);
 
     void draw();
-    void update();
+    void update(Planet& t_planet);
 
 private:
     Texture2D texture;

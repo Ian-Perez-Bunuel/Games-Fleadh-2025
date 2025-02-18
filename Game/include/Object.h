@@ -6,6 +6,7 @@
 #include <memory>
 
 #include "../include/ParticleSpawner.h"
+#include "../include/Planet.h"
 
 
 class Object
@@ -30,6 +31,8 @@ public:
     bool checkObjectCollisions(std::shared_ptr<Object> t_otherObject);
     void destroy();
 
+    // Planet things
+    void movementToPlanet(Planet& t_planet);
     
 private:
     bool moveToRotationArea(Vector2 t_anchorPos, float t_targetDist);
@@ -45,7 +48,6 @@ private:
     // Movement towards planet
     bool toPlanet = false;
     Vector2 planetPos;
-    void movementToPlanet();
 
     // Invinsability
     bool collidable = false;
