@@ -1,26 +1,28 @@
 #include "../include/Planet.h"
 #include "../include/SceneCamera.h"
 #include <random>
+#include "rlgl.h"
 
 void Planet::init(Vector3 t_pos)
 {
     position = t_pos;
-    model = LoadModel("resources/Art/3D/planet3.glb");
+    model = LoadModel("resources/Art/3D/planet1.glb");
 
-    roll = 225.0f;
+    roll = 45.0f;
     yaw = 25.0f;
     model.transform = MatrixRotateXYZ({ DEG2RAD*pitch, DEG2RAD*yaw, DEG2RAD*roll });
+
+    rlSetLineWidth(2.0f);
 }
 
 void Planet::update()
 {
-    // roll++;
+    yaw += 0.5f;
     model.transform = MatrixRotateXYZ({ DEG2RAD*pitch, DEG2RAD*yaw, DEG2RAD*roll });
 }
 
 void Planet::draw()
 {
-    // DrawModel(model, position, 0.75f, WHITE);
     DrawModelWires(model, position, 0.75f, RED);
 }
 
