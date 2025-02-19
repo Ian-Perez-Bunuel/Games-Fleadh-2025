@@ -11,6 +11,7 @@
 #include "../include/PlanetSelector.h"
 #include "../include/ObjectManager.h"
 #include "../include/Projectile.h"
+#include "../include/PlanetManager.h"
 
 
 class Game
@@ -60,7 +61,7 @@ private:
     RenderTexture2D targetBlur2;
 
     const Vector3 MIDDLEGROUND_POS = {0.0f, 0.0f, 1.0f};
-    const Vector3 BACKGROUND_POS = {0.0f, 0.0f, -20.0f};
+    const Vector3 BACKGROUND_POS = {0.0f, 0.0f, -200.0f};
     const Vector3 PLANET_POS = {0.0f, 0.0f, -9.0f};
     
     // Billboard Textures
@@ -75,7 +76,7 @@ private:
     std::vector<Projectile> projectiles;
 
     // Planet
-    Planet planet;
+    PlanetManager planetManager;
 
     Vector2 mousePos;
 

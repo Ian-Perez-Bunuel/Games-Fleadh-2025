@@ -21,7 +21,7 @@ void Game::initialize()
     reticle = LoadTexture("resources/Art/2D/target.png");
 
     planetSelector.init();
-    planet.init(PLANET_POS);
+    planetManager.init();
 
     // Camera initializing
     SceneCamera::initialize();
@@ -84,7 +84,7 @@ void Game::update()
     
     player.update(controller.getLeftStickDir());
     
-    objectManager.update(planet);
+    objectManager.update(planetManager.getMainPlanet());
 
     if (planetSelector.isActive())
     {
@@ -96,7 +96,7 @@ void Game::update()
         proj.update();
     } 
 
-    planet.update();
+    planetManager.update();
 
     closestObjectToPlayer = objectManager.findClosestToPlayer(player);
 }
@@ -107,9 +107,10 @@ void Game::draw()
     drawBackground();
 
     BeginMode3D(SceneCamera::camera);
-        DrawBillboard(SceneCamera::camera, background.texture, BACKGROUND_POS, 25.0f, WHITE);
+        DrawBillboard(SceneCamera::camera, background.texture, BACKGROUND_POS, 200.0f, WHITE);
 
-        // planet.draw();
+        planetManager.drawOtherPlanets();
+        
         for (Projectile& proj : projectiles)
         {
             proj.draw();
@@ -132,7 +133,7 @@ void Game::drawMiddleground()
         ClearBackground(BLANK);
 
         BeginMode3D(SceneCamera::camera);
-            planet.draw();
+            planetManager.drawMainPlanet();
         EndMode3D();
 
         objectManager.draw();
@@ -290,7 +291,7 @@ Vector3 Game::convertToMiddleCoords(Vector2 t_originalCoords)
     float normalizedX = normalizeSigned(t_originalCoords.x, 0.0f, SCREEN_WIDTH);
     float normalizedY = normalizeSigned(t_originalCoords.y, 0.0f, SCREEN_HEIGHT);
 
-    return {normalizedX * 7.05f, normalizedY * 3.8f, MIDDLEGROUND_POS.z};
+    return {normalizedX * SCREEN_BOUNDS_X, normalizedY * SCREEN_BOUNDS_Y, MIDDLEGROUND_POS.z};
 }
 
 Vector2 Game::convertToGameCoords(Vector2 t_originalCoords)

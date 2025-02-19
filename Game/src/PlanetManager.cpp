@@ -1,0 +1,65 @@
+#include "../include/PlanetManager.h"
+#include "../include/Globals.h"
+
+void PlanetManager::init()
+{
+    planets.clear();
+
+    for (int i = 0; i < PLANET_AMOUNT; i++)
+    {
+        planets.push_back(Planet());
+
+        const int TOTAL = 326;
+        Color randomColor;
+
+        // Pick r anywhere from 0 to 255.
+        int r = rand() % 256;
+
+        // For a valid triple, we must have 0 <= g <= 255 and also b = TOTAL - r - g must be between 0 and 255.
+        // This forces: TOTAL - r - g >= 0   and   TOTAL - r - g <= 255,
+        // which is equivalent to: g <= TOTAL - r   and   g >= TOTAL - r - 255.
+
+        // So, compute the allowed range for g:
+        int g_min = (TOTAL - r - 255 > 0) ? TOTAL - r - 255 : 0;
+        int g_max = (TOTAL - r < 255) ? TOTAL - r : 255;
+
+        // Now pick g from that range.
+        int g = g_min + (rand() % (g_max - g_min + 1));
+
+        // And b is determined by the constraint.
+        int b = TOTAL - r - g;
+
+        randomColor.r = r;
+        randomColor.g = g;
+        randomColor.b = b;
+        randomColor.a = 255;
+
+        printf("\n\n%f, %f, %f\n\n", randomColor.r, randomColor.g, randomColor.b);
+
+        float randX = static_cast<float>((rand() % (2 * SCREEN_BOUNDS_X)) - SCREEN_BOUNDS_X);
+        float randY = static_cast<float>((rand() % (2 * SCREEN_BOUNDS_Y)) - SCREEN_BOUNDS_Y);
+
+        planets[i].init({randX, randY, MAIN_PLANET_Z - (i * PLANET_SPACING)}, randomColor);
+    }
+}
+
+void PlanetManager::update()
+{
+    for (Planet& planet : planets)
+    {
+        planet.update();
+    }
+}
+
+void PlanetManager::drawMainPlanet()
+{
+    planets[0].draw();
+}
+
+void PlanetManager::drawOtherPlanets()
+{
+    for (int i = 1; i < PLANET_AMOUNT; i++)
+    {
+        planets[i].draw();
+    }
+}

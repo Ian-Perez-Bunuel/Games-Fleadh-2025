@@ -3,11 +3,12 @@
 #include "raylib.h"
 #include "raymath.h"
 #include "stdio.h"
+#include <algorithm>
 
 class Planet
 {
 public:
-    void init(Vector3 t_pos = {0.0f, 0.0f, -9.0f});
+    void init(Vector3 t_pos = {0.0f, 0.0f, -9.0f}, Color t_color = WHITE);
 
     void update();
     void draw();
@@ -16,6 +17,9 @@ public:
 
 private:    
     Model model;
+    Model core;
+
+    bool defeated = false;
 
     Vector3 position;
 
@@ -29,4 +33,16 @@ private:
     int health = MAX_HEALTH;
 
     Color color;
+    Color coreTint = {25, 25, 25, 255};
 };
+
+// Overload the + operator for Raylib's Color type
+inline Color operator+(const Color &lhs, const Color &rhs) 
+{
+    Color result;
+    result.r = static_cast<unsigned char>(std::min(static_cast<int>(lhs.r) + static_cast<int>(rhs.r), 255));
+    result.g = static_cast<unsigned char>(std::min(static_cast<int>(lhs.g) + static_cast<int>(rhs.g), 255));
+    result.b = static_cast<unsigned char>(std::min(static_cast<int>(lhs.b) + static_cast<int>(rhs.b), 255));
+    result.a = static_cast<unsigned char>(std::min(static_cast<int>(lhs.a) + static_cast<int>(rhs.a), 255));
+    return result;
+}
