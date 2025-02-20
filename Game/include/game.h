@@ -2,6 +2,7 @@
 #define GAME_H
 
 #include "raylib.h"
+#include "raymath.h"
 #include "stdio.h"
 #include <vector>
 #include <memory>
@@ -61,7 +62,7 @@ private:
     RenderTexture2D targetBlur2;
 
     const Vector3 MIDDLEGROUND_POS = {0.0f, 0.0f, 1.0f};
-    const Vector3 BACKGROUND_POS = {0.0f, 0.0f, -200.0f};
+    const Vector3 BACKGROUND_POS = {0.0f, 0.0f, -500.0f};
     const Vector3 PLANET_POS = {0.0f, 0.0f, -9.0f};
     
     // Billboard Textures
@@ -87,7 +88,11 @@ private:
         return 2 * (x - t_min) / (t_max - t_min) - 1;
     }
     Vector3 convertToMiddleCoords(Vector2 t_originalCoords);
-    Vector2 convertToGameCoords(Vector2 t_originalCoords);
+    Vector2 convertToGameCoords(Vector3 t_originalCoords);
+
+    float Vector3Dot(Vector3 v1, Vector3 v2) { return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z; }
+    bool CheckCollisionRaySphere(Ray ray, Vector3 spherePos, float sphereRadius);
+    bool isMouseOverSphere(Camera camera, Vector2 mousePos, Vector3 spherePos, float sphereRadius);
 };
 
 #endif // GAME_H

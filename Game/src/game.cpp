@@ -107,7 +107,7 @@ void Game::draw()
     drawBackground();
 
     BeginMode3D(SceneCamera::camera);
-        DrawBillboard(SceneCamera::camera, background.texture, BACKGROUND_POS, 200.0f, WHITE);
+        DrawBillboard(SceneCamera::camera, background.texture, BACKGROUND_POS, 425.0f, WHITE);
 
         planetManager.drawOtherPlanets();
         
@@ -213,33 +213,26 @@ void Game::input()
     }
 }
 
-// Function that checks if the mouse position is inside the circle
-bool isInsideCircle(Vector2 t_mousePos, Vector2 t_circlePos, int t_radius) 
-{
-    int dx = t_mousePos.x - t_circlePos.x;
-    int dy = t_mousePos.y - t_circlePos.y;
-    // Compare the squared distance with the squared radius
-    return (dx * dx + dy * dy) <= (t_radius * t_radius);
-}
+
 
 void Game::mouseInput()
 {
     if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
     {
-        player.releaseGrapple(mousePos, isInsideCircle(mousePos, {(SCREEN_WIDTH - 150) / 2.0f, (SCREEN_HEIGHT + 75) / 2.0f}, 125));
+        player.releaseGrapple(mousePos, isMouseOverSphere(SceneCamera::camera, mousePos, planetManager.getMainPlanet().getPos(), 2));
     }
-
+    
     // Used to grab objects
     if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT))
     {
         player.shootGrapple(closestObjectToPlayer);
     }
-
+    
     if (IsKeyPressed(KEY_SPACE))
     {
         objectManager.setObjects();
     }
-
+    
     if (IsKeyPressed(KEY_M))
     {
         planetSelector.activate();
@@ -254,18 +247,18 @@ void Game::mouseInput()
 void Game::controllerInput()
 {
     controller.getAllInputs();
-
+    
     if (IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_TRIGGER_2))
     {
         // player.releaseGrapple(mousePos);
     }
-
+    
     // Used to grab objects
     if (IsGamepadButtonDown(0, GAMEPAD_BUTTON_RIGHT_TRIGGER_2))
     {
         player.shootGrapple(closestObjectToPlayer);
     }
-
+    
     if (IsGamepadButtonDown(0, GAMEPAD_BUTTON_RIGHT_FACE_DOWN))
     {
         objectManager.setObjects();
@@ -290,14 +283,51 @@ Vector3 Game::convertToMiddleCoords(Vector2 t_originalCoords)
 {
     float normalizedX = normalizeSigned(t_originalCoords.x, 0.0f, SCREEN_WIDTH);
     float normalizedY = normalizeSigned(t_originalCoords.y, 0.0f, SCREEN_HEIGHT);
-
+    
     return {normalizedX * SCREEN_BOUNDS_X, normalizedY * SCREEN_BOUNDS_Y, MIDDLEGROUND_POS.z};
 }
 
-Vector2 Game::convertToGameCoords(Vector2 t_originalCoords)
+Vector2 Game::convertToGameCoords(Vector3 t_originalCoords)
 {
-    float normalizedX = normalizeSigned(t_originalCoords.x, 0.0f, 7.05f);
-    float normalizedY = normalizeSigned(t_originalCoords.y, 0.0f, 3.8f);
+    float normalizedX = Normalize(t_originalCoords.x, -SCREEN_BOUNDS_X, SCREEN_BOUNDS_X);
+    float normalizedY = Normalize(t_originalCoords.y, -SCREEN_BOUNDS_Y, SCREEN_BOUNDS_Y);
+    
+    return {normalizedX * SCREEN_WIDTH, (normalizedY * SCREEN_HEIGHT)};
+}
 
-    return {normalizedX * SCREEN_WIDTH, normalizedY * SCREEN_HEIGHT};
+
+
+
+// Function that checks if the mouse is over a sphere in 3D space
+bool Game::isMouseOverSphere(Camera camera, Vector2 mousePos, Vector3 spherePos, float sphereRadius) 
+{
+    // Create a ray from the current mouse position
+    Ray ray = GetMouseRay(mousePos, camera);
+    
+    // Check if the ray intersects the sphere
+    return CheckCollisionRaySphere(ray, spherePos, sphereRadius);
+}
+
+// Custom function to check for ray-sphere intersection
+bool Game::CheckCollisionRaySphere(Ray ray, Vector3 spherePos, float sphereRadius) 
+{
+    // Compute vector from sphere center to ray origin
+    Vector3 m = Vector3Subtract(ray.position, spherePos);
+
+    // b is the projection of m onto the ray direction
+    float b = Vector3Dot(m, ray.direction);
+    // c is the squared distance from sphere center to the ray, minus radius squared
+    float c = Vector3Dot(m, m) - sphereRadius * sphereRadius;
+
+    // If the ray's origin is outside the sphere (c > 0)
+    // and pointing away from the sphere (b > 0), there's no intersection.
+    if (c > 0.0f && b > 0.0f)
+        return false;
+
+    // Calculate the discriminant of the quadratic equation
+    float discriminant = b * b - c;
+    if (discriminant < 0.0f)
+        return false;  // No real roots, hence no intersection
+
+    return true;  // The ray intersects the sphere
 }

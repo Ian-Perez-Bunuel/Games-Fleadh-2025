@@ -8,6 +8,7 @@ void Planet::init(Vector3 t_pos, Color t_color)
     position = t_pos;
     model = LoadModel("resources/Art/3D/planet1.glb");
     core = LoadModel("resources/Art/3D/core.glb");
+    shield = LoadModel("resources/Art/3D/shield.glb");
 
     roll = 45.0f;
     yaw = 25.0f;
@@ -21,6 +22,7 @@ void Planet::update()
     yaw += 0.5f;
     model.transform = MatrixRotateXYZ({ DEG2RAD*pitch, DEG2RAD*yaw, DEG2RAD*roll });
     core.transform = MatrixRotateXYZ({ DEG2RAD*pitch, DEG2RAD*yaw, DEG2RAD*roll });
+    // shield.transform = MatrixRotateXYZ({ DEG2RAD*pitch, DEG2RAD*yaw, DEG2RAD*roll });
 }
 
 void Planet::draw()
@@ -34,6 +36,10 @@ void Planet::draw()
     {
         DrawModelWires(model, position, 0.75f, color);
     }
+
+    // rlSetLineWidth(10.0f);
+    // DrawModel(shield, position, 1.0, WHITE);
+    // DrawModelWires(shield, position, 1.0, BLUE);
 }
 
 

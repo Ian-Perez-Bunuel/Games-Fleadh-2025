@@ -13,11 +13,14 @@ public:
     void update();
     void draw();
 
+    Vector3 getPos() { return position; }
+
     void takeDmg(int t_damage);
 
 private:    
     Model model;
     Model core;
+    Model shield;
 
     bool defeated = false;
 

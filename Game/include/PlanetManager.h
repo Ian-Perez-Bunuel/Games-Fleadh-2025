@@ -25,5 +25,5 @@ private:
     int currentPlanet = 0;
 
     const float MAIN_PLANET_Z = -9.0f;
-    const int PLANET_SPACING = 20;
+    const int PLANET_SPACING = 100;
 };
