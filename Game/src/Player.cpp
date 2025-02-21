@@ -87,13 +87,16 @@ void Player::capSpeed()
 
 void Player::draw()
 {
-    for (int i = 0; i < GRAPPLE_AMOUNT; i++)
+    if (alive)
     {
-        grapples[i].draw(); 
+        for (int i = 0; i < GRAPPLE_AMOUNT; i++)
+        {
+            grapples[i].draw(); 
+        }
+    
+        //DrawCircleV(position, RADIUS, BLUE);
+        DrawTextureEx(texture, {position.x - RADIUS, position.y - RADIUS}, 0, 1.0f, color);
     }
-
-    //DrawCircleV(position, RADIUS, BLUE);
-    DrawTextureEx(texture, {position.x - RADIUS, position.y - RADIUS}, 0, 1.0f, WHITE);
 }
 
 void Player::shootGrapple(std::shared_ptr<Object> t_object)
@@ -191,16 +194,67 @@ void Player::setGrappleAgression()
 
 void Player::update(Vector2 t_leftStickDir)
 {   
-    controllerMovement(t_leftStickDir);
-    move();
-    setGrapplePos();
-
-    setGrappleAgression();
-    
-
-
-    for (int i = 0; i < GRAPPLE_AMOUNT; i++)
+    if (alive)
     {
-        grapples[i].update();
+        controllerMovement(t_leftStickDir);
+        move();
+    
+        if (invincible)
+        {
+            invincibleClock();
+        }
+    
+        // Grapple updates
+        setGrapplePos();
+        setGrappleAgression();
+        for (int i = 0; i < GRAPPLE_AMOUNT; i++)
+        {
+            grapples[i].update();
+        }
+    }
+}
+
+void Player::kill()
+{
+    alive = false;
+}
+
+void Player::invincibleClock()
+{
+    if (invincibilityTimer < INVINCIBILITY_DURATION)
+    {
+        invincibilityTimer += GetFrameTime();
+
+        color = RED;
+    }
+    else
+    {
+        invincibilityTimer = 0;
+        invincible = false;
+        color = WHITE;
+    }
+}
+
+void Player::takeDamage(int t_amount)
+{
+    if (!invincible && alive)
+    {
+        if (health > t_amount)
+        {
+            health -= t_amount;
+            invincible = true;
+        }
+        else if (health == t_amount && !lastHit)
+        {
+            health = 1;
+            lastHit = true;
+            invincible = true;
+        }
+        else
+        {
+            kill();
+        }
+
+        printf("\n\n%d / %d\n\n", health, MAX_HEALTH);
     }
 }

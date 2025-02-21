@@ -19,25 +19,42 @@ public:
 
 private:    
     Model model;
+
     Model core;
     Model shield;
 
     bool defeated = false;
 
     Vector3 position;
-    float tilt = -45.0f;
 
+    void updateRotation();
+    float tilt = -45.0f;
     float pitch = 0.0f;
     float roll = 0.0f;
     float yaw = 0.0f;
-
-    float rotation = 0.0f;
 
     static const int MAX_HEALTH = 100;
     int health = MAX_HEALTH;
 
     Color color;
     Color coreTint = {25, 25, 25, 255};
+
+    void explosion();
+    void genExplosionTexture();
+
+    Shader explosionShader;
+    // shader locations
+    int displacementIntensityLocationInShader;
+    int perlinNoiseTextureLocationInShader;
+    int explosionTimerLocationInShader;
+
+    Texture2D explosion_driver;
+    float displacementIntensity = 0.0f;
+    bool explosionActive = false;
+    float explosionTimer = 0.0f;
+    // Change this number for more dramatic effect
+    float multiplier = 1.0f;
+    bool maxDistHit = false;
 };
 
 // Overload the + operator for Raylib's Color type

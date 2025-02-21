@@ -50,6 +50,20 @@ std::shared_ptr<Object> ObjectManager::findClosestToPlayer(Player t_player)
     return closestObject;
 }
 
+void ObjectManager::checkPlayerCollisions(Player &t_player, std::shared_ptr<Object>& t_object)
+{
+    if (!t_object->checkGrabbed() || t_object->isActive() || t_object->checkCollidable())
+    {
+        float dist = pointToPointDist(t_player.getPos(), t_object->getPos());
+
+        if (dist <= t_player.getRadius() + t_object->getRadius())
+        {
+            // Collision occurred
+            t_player.takeDamage(t_object->getRadius() / 2);
+        }
+    }
+}
+
 void ObjectManager::checkCollisions()
 {
     for (std::shared_ptr<Object>& currentObject : objects)
@@ -132,7 +146,7 @@ void ObjectManager::draw()
     }
 }
 
-void ObjectManager::update(Planet& t_planet)
+void ObjectManager::update(Planet& t_planet, Player& t_player)
 {
     for (std::shared_ptr<Object>& object : objects)
     {
@@ -142,6 +156,9 @@ void ObjectManager::update(Planet& t_planet)
 	    {
 		    object->movementToPlanet(t_planet);
 	    }
+
+        checkPlayerCollisions(t_player, object);
     }
     checkCollisions();
+
 }

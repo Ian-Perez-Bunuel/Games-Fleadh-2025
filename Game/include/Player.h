@@ -18,14 +18,18 @@ public:
     void draw();
 
     Vector2& getPos() { return position; }
+    int getRadius() { return RADIUS; }
 
     // Grapple commands
     void shootGrapple(std::shared_ptr<Object> t_object);
     void releaseGrapple(Vector2 t_releaseDir, bool t_toPlanet);
 
+    void takeDamage(int t_amount);
+
 private:
     const int RADIUS = 33;
     Texture2D texture;
+    Color color = WHITE;
 
     Vector2 position;
 
@@ -38,10 +42,24 @@ private:
     Vector2 velocity;
     const float FRICTION = 0.9f;
 
+    // Grapples
     void setGrapplePos();
     void setGrappleAgression();
     static const int GRAPPLE_AMOUNT = 8;
     Grapple grapples[GRAPPLE_AMOUNT];
+    
+    bool alive = true;
+
+    // Health
+    void kill();
+    bool lastHit = false;
+    const int MAX_HEALTH = 100;
+    int health = MAX_HEALTH;
+    // Invincible
+    void invincibleClock();
+    const float INVINCIBILITY_DURATION = 0.5f; // 0.5 seconds
+    float invincibilityTimer = 0;
+    bool invincible = false;
 
     float pointToPointDist(Vector2 t_p1, Vector2 t_p2) { return sqrt(((t_p2.x - t_p1.x) * (t_p2.x - t_p1.x)) + ((t_p2.y - t_p1.y) * (t_p2.y - t_p1.y))); }
 };

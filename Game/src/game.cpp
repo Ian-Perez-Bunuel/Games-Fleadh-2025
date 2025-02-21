@@ -84,7 +84,7 @@ void Game::update()
     
     player.update(controller.getLeftStickDir());
     
-    objectManager.update(planetManager.getMainPlanet());
+    objectManager.update(planetManager.getMainPlanet(), player);
 
     if (planetSelector.isActive())
     {
@@ -140,7 +140,7 @@ void Game::drawMiddleground()
         
         player.draw();
 
-        if (closestObjectToPlayer != nullptr)
+        if (closestObjectToPlayer != nullptr )
         {
             DrawTextureEx(reticle, {closestObjectToPlayer->getPos().x - 25, closestObjectToPlayer->getPos().y - 25}, 0, 1.25f, WHITE);
         }

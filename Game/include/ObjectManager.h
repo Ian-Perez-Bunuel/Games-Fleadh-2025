@@ -15,7 +15,7 @@ public:
     std::shared_ptr<Object> findClosestToPlayer(Player t_player);
 
     void draw();
-    void update(Planet& t_planet);
+    void update(Planet& t_planet, Player& t_player);
 
 private:
     Texture2D texture;
@@ -28,11 +28,12 @@ private:
     static const int MEDIUM;
     static const int LARGE;
 
-    const int OBJECT_AMOUNT = 10;
+    const int OBJECT_AMOUNT = 25;
     
     std::vector<std::shared_ptr<Object>> objects;
     std::vector<std::weak_ptr<Object>> objectsToSplit;
 
+    void checkPlayerCollisions(Player& t_player, std::shared_ptr<Object>& t_object);
     void checkCollisions();
     void splitObject();
 
