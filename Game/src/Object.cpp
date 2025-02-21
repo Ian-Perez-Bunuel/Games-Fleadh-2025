@@ -35,6 +35,7 @@ void Object::update()
 	particleSpawner.update();
 }
 
+
 void Object::draw()
 {
 	if (active)
@@ -220,18 +221,26 @@ void Object::released(Vector2 t_releaseDir, bool t_toPlanet)
 
 void Object::movementToPlanet(Planet& t_planet)
 {
-	position.x += velocity.x;
-	position.y += velocity.y;
-	scale += 20.0f;
-
-	float leeway = 15.0f; // Adjust this value to your desired tolerance
-	if (fabs(position.x - planetPos.x) < leeway && fabs(position.y - planetPos.y) < leeway)
+	if (active)
 	{
-	    destroy();
-
-		t_planet.takeDmg(10);
-
-	    active = false;
-		toPlanet = false;
+		position.x += velocity.x;
+		position.y += velocity.y;
+		scale += 20.0f;
+	
+		float leeway = 15.0f; // Adjust this value to your desired tolerance
+		if (fabs(position.x - planetPos.x) < leeway && fabs(position.y - planetPos.y) < leeway)
+		{
+			destroy();
+	
+			t_planet.takeDmg(10);
+	
+			active = false;
+			toPlanet = false;
+		}
+	
+		if (scale > 10000)
+		{
+			active = false;
+		}
 	}
 }

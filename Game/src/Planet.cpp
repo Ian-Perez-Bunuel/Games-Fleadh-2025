@@ -6,23 +6,28 @@
 void Planet::init(Vector3 t_pos, Color t_color)
 {
     position = t_pos;
-    model = LoadModel("resources/Art/3D/planet1.glb");
+    model = LoadModel("resources/Art/3D/planet4.glb");
     core = LoadModel("resources/Art/3D/core.glb");
     shield = LoadModel("resources/Art/3D/shield.glb");
-
-    roll = 45.0f;
-    yaw = 25.0f;
-    model.transform = MatrixRotateXYZ({ DEG2RAD*pitch, DEG2RAD*yaw, DEG2RAD*roll });
 
     color = t_color;
 }
 
 void Planet::update()
 {
-    yaw += 0.5f;
-    model.transform = MatrixRotateXYZ({ DEG2RAD*pitch, DEG2RAD*yaw, DEG2RAD*roll });
-    core.transform = MatrixRotateXYZ({ DEG2RAD*pitch, DEG2RAD*yaw, DEG2RAD*roll });
-    // shield.transform = MatrixRotateXYZ({ DEG2RAD*pitch, DEG2RAD*yaw, DEG2RAD*roll });
+    pitch += 0.25f;  // Increment rotation over time
+    
+    // Create a rotation matrix for the tilt around the X axis,
+    // then a spin rotation around the Y axis.
+    Matrix tiltMatrix = MatrixRotateX(DEG2RAD * tilt);
+    Matrix spinMatrix = MatrixRotateY(DEG2RAD * pitch);
+
+    // Combine the rotations
+    Matrix rotation = MatrixMultiply(spinMatrix, tiltMatrix);
+
+    // Apply the combined rotation to the planet models
+    model.transform = rotation;
+    core.transform = rotation;
 }
 
 void Planet::draw()

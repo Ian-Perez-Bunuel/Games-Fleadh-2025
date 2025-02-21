@@ -25,6 +25,7 @@ private:
     bool defeated = false;
 
     Vector3 position;
+    float tilt = -45.0f;
 
     float pitch = 0.0f;
     float roll = 0.0f;

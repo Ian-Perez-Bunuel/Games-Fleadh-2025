@@ -44,7 +44,7 @@ public:
     Buttons buttons;
 
     // Cursor
-    Vector2 getCursorPos() { return cursorPos; }
+    Vector2 getCursorPos() { return {cursorPos.x, GetScreenHeight() - cursorPos.y}; }
     int getCursorRadius() { return CURSOR_RADIUS; }
     void drawCursor();
 

@@ -47,8 +47,8 @@ void Player::move()
 
 void Player::controllerMovement(Vector2 t_stickDir)
 {
-    velocity.x += t_stickDir.x;
-    velocity.y += t_stickDir.y;
+    velocity.x += t_stickDir.x * 0.4f;
+    velocity.y -= t_stickDir.y * 0.4f;
 
     if (t_stickDir.x == 0 && t_stickDir.y == 0)
     {
@@ -58,7 +58,6 @@ void Player::controllerMovement(Vector2 t_stickDir)
 
     // Make sure the player doesnt go too fast
     capSpeed();
-
 
     position.x += velocity.x;
     position.y += velocity.y;

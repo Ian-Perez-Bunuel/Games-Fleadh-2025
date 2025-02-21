@@ -45,10 +45,7 @@ void PlanetManager::init()
 
 void PlanetManager::update()
 {
-    for (Planet& planet : planets)
-    {
-        planet.update();
-    }
+    planets[0].update();
 }
 
 void PlanetManager::drawMainPlanet()

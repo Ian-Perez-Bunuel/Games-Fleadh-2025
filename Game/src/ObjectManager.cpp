@@ -40,7 +40,7 @@ std::shared_ptr<Object> ObjectManager::findClosestToPlayer(Player t_player)
     for (std::shared_ptr<Object>& object : objects)
     {
         float distToObject = pointToPointDist(object->getPos(), t_player.getPos());
-        if (distToObject < lowestDist && !object->checkGrabbed() && object->isActive())
+        if (distToObject < lowestDist && !object->checkGrabbed() && object->isActive() && !object->checkToPlanet())
         {
             lowestDist = distToObject;
             closestObject = object;
