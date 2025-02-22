@@ -2,7 +2,7 @@
 
 void PickUp::update()
 {
-    if (parentObject == nullptr || parentObject->isActive())
+    if (parentObject == nullptr || (parentObject->isActive() && !parentObject->checkToPlanet()))
     {
         position = parentObject->getPos();
     }
@@ -15,7 +15,7 @@ void PickUp::update()
     }
 
     collisionDetection();
-    
+
     particleSpawner.update();
 }
 
