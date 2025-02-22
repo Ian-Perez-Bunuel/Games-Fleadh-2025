@@ -29,12 +29,6 @@ void PickUp::animate()
     if (abs(offsetY) > abs(MAX_OFFSET))
     {
         animationSpeed *= -1;
-
-        if (animationSpeed > 0)
-        {
-            particleSpawner.setValues(position, 360, 0);
-            particleSpawner.spawn();
-        }
     }
 
     offsetY += animationSpeed;
