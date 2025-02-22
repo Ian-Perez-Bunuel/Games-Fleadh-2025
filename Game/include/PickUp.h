@@ -34,7 +34,12 @@ protected:
     ParticleSpawner particleSpawner;
 
 private:
-    void collisionDetection();  
+    void collisionDetection();
+    
+    const int MAX_OFFSET = 1;
+    float animationSpeed = 0.05f;
+    float offsetY = 0;
+    void animate();
 
     float pointToPointDist(Vector2 t_p1, Vector2 t_p2) { return sqrt(((t_p2.x - t_p1.x) * (t_p2.x - t_p1.x)) + ((t_p2.y - t_p1.y) * (t_p2.y - t_p1.y))); }
 };
