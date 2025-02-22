@@ -13,7 +13,10 @@ void PickUp::update()
             active = true;
         }
 
-        animate();
+        if (!pickedUp)
+        {
+            animate();
+        }
     }
 
     collisionDetection();
@@ -26,10 +29,15 @@ void PickUp::animate()
     if (abs(offsetY) > abs(MAX_OFFSET))
     {
         animationSpeed *= -1;
+
+        if (animationSpeed > 0)
+        {
+            particleSpawner.setValues(position, 360, 0);
+            particleSpawner.spawn();
+        }
     }
 
     offsetY += animationSpeed;
-    printf("\n\n%f\n\n", offsetY);
     position.y += offsetY;
 }
 
