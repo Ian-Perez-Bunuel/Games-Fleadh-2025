@@ -63,10 +63,10 @@ OPTIMISATION_LEVEL		?= 2
 
 ifeq ($(CONFIG), debug)
 	BUILD_DIR := $(DEBUG_DIR)
-	CFLAGS := -std=c++11 -Wall -Wextra -g -DDEBUG $(INCLUDES)
+	CFLAGS := -std=c++14 -Wall -Wextra -g -DDEBUG $(INCLUDES)
 else ifeq ($(CONFIG), release)
 	BUILD_DIR := $(RELEASE_DIR)
-	CFLAGS := -std=c++11 -O$(OPTIMISATION_LEVEL) -DNDEBUG $(INCLUDES)
+	CFLAGS := -std=c++14 -O$(OPTIMISATION_LEVEL) -DNDEBUG $(INCLUDES)
 else
 	$(error Invalid CONFIG value: $(CONFIG))
 endif

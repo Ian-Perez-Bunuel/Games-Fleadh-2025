@@ -5,12 +5,14 @@
 #include <vector>
 #include <memory>
 
-#include "../include/Object.h"
+#include "../include/HealthPack.h"
 #include "../include/Player.h"
 
 class ObjectManager
 {
 public:
+    ObjectManager(Player& t_player);
+
     void setObjects();
     std::shared_ptr<Object> findClosestToPlayer(Player t_player);
 
@@ -29,9 +31,19 @@ private:
     static const int LARGE;
 
     const int OBJECT_AMOUNT = 25;
+    const int PICKUP_CHANCE = 5; // 1 / 5 chance
+
+    void checkForPickup(std::shared_ptr<Object> t_object);
     
     std::vector<std::shared_ptr<Object>> objects;
     std::vector<std::weak_ptr<Object>> objectsToSplit;
+
+    Player& player;
+
+    // Pickup info
+    void initPickupTextures();
+    std::vector<std::shared_ptr<PickUp>> pickups;
+    Texture2D healthPackTexture;
 
     void checkPlayerCollisions(Player& t_player, std::shared_ptr<Object>& t_object);
     void checkCollisions();

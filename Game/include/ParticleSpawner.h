@@ -13,8 +13,8 @@ public:
     void update();
     void draw();
 
-private:
     bool checkIfParticalsActive();
+private:
     // Randomizing functions
     float randomizeDir();
     Color randomizeColor();

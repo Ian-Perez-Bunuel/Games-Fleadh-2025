@@ -6,12 +6,21 @@ const int ObjectManager::SMALL = 15;
 const int ObjectManager::MEDIUM = 25;
 const int ObjectManager::LARGE = 45;
 
+ObjectManager::ObjectManager(Player& t_player) : player(t_player)
+{
+    texture = LoadTexture("resources/Art/2D/asteroidWhite.png");
+    initPickupTextures();
+}
+
+void ObjectManager::initPickupTextures()
+{
+    healthPackTexture = LoadTexture("resources/Art/2D/heal.png");
+}
 
 void ObjectManager::setObjects()
 {
-    texture = LoadTexture("resources/Art/2D/asteroidWhite.png");
-
     objects.clear();
+    pickups.clear();
 
     for (int i = 0; i < OBJECT_AMOUNT; i++)
     {
@@ -27,8 +36,19 @@ void ObjectManager::setObjects()
             break;
         case 2:
             objects.push_back(std::make_shared<Object>(texture, position, LARGE));
+            checkForPickup(objects[i]);  
             break;
         }
+    }
+}
+
+void ObjectManager::checkForPickup(std::shared_ptr<Object> t_object)
+{
+    int pickupChance = rand() % PICKUP_CHANCE;
+    if (pickupChance == 0)
+    {
+        // Make a switch statement if multiple pickups in the future
+        pickups.push_back(std::make_shared<HealthPack>(healthPackTexture, player, t_object, 20));
     }
 }
 
@@ -52,7 +72,7 @@ std::shared_ptr<Object> ObjectManager::findClosestToPlayer(Player t_player)
 
 void ObjectManager::checkPlayerCollisions(Player &t_player, std::shared_ptr<Object>& t_object)
 {
-    if (!t_object->checkGrabbed() || t_object->isActive() || t_object->checkCollidable())
+    if (!t_object->checkGrabbed() && t_object->isActive() && t_object->checkCollidable())
     {
         float dist = pointToPointDist(t_player.getPos(), t_object->getPos());
 
@@ -92,12 +112,22 @@ void ObjectManager::checkCollisions()
                     
                     currentObject->destroy();
                     otherObject->destroy();
+
+                    // Need to delete currentObject and otherObject here
                 }
             }
         }
     }
-    
+
+    // Split objects that need splitting
     splitObject();
+
+    // Remove all objects that are marked as not active.
+    objects.erase(std::remove_if(objects.begin(), objects.end(),
+                   [](const std::shared_ptr<Object>& obj) {
+                       return obj->isParticalsActive() && !obj->isActive();
+                   }),
+                   objects.end());
 }
 
 void ObjectManager::splitObject()
@@ -144,6 +174,11 @@ void ObjectManager::draw()
     {
         object->draw();
     }
+
+    for (std::shared_ptr<PickUp>& pickup : pickups)
+    {
+        pickup->draw();
+    }
 }
 
 void ObjectManager::update(Planet& t_planet, Player& t_player)
@@ -161,4 +196,8 @@ void ObjectManager::update(Planet& t_planet, Player& t_player)
     }
     checkCollisions();
 
+    for (std::shared_ptr<PickUp>& pickup : pickups)
+    {
+        pickup->update();
+    }
 }

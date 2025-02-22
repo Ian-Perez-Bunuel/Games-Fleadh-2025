@@ -14,6 +14,7 @@ void Game::initialize()
     initializeShaders();
 
     player.initialize();
+    objectManager = std::make_unique<ObjectManager>(player);
     // Sprites
     backgroundTexture = LoadTexture("resources/Art/2D/background.png");
     enemy = LoadTexture("resources/Art/2D/Planet.png");
@@ -84,7 +85,7 @@ void Game::update()
     
     player.update(controller.getLeftStickDir());
     
-    objectManager.update(planetManager.getMainPlanet(), player);
+    objectManager->update(planetManager.getMainPlanet(), player);
 
     if (planetSelector.isActive())
     {
@@ -98,7 +99,7 @@ void Game::update()
 
     planetManager.update();
 
-    closestObjectToPlayer = objectManager.findClosestToPlayer(player);
+    closestObjectToPlayer = objectManager->findClosestToPlayer(player);
 }
 
 void Game::draw() 
@@ -136,7 +137,7 @@ void Game::drawMiddleground()
             planetManager.drawMainPlanet();
         EndMode3D();
 
-        objectManager.draw();
+        objectManager->draw();
         
         player.draw();
 
@@ -230,7 +231,7 @@ void Game::mouseInput()
     
     if (IsKeyPressed(KEY_SPACE))
     {
-        objectManager.setObjects();
+        objectManager->setObjects();
     }
     
     if (IsKeyPressed(KEY_M))
@@ -261,7 +262,7 @@ void Game::controllerInput()
     
     if (IsGamepadButtonDown(0, GAMEPAD_BUTTON_RIGHT_FACE_DOWN))
     {
-        objectManager.setObjects();
+        objectManager->setObjects();
     }
 }
 

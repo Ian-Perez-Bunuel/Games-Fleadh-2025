@@ -1,4 +1,5 @@
 #include "../include/Player.h"
+#include "../include/SceneCamera.h"
 
 Player::Player()
 {
@@ -235,6 +236,16 @@ void Player::invincibleClock()
     }
 }
 
+void Player::heal(int t_amount)
+{
+    health += t_amount;
+
+    if (health > MAX_HEALTH)
+    {
+        health = MAX_HEALTH;
+    }
+}
+
 void Player::takeDamage(int t_amount)
 {
     if (!invincible && alive)
@@ -243,18 +254,19 @@ void Player::takeDamage(int t_amount)
         {
             health -= t_amount;
             invincible = true;
+            SceneCamera::screenShake(SceneCamera::LARGE_SHAKE, 15);
         }
         else if (health == t_amount && !lastHit)
         {
             health = 1;
             lastHit = true;
             invincible = true;
+
+            SceneCamera::screenShake(SceneCamera::LARGE_SHAKE, 15);
         }
         else
         {
             kill();
         }
-
-        printf("\n\n%d / %d\n\n", health, MAX_HEALTH);
     }
 }

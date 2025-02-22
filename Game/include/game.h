@@ -45,7 +45,7 @@ private:
     
     bool CircleCollisions(int t_r1, int t_r2, Vector2 pos1, Vector2 pos2);
 
-    ObjectManager objectManager;
+    std::unique_ptr<ObjectManager> objectManager;
 
     Texture2D backgroundTexture;
     Texture2D enemy;

@@ -21,6 +21,7 @@ public:
     int getRadius() { return radius; }
     bool checkGrabbed() { return grabbed; }
     bool isActive() { return active; }
+    bool isParticalsActive() { return particleSpawner.checkIfParticalsActive(); }
     bool checkCollidable() { return collidable; }
     bool checkToPlanet() { return toPlanet; }
     
@@ -40,7 +41,6 @@ private:
     void checkForSpeedIncrease();
     void invinsabilityCheck();
 
-    
     void loop();
     
     bool active = false;
