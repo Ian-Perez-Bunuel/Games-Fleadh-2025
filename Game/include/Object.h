@@ -24,6 +24,7 @@ public:
     bool isParticalsActive() { return particleSpawner.checkIfParticalsActive(); }
     bool checkCollidable() { return collidable; }
     bool checkToPlanet() { return toPlanet; }
+    bool checkIfPickedUp() { return beenPickedUp; }
     
     void grab();
     void held(Vector2 t_anchorPos, float t_dist);
@@ -58,6 +59,7 @@ private:
     Texture2D texture;
 
     bool grabbed = false;
+    bool beenPickedUp = false;
     bool correctDist = false;
     float angle = -1.0f;
 

@@ -14,10 +14,10 @@ public:
     ObjectManager(Player& t_player);
 
     void setObjects();
-    std::shared_ptr<Object> findClosestToPlayer(Player t_player);
+    std::shared_ptr<Object> findClosestToPlayer();
 
     void draw();
-    void update(Planet& t_planet, Player& t_player);
+    void update(Planet& t_planet);
 
 private:
     Texture2D texture;
@@ -45,7 +45,7 @@ private:
     std::vector<std::shared_ptr<PickUp>> pickups;
     Texture2D healthPackTexture;
 
-    void checkPlayerCollisions(Player& t_player, std::shared_ptr<Object>& t_object);
+    void checkPlayerCollisions(std::shared_ptr<Object>& t_object);
     void checkCollisions();
     void splitObject();
 

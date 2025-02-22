@@ -51,6 +51,7 @@ void Object::grab()
 	if (!grabbed)
 	{
 		grabbed = true;
+		beenPickedUp = true;
 		color = YELLOW;
 
 		particleSpawner.addColor(YELLOW);

@@ -52,14 +52,14 @@ void ObjectManager::checkForPickup(std::shared_ptr<Object> t_object)
     }
 }
 
-std::shared_ptr<Object> ObjectManager::findClosestToPlayer(Player t_player)
+std::shared_ptr<Object> ObjectManager::findClosestToPlayer()
 {
     float lowestDist = 100000.0f;
     std::shared_ptr<Object> closestObject = nullptr;
 
     for (std::shared_ptr<Object>& object : objects)
     {
-        float distToObject = pointToPointDist(object->getPos(), t_player.getPos());
+        float distToObject = pointToPointDist(object->getPos(), player.getPos());
         if (distToObject < lowestDist && !object->checkGrabbed() && object->isActive() && !object->checkToPlanet())
         {
             lowestDist = distToObject;
@@ -70,16 +70,16 @@ std::shared_ptr<Object> ObjectManager::findClosestToPlayer(Player t_player)
     return closestObject;
 }
 
-void ObjectManager::checkPlayerCollisions(Player &t_player, std::shared_ptr<Object>& t_object)
+void ObjectManager::checkPlayerCollisions(std::shared_ptr<Object>& t_object)
 {
-    if (!t_object->checkGrabbed() && t_object->isActive() && t_object->checkCollidable())
+    if (!t_object->checkGrabbed() && t_object->isActive() && t_object->checkCollidable() && !t_object->checkIfPickedUp())
     {
-        float dist = pointToPointDist(t_player.getPos(), t_object->getPos());
+        float dist = pointToPointDist(player.getPos(), t_object->getPos());
 
-        if (dist <= t_player.getRadius() + t_object->getRadius())
+        if (dist <= player.getRadius() + t_object->getRadius())
         {
             // Collision occurred
-            t_player.takeDamage(t_object->getRadius() / 2);
+            player.takeDamage(t_object->getRadius() / 2);
         }
     }
 }
@@ -181,7 +181,7 @@ void ObjectManager::draw()
     }
 }
 
-void ObjectManager::update(Planet& t_planet, Player& t_player)
+void ObjectManager::update(Planet& t_planet)
 {
     for (std::shared_ptr<Object>& object : objects)
     {
@@ -192,7 +192,7 @@ void ObjectManager::update(Planet& t_planet, Player& t_player)
 		    object->movementToPlanet(t_planet);
 	    }
 
-        checkPlayerCollisions(t_player, object);
+        checkPlayerCollisions(object);
     }
     checkCollisions();
 

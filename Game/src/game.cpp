@@ -85,7 +85,7 @@ void Game::update()
     
     player.update(controller.getLeftStickDir());
     
-    objectManager->update(planetManager.getMainPlanet(), player);
+    objectManager->update(planetManager.getMainPlanet());
 
     if (planetSelector.isActive())
     {
@@ -99,7 +99,7 @@ void Game::update()
 
     planetManager.update();
 
-    closestObjectToPlayer = objectManager->findClosestToPlayer(player);
+    closestObjectToPlayer = objectManager->findClosestToPlayer();
 }
 
 void Game::draw() 
