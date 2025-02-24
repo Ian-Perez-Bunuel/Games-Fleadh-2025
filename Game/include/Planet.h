@@ -17,9 +17,11 @@ public:
     void drawParticles();
 
     Vector3 getPos() { return position; }
+    void setPos(Vector3 t_pos) { position = t_pos; }
 
     bool isDefeated() { return defeated; }
     void takeDmg(int t_damage);
+    void whileDead(Vector3 t_playerPos, Vector2 t_playerPos2D);
 
 private:    
     Model model;
@@ -36,13 +38,12 @@ private:
     float roll = 0.0f;
     float yaw = 0.0f;
     
-    void deathAnimation();
-    void moveToDeathPos();
-    void whileDead();
+    void deathAnimation(Vector2 t_playerPos);
+    void moveToPos(Vector3 t_targetPos);
     static const int MAX_HEALTH = 1;
     int health = MAX_HEALTH;
     bool defeated = false;
-    Vector3 deathPos = {0.0f, 0.0f, 1.0f};
+    bool coreConsumed = false;
 
     Color color;
     Color coreTint = {25, 25, 25, 255};
@@ -64,9 +65,11 @@ private:
     bool maxDistHit = false;
 
     ParticleSpawner deathParticles;
-    const float PARTICLE_WAIT = 1.0f;
-    float particleTimer = 0.0f;
-    bool invertedParticles = true;
+    bool maxRadiusHit = false;
+    const float MAX_PARTICAL_RADIUS = 150.0f;
+    float particleRadius = 30.0f;
+
+    const float SPEED = 0.15f;
 };
 
 // Overload the + operator for Raylib's Color type

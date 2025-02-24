@@ -16,14 +16,13 @@ public:
     void drawMainPlanet();
     void drawOtherPlanets();
 
-    Planet& getMainPlanet() { return planets[0]; }
+    Planet& getMainPlanet() { return planets[currentPlanet]; }
 
+    void nextPlanet();
 private:
+
     std::vector<Planet> planets;
 
     static const int PLANET_AMOUNT = 5;
     int currentPlanet = 0;
-
-    const float MAIN_PLANET_Z = -9.0f;
-    const int PLANET_SPACING = 100;
 };

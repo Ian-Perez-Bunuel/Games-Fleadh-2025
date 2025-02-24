@@ -1,5 +1,6 @@
 #include "../include/SceneCamera.h"
 #include <random>
+#include "../include/Globals.h"
 
 // 3D Camera
 Camera3D SceneCamera::camera;
@@ -54,9 +55,10 @@ void SceneCamera::updateShake()
 void SceneCamera::screenShake(float t_shake, int t_duration)
 {
     shakeIntensity = t_shake / 50.0f;
-    shakeDuration = t_duration;
+    shakeDuration += t_duration;
     shaking = true;
 }
+
 
 float SceneCamera::getRandFloat()
 {

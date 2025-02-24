@@ -52,8 +52,6 @@ void Game::initializeShaders()
     SetTextureFilter(foreground.texture, TEXTURE_FILTER_BILINEAR);
 
 
-    
-
     Vector2 resolutionForBlur = {(float)SCREEN_WIDTH * 5, (float)SCREEN_HEIGHT * 5};
 
     // Uniforms
@@ -64,6 +62,9 @@ void Game::initializeShaders()
     SetShaderValue(blurVertical, GetShaderLocation(blurVertical, "radius"), &glowRadius, SHADER_UNIFORM_FLOAT);
 
     SetShaderValue(combineShader, GetShaderLocation(combineShader, "intensity"), &glowIntensity, SHADER_UNIFORM_FLOAT);
+
+    // Particles for core collection
+    collectingParticles.addColor(YELLOW);
 }
 
 Game::~Game()
@@ -91,20 +92,21 @@ void Game::update()
     {
         planetSelector.transition();
     }
-    if (planetManager.getMainPlanet().isDefeated())
-    {
-        if (CircleCollisions(player.getRadius(), 100, player.getPos(), {SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f}))
-        {
-            DrawCircle(0.0f, 0.0f, 100, RED);
-        }
-    }
 
     for (Projectile& proj : projectiles)
     {
         proj.update();
     } 
 
-    planetManager.update();
+    if (planetManager.getMainPlanet().isDefeated())
+    {
+        planetManager.getMainPlanet().whileDead(convertToMiddleCoords(player.getPos()), player.getPos());
+    }
+    else
+    {
+        planetManager.update();
+    }
+
 
     closestObjectToPlayer = objectManager->findClosestToPlayer();
 }
@@ -210,6 +212,12 @@ void Game::drawBackground()
     }
 }
 
+void Game::coreCollection()
+{
+    collectingParticles.setValues({SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f}, 0, 0);
+    collectingParticles.circularSpawn(5, 150);
+}
+
 void Game::input()
 {
     mousePos = {GetMousePosition().x, SCREEN_HEIGHT - GetMousePosition().y};
@@ -250,11 +258,7 @@ void Game::mouseInput()
     if (IsKeyPressed(KEY_M))
     {
         planetSelector.activate();
-    }
-
-    if (IsKeyPressed(KEY_F))
-    {
-        projectiles.push_back(Projectile(PLANET_POS, convertToMiddleCoords(player.getPos())));
+        planetManager.nextPlanet();
     }
 }
 
@@ -301,7 +305,7 @@ Vector3 Game::convertToMiddleCoords(Vector2 t_originalCoords)
     float normalizedX = normalizeSigned(t_originalCoords.x, 0.0f, SCREEN_WIDTH);
     float normalizedY = normalizeSigned(t_originalCoords.y, 0.0f, SCREEN_HEIGHT);
     
-    return {normalizedX * SCREEN_BOUNDS_X, normalizedY * SCREEN_BOUNDS_Y, MIDDLEGROUND_POS.z};
+    return {normalizedX * SCREEN_BOUNDS_X, -normalizedY * SCREEN_BOUNDS_Y, MIDDLEGROUND_POS.z};
 }
 
 Vector2 Game::convertToGameCoords(Vector3 t_originalCoords)

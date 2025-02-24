@@ -61,10 +61,6 @@ private:
     RenderTexture2D targetScene;
     RenderTexture2D targetBlur1;
     RenderTexture2D targetBlur2;
-
-    const Vector3 MIDDLEGROUND_POS = {0.0f, 0.0f, 1.0f};
-    const Vector3 BACKGROUND_POS = {0.0f, 0.0f, -500.0f};
-    const Vector3 PLANET_POS = {0.0f, 0.0f, -9.0f};
     
     // Billboard Textures
     RenderTexture2D background;
@@ -78,6 +74,9 @@ private:
     std::vector<Projectile> projectiles;
 
     // Planet
+    void coreCollection();
+    bool collectingCore = false;
+    ParticleSpawner collectingParticles;
     PlanetManager planetManager;
 
     Vector2 mousePos;

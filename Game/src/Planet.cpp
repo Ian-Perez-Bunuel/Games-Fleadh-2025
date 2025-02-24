@@ -63,24 +63,22 @@ void Planet::update()
     {
         explosion();
     }
-    if (defeated)
-    {
-        whileDead();
-    }
 
     updateRotation();
 }
 
 void Planet::draw()
 {
-    rlSetLineWidth(0.1f);
-    DrawModel(core, position, 0.5, color);
-    DrawModelWires(core, position, 0.5f, color + coreTint);
-
-    rlSetLineWidth(2.0f);
     if (!defeated)
     {
+        rlSetLineWidth(2.0f);
         DrawModelWires(model, position, 0.75f, color);
+    }
+    if (!coreConsumed)
+    {
+        rlSetLineWidth(0.1f);
+        DrawModel(core, position, 0.5, color);
+        DrawModelWires(core, position, 0.5f, color + coreTint);
     }
 
     // rlSetLineWidth(10.0f);
@@ -93,54 +91,65 @@ void Planet::drawParticles()
     deathParticles.draw();
 }
 
-void Planet::whileDead()
+void Planet::whileDead(Vector3 t_playerPos3D, Vector2 t_playerPos2D)
 {
-    float dist = sqrtf(pow(deathPos.x - position.x, 2) + pow(deathPos.y - position.y, 2) + pow(deathPos.z - position.z, 2));
-    // If not at Death pos move to it
-    if (dist > 0.1f)
+    float dist = sqrtf(pow(t_playerPos3D.x - position.x, 2) + pow(t_playerPos3D.y - position.y, 2) + pow(t_playerPos3D.z - position.z, 2));
+    // If not at player position move to it
+    if (dist > 0.1f && !coreConsumed)
     {
-        moveToDeathPos();
+        moveToPos(t_playerPos3D);
     }
     else
     {
-        deathAnimation();
+        // Anything in this if  statement will only be called once when the core is consumed
+        if (!coreConsumed)
+        {
+            coreConsumed = true;
+
+            SceneCamera::screenShake(SceneCamera::LARGE_SHAKE, 120);
+        }
+        deathAnimation(t_playerPos2D);
     }
 }
 
-void Planet::deathAnimation()
+
+void Planet::deathAnimation(Vector2 t_playerPos)
 {
-    if (particleTimer < PARTICLE_WAIT)
+    deathParticles.setValues(t_playerPos, 360, 0);
+    // Increasing radius to max radius
+    if (particleRadius <= MAX_PARTICAL_RADIUS && !maxRadiusHit)
     {
-        particleTimer += GetFrameTime();
+        deathParticles.circularSpawn(1, particleRadius);
+        particleRadius += 6.0f;
     }
     else
     {
-        particleTimer = 0.0f;
+        maxRadiusHit = true;
+    }
+    // Decreasing radius towards the player
+    if (particleRadius >= 30 && maxRadiusHit)
+    {
+        deathParticles.circularSpawn(1, particleRadius);
+        particleRadius -= 1.5f;
+    }
+    else if (particleRadius != -1 && maxRadiusHit)
+    {
+        deathParticles.setValues(t_playerPos, 360, 0);
+        deathParticles.spawn(10);
 
-        deathParticles.setValues({SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f}, 360, 0);
-
-        if (invertedParticles)
-        {
-            deathParticles.invertedSpawn(5);
-            invertedParticles = false;
-        }
-        else
-        {
-            deathParticles.spawn(5);
-            invertedParticles = true;
-        }
+        particleRadius = -1; // Make sure that the explosion only happens once.
     }
 
     deathParticles.update();
 }
 
-void Planet::moveToDeathPos()
+void Planet::moveToPos(Vector3 t_targetPos)
 {
     // Compute the direction vector
     Vector3 direction = {
-        deathPos.x - position.x,
-        deathPos.y - position.y,
-        deathPos.z - position.z
+        t_targetPos.x - position.x,
+        t_targetPos.y - position.y,
+        t_targetPos.z - position.z
     };
 
     // Calculate the length of the direction vector
@@ -157,9 +166,9 @@ void Planet::moveToDeathPos()
     }   
 
     // Move Core to deathPos
-    position.x += direction.x * 0.1f;
-    position.y += direction.y * 0.1f;
-    position.z += direction.z * 0.1f;
+    position.x += direction.x * SPEED;
+    position.y += direction.y * SPEED;
+    position.z += direction.z * SPEED;
 }
 
 void Planet::takeDmg(int t_damage)

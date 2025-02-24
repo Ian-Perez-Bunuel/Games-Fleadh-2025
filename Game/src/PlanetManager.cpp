@@ -45,18 +45,32 @@ void PlanetManager::init()
 
 void PlanetManager::update()
 {
-    planets[0].update();
+    planets[currentPlanet].update();
 }
 
 void PlanetManager::drawMainPlanet()
 {
-    planets[0].draw();
+    planets[currentPlanet].draw();
 }
 
 void PlanetManager::drawOtherPlanets()
 {
-    for (int i = 1; i < PLANET_AMOUNT; i++)
+    for (int i = currentPlanet + 1; i < PLANET_AMOUNT; i++)
     {
         planets[i].draw();
     }
+}
+
+void PlanetManager::nextPlanet()
+{
+    if (currentPlanet < planets.size())
+    {
+        currentPlanet++;
+        
+        for (Planet& planet : planets)
+        {
+            planet.setPos({planet.getPos().x, planet.getPos().y, planet.getPos().z + PLANET_SPACING});
+        }
+    }
+
 }

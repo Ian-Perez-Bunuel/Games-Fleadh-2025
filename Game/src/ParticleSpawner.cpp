@@ -44,30 +44,14 @@ void ParticleSpawner::spawn(int t_amount)
     active = true;
 }
 
-void ParticleSpawner::invertedSpawn()
-{
-    for (int i = 0; i < MAX_PARTICLES; i++)
-    {
-        float randDir = randomizeDir();
-        Vector2 randPos = posOnCircle(randDir + 90);
-        int randSpeed = (rand() % 5) + 5;
-        int randSize = (rand() % 7) + 7;
-        Color randColor = randomizeColor();
-
-        particles.push_back(Particle(randPos, randSize, randSpeed, randDir, randColor));
-    }
-
-    active = true;
-}
-
-void ParticleSpawner::invertedSpawn(int t_amount)
+void ParticleSpawner::circularSpawn(int t_amount, float t_radius)
 {
     for (int iteration = 0; iteration < t_amount; iteration++)
     {
         for (int i = 0; i < MAX_PARTICLES; i++)
         {
             float randDir = randomizeDir();
-            Vector2 randPos = posOnCircle(randDir);
+            Vector2 randPos = posOnCircle(randDir, t_radius);
             int randSpeed = (rand() % 5) + 5;
             int randSize = (rand() % 7) + 7;
             Color randColor = randomizeColor();
@@ -101,7 +85,7 @@ void ParticleSpawner::update()
         active = false;
     }
     
-    if (active)
+    if (active && !paused)
     {
         for (Particle& p : particles)
         {
@@ -124,14 +108,14 @@ void ParticleSpawner::draw()
     }
 }
 
-Vector2 ParticleSpawner::posOnCircle(float t_angle)
+Vector2 ParticleSpawner::posOnCircle(float t_angle, float t_radius)
 {
     Vector2 randPos = {0.0f, 0.0f};
     float randAngle = rand() % 360;
     t_angle = t_angle * DEG2RAD;
 
-    randPos.x = position.x + 200 * cos(t_angle);
-    randPos.y = position.y + 200 * sin(t_angle);
+    randPos.x = position.x + t_radius * cos(t_angle);
+    randPos.y = position.y + t_radius * sin(t_angle);
 
 
     return randPos;
