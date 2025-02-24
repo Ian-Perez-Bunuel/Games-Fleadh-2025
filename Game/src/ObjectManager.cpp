@@ -8,7 +8,11 @@ const int ObjectManager::LARGE = 45;
 
 ObjectManager::ObjectManager(Player& t_player) : player(t_player)
 {
-    texture = LoadTexture("resources/Art/2D/asteroidWhite.png");
+    texture1 = LoadTexture("resources/Art/2D/object1.png");
+    texture2 = LoadTexture("resources/Art/2D/object2.png");
+    texture3 = LoadTexture("resources/Art/2D/object3.png");
+    texture4 = LoadTexture("resources/Art/2D/object4.png");
+
     initPickupTextures();
 }
 
@@ -24,6 +28,7 @@ void ObjectManager::setObjects()
 
     for (int i = 0; i < OBJECT_AMOUNT; i++)
     {
+        setRandomTexture();
         Vector2 position = {(float)(rand() % SCREEN_WIDTH), (float)(rand() % SCREEN_HEIGHT)};
         int randSize = rand() % 3;
         switch (randSize)
@@ -39,6 +44,30 @@ void ObjectManager::setObjects()
             checkForPickup(objects[i]);  
             break;
         }
+    }
+}
+
+void ObjectManager::setRandomTexture()
+{
+    int randNum = rand() % 4;
+
+    switch (randNum)
+    {
+    case 0:
+        texture = texture1;
+        break;
+
+    case 1:
+        texture = texture2;
+        break;
+
+    case 2:
+        texture = texture3;
+        break;
+
+    case 3:
+        texture = texture4;
+        break;
     }
 }
 
@@ -112,8 +141,6 @@ void ObjectManager::checkCollisions()
                     
                     currentObject->destroy();
                     otherObject->destroy();
-
-                    // Need to delete currentObject and otherObject here
                 }
             }
         }
@@ -122,7 +149,7 @@ void ObjectManager::checkCollisions()
     // Split objects that need splitting
     splitObject();
 
-    // Remove all objects that are marked as not active.
+    // Remove all objects that are marked as not active (Including their particles).
     objects.erase(std::remove_if(objects.begin(), objects.end(),
                    [](const std::shared_ptr<Object>& obj) {
                        return obj->isParticalsActive() && !obj->isActive();

@@ -48,7 +48,8 @@ private:
     std::unique_ptr<ObjectManager> objectManager;
 
     Texture2D backgroundTexture;
-    Texture2D enemy;
+    Texture2D astroidBeltTexture;
+
 
     // Shaders
     float glowRadius = 15.0f;

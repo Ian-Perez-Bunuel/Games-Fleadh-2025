@@ -17,11 +17,9 @@ void Planet::init(Vector3 t_pos, Color t_color)
     explosionShader = LoadShader("resources/Shaders/explosion.vs", "resources/Shaders/explosion.fs");
 
     displacementIntensityLocationInShader = GetShaderLocation(explosionShader, "displacementIntensity");
-    perlinNoiseTextureLocationInShader = GetShaderLocation(explosionShader, "perlinNoiseTexture");
     explosionTimerLocationInShader = GetShaderLocation(explosionShader, "explosionTimer");
 
     SetShaderValue(explosionShader, displacementIntensityLocationInShader, &displacementIntensity, SHADER_UNIFORM_FLOAT);
-    SetShaderValueTexture(explosionShader, perlinNoiseTextureLocationInShader, explosion_driver);
     SetShaderValue(explosionShader, explosionTimerLocationInShader, &explosionTimer, SHADER_UNIFORM_FLOAT);
 
     // used to pass to the shader
@@ -62,6 +60,10 @@ void Planet::update()
     {
         explosion();
     }
+    if (defeated)
+    {
+        deathAnimation();
+    }
 
     updateRotation();
 }
@@ -83,6 +85,13 @@ void Planet::draw()
     // DrawModelWires(shield, position, 1.0, BLUE);
 }
 
+void Planet::deathAnimation()
+{
+    if (position.z < 1.0f)
+    {
+        position.z += 0.1f;
+    }
+}
 
 void Planet::takeDmg(int t_damage)
 {
@@ -127,7 +136,8 @@ void Planet::explosion()
         }
     }
 
-    displacementIntensity = explosionTimer * multiplier;
+    displacementIntensity = explosionTimer;
+    printf("Intensity: %f", displacementIntensity);
 
     SetShaderValue(explosionShader, displacementIntensityLocationInShader, &displacementIntensity, SHADER_UNIFORM_FLOAT);
     SetShaderValue(explosionShader, explosionTimerLocationInShader, &explosionTimer, SHADER_UNIFORM_FLOAT);
@@ -163,6 +173,10 @@ void Planet::genExplosionTexture()
 
     // Now load the explosion_driver texture
     explosion_driver = LoadTextureFromImage(perlinNoiseImage);
+
+    // Give details to shader
+    perlinNoiseTextureLocationInShader = GetShaderLocation(explosionShader, "perlinNoiseTexture");
+    SetShaderValueTexture(explosionShader, perlinNoiseTextureLocationInShader, explosion_driver);
 
     // Cleanup generated images, these are not needed now
     UnloadImage(perlinNoiseImage);

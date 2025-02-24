@@ -17,7 +17,7 @@ void Game::initialize()
     objectManager = std::make_unique<ObjectManager>(player);
     // Sprites
     backgroundTexture = LoadTexture("resources/Art/2D/background.png");
-    enemy = LoadTexture("resources/Art/2D/Planet.png");
+    astroidBeltTexture = LoadTexture("resources/Art/2D/bgAsteroids.png");
 
     reticle = LoadTexture("resources/Art/2D/target.png");
 
@@ -108,7 +108,7 @@ void Game::draw()
     drawBackground();
 
     BeginMode3D(SceneCamera::camera);
-        DrawBillboard(SceneCamera::camera, background.texture, BACKGROUND_POS, 425.0f, WHITE);
+        DrawBillboard(SceneCamera::camera, background.texture, BACKGROUND_POS, 450.0f, WHITE);
 
         planetManager.drawOtherPlanets();
         
@@ -192,6 +192,7 @@ void Game::drawBackground()
 {
     BeginTextureMode(background);
         DrawTextureEx(backgroundTexture, {0, 0}, 0, 1.0, WHITE);
+        DrawTextureEx(astroidBeltTexture, {-100, 400}, -25, 1.0, BLUE );
     EndTextureMode();
 
     if (planetSelector.isActive())

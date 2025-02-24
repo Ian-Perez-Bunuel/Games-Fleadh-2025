@@ -37,6 +37,7 @@ public:
     void movementToPlanet(Planet& t_planet);
     
 private:
+    void move();    
     bool moveToRotationArea(Vector2 t_anchorPos, float t_targetDist);
     
     void checkForSpeedIncrease();
@@ -64,7 +65,7 @@ private:
     float angle = -1.0f;
 
     Vector2 position = {0.0f, 0.0f};
-    float scale = 460.0f;
+    float scale = 1.0f;
 
     // Physics
     float mass = 10;
@@ -74,8 +75,10 @@ private:
     Vector2 velocity;
     float anchorDist = -1.0f;
 
-
     Color color;
+
+    const float TRAIL_PARTICLE_WAIT = 0.1f;
+    float trailTimer = 0.0f;
 
     // Particals
     ParticleSpawner particleSpawner;

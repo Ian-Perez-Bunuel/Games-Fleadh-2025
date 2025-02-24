@@ -2,6 +2,7 @@
 #include <random>
 #include "../include/SceneCamera.h"
 #include "../include/Globals.h"
+#include "../include/ObjectManager.h"
 
 
 Object::Object(Texture2D& t_texture, Vector2 t_pos, int t_size, int dirAngle) 
@@ -18,14 +19,25 @@ Object::Object(Texture2D& t_texture, Vector2 t_pos, int t_size, int dirAngle)
 	color = BLUE;
 
 	particleSpawner.addColor(color);
+
+	// Change scale depending on size
+	if (radius <= ObjectManager::SMALL) // Small size
+	{
+		scale = 0.34f;
+	}
+	else if (radius < ObjectManager::LARGE) // If size Medium
+	{
+		scale = 0.56f;
+	}
+	// Large is 1 so no change needed
+
 }
 
 void Object::update()
 {
 	if (!grabbed && active && !toPlanet)
 	{
-		position.x += velocity.x;
-		position.y += velocity.y;
+		move();
 
 		invinsabilityCheck();
 
@@ -40,8 +52,8 @@ void Object::draw()
 {
 	if (active)
 	{
-		// DrawCircleV(position, radius, color);
-		DrawTextureEx(texture, {position.x - radius, position.y - radius}, 0, radius / scale, color);
+		// DrawCircleV(position, radius, RED);
+		DrawTextureEx(texture, {position.x - radius, position.y - radius}, 0, scale, color);
 	}
 	particleSpawner.draw();
 }
@@ -221,13 +233,37 @@ void Object::released(Vector2 t_releaseDir, bool t_toPlanet)
 	correctDist = false;
 }
 
+void Object::move()
+{
+	position.x += velocity.x;
+	position.y += velocity.y;
+
+	if (beenPickedUp)
+	{
+		if (trailTimer >= TRAIL_PARTICLE_WAIT)
+		{
+			// Spawn trail particles
+			Vector2 nextPos = {position.x + velocity.x, position.y + velocity.y};
+			float oppositeAngle = atan2f(nextPos.y - position.y, nextPos.x - position.x) * RAD2DEG + 270;
+			particleSpawner.setValues(position, 15, oppositeAngle);
+			particleSpawner.spawn();
+
+			// Reset timer
+			trailTimer = 0;
+		}
+		else
+		{
+			trailTimer +=  GetFrameTime();
+		}
+	}
+}
+
 void Object::movementToPlanet(Planet& t_planet)
 {
 	if (active)
 	{
-		position.x += velocity.x;
-		position.y += velocity.y;
-		scale += 20.0f;
+		move();
+		scale -= 0.005f;
 	
 		float leeway = 15.0f; // Adjust this value to your desired tolerance
 		if (fabs(position.x - planetPos.x) < leeway && fabs(position.y - planetPos.y) < leeway)
@@ -240,7 +276,7 @@ void Object::movementToPlanet(Planet& t_planet)
 			toPlanet = false;
 		}
 	
-		if (scale > 10000)
+		if (scale <= 0)
 		{
 			active = false;
 		}

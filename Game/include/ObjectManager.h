@@ -19,16 +19,17 @@ public:
     void draw();
     void update(Planet& t_planet);
 
+    static const int SMALL;
+    static const int MEDIUM;
+    static const int LARGE;
+
 private:
+    void setRandomTexture();
     Texture2D texture;
     Texture2D texture1;
     Texture2D texture2;
     Texture2D texture3;
     Texture2D texture4;
-
-    static const int SMALL;
-    static const int MEDIUM;
-    static const int LARGE;
 
     const int OBJECT_AMOUNT = 25;
     const int PICKUP_CHANCE = 5; // 1 / 5 chance

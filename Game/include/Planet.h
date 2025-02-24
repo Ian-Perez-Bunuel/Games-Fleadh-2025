@@ -15,6 +15,7 @@ public:
 
     Vector3 getPos() { return position; }
 
+    bool isDefeated() { return defeated; }
     void takeDmg(int t_damage);
 
 private:    
@@ -23,18 +24,19 @@ private:
     Model core;
     Model shield;
 
-    bool defeated = false;
-
+    
     Vector3 position;
-
+    
     void updateRotation();
     float tilt = -45.0f;
     float pitch = 0.0f;
     float roll = 0.0f;
     float yaw = 0.0f;
-
+    
     static const int MAX_HEALTH = 100;
     int health = MAX_HEALTH;
+    void deathAnimation();
+    bool defeated = false;
 
     Color color;
     Color coreTint = {25, 25, 25, 255};
@@ -53,7 +55,6 @@ private:
     bool explosionActive = false;
     float explosionTimer = 0.0f;
     // Change this number for more dramatic effect
-    float multiplier = 1.0f;
     bool maxDistHit = false;
 };
 
