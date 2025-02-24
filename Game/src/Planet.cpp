@@ -1,5 +1,6 @@
 #include "../include/Planet.h"
 #include "../include/SceneCamera.h"
+#include "../include/Globals.h"
 #include <random>
 #include "rlgl.h"
 
@@ -35,6 +36,8 @@ void Planet::init(Vector3 t_pos, Color t_color)
     // Assign shader to the planet model
     model.materials[0].shader = explosionShader;
     core.materials[0].shader = explosionShader;
+
+    deathParticles.addColor(color);
 }
 
 void Planet::updateRotation()
@@ -62,7 +65,7 @@ void Planet::update()
     }
     if (defeated)
     {
-        deathAnimation();
+        whileDead();
     }
 
     updateRotation();
@@ -85,12 +88,78 @@ void Planet::draw()
     // DrawModelWires(shield, position, 1.0, BLUE);
 }
 
+void Planet::drawParticles()
+{
+    deathParticles.draw();
+}
+
+void Planet::whileDead()
+{
+    float dist = sqrtf(pow(deathPos.x - position.x, 2) + pow(deathPos.y - position.y, 2) + pow(deathPos.z - position.z, 2));
+    // If not at Death pos move to it
+    if (dist > 0.1f)
+    {
+        moveToDeathPos();
+    }
+    else
+    {
+        deathAnimation();
+    }
+}
+
 void Planet::deathAnimation()
 {
-    if (position.z < 1.0f)
+    if (particleTimer < PARTICLE_WAIT)
     {
-        position.z += 0.1f;
+        particleTimer += GetFrameTime();
     }
+    else
+    {
+        particleTimer = 0.0f;
+
+        deathParticles.setValues({SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f}, 360, 0);
+
+        if (invertedParticles)
+        {
+            deathParticles.invertedSpawn(5);
+            invertedParticles = false;
+        }
+        else
+        {
+            deathParticles.spawn(5);
+            invertedParticles = true;
+        }
+    }
+
+    deathParticles.update();
+}
+
+void Planet::moveToDeathPos()
+{
+    // Compute the direction vector
+    Vector3 direction = {
+        deathPos.x - position.x,
+        deathPos.y - position.y,
+        deathPos.z - position.z
+    };
+
+    // Calculate the length of the direction vector
+    float length = sqrtf(direction.x * direction.x + 
+                        direction.y * direction.y + 
+                        direction.z * direction.z);
+
+    // Normalize the direction vector
+    if (length > 0.0001f) 
+    {
+        direction.x /= length;
+        direction.y /= length;
+        direction.z /= length;
+    }   
+
+    // Move Core to deathPos
+    position.x += direction.x * 0.1f;
+    position.y += direction.y * 0.1f;
+    position.z += direction.z * 0.1f;
 }
 
 void Planet::takeDmg(int t_damage)
@@ -137,7 +206,6 @@ void Planet::explosion()
     }
 
     displacementIntensity = explosionTimer;
-    printf("Intensity: %f", displacementIntensity);
 
     SetShaderValue(explosionShader, displacementIntensityLocationInShader, &displacementIntensity, SHADER_UNIFORM_FLOAT);
     SetShaderValue(explosionShader, explosionTimerLocationInShader, &explosionTimer, SHADER_UNIFORM_FLOAT);

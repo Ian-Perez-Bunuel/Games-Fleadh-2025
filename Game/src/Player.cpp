@@ -3,12 +3,12 @@
 
 Player::Player()
 {
-    position = {100, 100};
 }
 
 void Player::initialize()
 {
     texture = LoadTexture("resources/Art/2D/player.png");
+    position = {GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f};
 }
 
 void Player::move()
@@ -124,7 +124,7 @@ void Player::shootGrapple(std::shared_ptr<Object> t_object)
         }
         if (closestGrappleIndex >= 0)
         {
-        grapples[closestGrappleIndex].shoot(t_object);
+            grapples[closestGrappleIndex].shoot(t_object);
         }
     }
 }

@@ -34,7 +34,7 @@ void ObjectManager::setObjects()
         switch (randSize)
         {
         case 0:
-            objects.push_back(std::make_shared<Object>(texture, position, SMALL));
+            objects.push_back(std::make_shared<Object>(texture, position, MEDIUM));
             break;
         case 1:
             objects.push_back(std::make_shared<Object>(texture, position,  MEDIUM));

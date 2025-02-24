@@ -44,6 +44,11 @@ void Object::update()
 		loop();
 	}
 
+	if (velocity.x == 0.0f && velocity.y == 0.0f)
+	{
+		active = false;
+	}
+
 	particleSpawner.update();
 }
 
@@ -240,21 +245,14 @@ void Object::move()
 
 	if (beenPickedUp)
 	{
-		if (trailTimer >= TRAIL_PARTICLE_WAIT)
-		{
-			// Spawn trail particles
-			Vector2 nextPos = {position.x + velocity.x, position.y + velocity.y};
-			float oppositeAngle = atan2f(nextPos.y - position.y, nextPos.x - position.x) * RAD2DEG + 270;
-			particleSpawner.setValues(position, 15, oppositeAngle);
-			particleSpawner.spawn();
+		// Spawn trail particles
+		Vector2 nextPos = {position.x + velocity.x, position.y + velocity.y};
+		float oppositeAngle = atan2f(nextPos.y - position.y, nextPos.x - position.x) * RAD2DEG + 270;
+		particleSpawner.setValues(position, 15, oppositeAngle);
+		particleSpawner.spawn();
 
-			// Reset timer
-			trailTimer = 0;
-		}
-		else
-		{
-			trailTimer +=  GetFrameTime();
-		}
+		// Reset timer
+		trailTimer = 0;
 	}
 }
 

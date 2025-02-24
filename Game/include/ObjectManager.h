@@ -31,7 +31,7 @@ private:
     Texture2D texture3;
     Texture2D texture4;
 
-    const int OBJECT_AMOUNT = 25;
+    const int OBJECT_AMOUNT = 50;
     const int PICKUP_CHANCE = 5; // 1 / 5 chance
 
     void checkForPickup(std::shared_ptr<Object> t_object);

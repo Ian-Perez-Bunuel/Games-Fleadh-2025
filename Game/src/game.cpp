@@ -91,6 +91,13 @@ void Game::update()
     {
         planetSelector.transition();
     }
+    if (planetManager.getMainPlanet().isDefeated())
+    {
+        if (CircleCollisions(player.getRadius(), 100, player.getPos(), {SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f}))
+        {
+            DrawCircle(0.0f, 0.0f, 100, RED);
+        }
+    }
 
     for (Projectile& proj : projectiles)
     {
@@ -137,11 +144,13 @@ void Game::drawMiddleground()
             planetManager.drawMainPlanet();
         EndMode3D();
 
+        planetManager.getMainPlanet().drawParticles();
+
         objectManager->draw();
         
         player.draw();
 
-        if (closestObjectToPlayer != nullptr )
+        if (closestObjectToPlayer != nullptr)
         {
             DrawTextureEx(reticle, {closestObjectToPlayer->getPos().x - 25, closestObjectToPlayer->getPos().y - 25}, 0, 1.25f, WHITE);
         }
@@ -227,7 +236,10 @@ void Game::mouseInput()
     // Used to grab objects
     if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT))
     {
-        player.shootGrapple(closestObjectToPlayer);
+        if (closestObjectToPlayer != nullptr)
+        {
+            player.shootGrapple(closestObjectToPlayer);
+        }
     }
     
     if (IsKeyPressed(KEY_SPACE))
@@ -258,7 +270,10 @@ void Game::controllerInput()
     // Used to grab objects
     if (IsGamepadButtonDown(0, GAMEPAD_BUTTON_RIGHT_TRIGGER_2))
     {
-        player.shootGrapple(closestObjectToPlayer);
+        if (closestObjectToPlayer != nullptr)
+        {
+            player.shootGrapple(closestObjectToPlayer);
+        }
     }
     
     if (IsGamepadButtonDown(0, GAMEPAD_BUTTON_RIGHT_FACE_DOWN))

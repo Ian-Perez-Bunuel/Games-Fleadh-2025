@@ -5,6 +5,8 @@
 #include "stdio.h"
 #include <algorithm>
 
+#include "../include/ParticleSpawner.h"
+
 class Planet
 {
 public:
@@ -12,6 +14,7 @@ public:
 
     void update();
     void draw();
+    void drawParticles();
 
     Vector3 getPos() { return position; }
 
@@ -33,10 +36,13 @@ private:
     float roll = 0.0f;
     float yaw = 0.0f;
     
-    static const int MAX_HEALTH = 100;
-    int health = MAX_HEALTH;
     void deathAnimation();
+    void moveToDeathPos();
+    void whileDead();
+    static const int MAX_HEALTH = 1;
+    int health = MAX_HEALTH;
     bool defeated = false;
+    Vector3 deathPos = {0.0f, 0.0f, 1.0f};
 
     Color color;
     Color coreTint = {25, 25, 25, 255};
@@ -56,6 +62,11 @@ private:
     float explosionTimer = 0.0f;
     // Change this number for more dramatic effect
     bool maxDistHit = false;
+
+    ParticleSpawner deathParticles;
+    const float PARTICLE_WAIT = 1.0f;
+    float particleTimer = 0.0f;
+    bool invertedParticles = true;
 };
 
 // Overload the + operator for Raylib's Color type
