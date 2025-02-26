@@ -17,7 +17,7 @@ void Game::initialize()
     objectManager = std::make_unique<ObjectManager>(player);
     // Sprites
     backgroundTexture = LoadTexture("resources/Art/2D/background.png");
-    astroidBeltTexture = LoadTexture("resources/Art/2D/bgAsteroids.png");
+    astroidBeltTexture = LoadTexture("resources/Art/2D/bgAsteroidsStraight.png");
 
     reticle = LoadTexture("resources/Art/2D/target.png");
 
