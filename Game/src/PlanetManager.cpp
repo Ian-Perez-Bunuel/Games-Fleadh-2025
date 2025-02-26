@@ -43,9 +43,9 @@ void PlanetManager::init()
     }
 }
 
-void PlanetManager::update()
+void PlanetManager::update(Vector3 t_playerPos3D, Vector2 t_playerPos2D)
 {
-    planets[currentPlanet].update();
+    planets[currentPlanet].update(t_playerPos3D, t_playerPos2D);
 }
 
 void PlanetManager::drawMainPlanet()

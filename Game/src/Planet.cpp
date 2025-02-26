@@ -7,10 +7,10 @@
 void Planet::init(Vector3 t_pos, Color t_color)
 {
     position = t_pos;
-    model = LoadModel("resources/Art/3D/planet4.glb");
+    model = LoadModel("resources/Art/3D/planet4.obj");
 
     core = LoadModel("resources/Art/3D/core.glb");
-    shield = LoadModel("resources/Art/3D/shield.glb");
+    shield = LoadModel("resources/Art/3D/shield.obj");
 
     color = t_color;
     genExplosionTexture();
@@ -57,14 +57,36 @@ void Planet::updateRotation()
     core.transform = rotation;
 }
 
-void Planet::update()
+void Planet::update(Vector3 t_playerPos3D, Vector2 t_playerPos2D)
 {
-    if (explosionActive)
+    if (defeated)
     {
-        explosion();
+        whileDead(t_playerPos3D, t_playerPos2D);
+    }
+    else
+    {
+        if (explosionActive)
+        {
+            explosion();
+        }
+
+        shotClock(t_playerPos3D);
+
+        for (Projectile& projectile : projectiles)
+        {
+            if (projectile.isActive())
+            {
+                projectile.update();
+            }
+            else if (projectile.isExploding())
+            {
+                projectile.explosion(t_playerPos3D);
+            }
+        }
+        
+        updateRotation();
     }
 
-    updateRotation();
 }
 
 void Planet::draw()
@@ -79,6 +101,11 @@ void Planet::draw()
         rlSetLineWidth(0.1f);
         DrawModel(core, position, 0.5, color);
         DrawModelWires(core, position, 0.5f, color + coreTint);
+    }
+
+    for (Projectile projectile : projectiles)
+    {
+        projectile.draw();
     }
 
     // rlSetLineWidth(10.0f);
@@ -258,4 +285,22 @@ void Planet::genExplosionTexture()
     // Cleanup generated images, these are not needed now
     UnloadImage(perlinNoiseImage);
     UnloadImage(radialGradientImage);
+}
+
+void Planet::shoot(Vector3 t_playerPos)
+{
+    projectiles.push_back(Projectile(position, t_playerPos));
+}
+
+void Planet::shotClock(Vector3 t_playerPos)
+{
+    if (shootingTimer < shootingWait)
+    {
+        shootingTimer += GetFrameTime();
+    }
+    else
+    {
+        shootingTimer = 0.0f;
+        shoot(t_playerPos);
+    }
 }
