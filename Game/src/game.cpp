@@ -98,7 +98,7 @@ void Game::update()
         proj.update();
     } 
 
-    planetManager.update(convertToMiddleCoords(player.getPos()), player.getPos());
+    planetManager.update(convertToMiddleCoords(player.getPos()), player);
 
 
     closestObjectToPlayer = objectManager->findClosestToPlayer();

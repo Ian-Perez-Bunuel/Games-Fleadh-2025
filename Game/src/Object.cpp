@@ -4,6 +4,8 @@
 #include "../include/Globals.h"
 #include "../include/ObjectManager.h"
 
+#include "../include/Planet.h"
+
 
 Object::Object(Texture2D& t_texture, Vector2 t_pos, int t_size, int dirAngle) 
 	: texture(t_texture), position(t_pos)
@@ -169,11 +171,26 @@ void Object::checkForSpeedIncrease()
 
 void Object::loop()
 {
-	if (position.x > SCREEN_WIDTH + radius)
+	if (position.x > SCREEN_WIDTH + 250)
 	{
-		position.x = -radius;
-		position.y = rand() % SCREEN_HEIGHT;
+		active = false;
 	}
+	// If gone completely off screen de-activate
+	else if (position.x < -250)  // Gives leeway for spawning
+	{
+		active = false;
+	}
+
+	if (position.y > SCREEN_HEIGHT + 250)
+	{
+		active = false;
+	}
+	// If gone completely off screen de-activate
+	else if (position.y < -250)
+	{
+		active = false;
+	}
+	
 }
 
 bool Object::checkObjectCollisions(std::shared_ptr<Object> t_otherObject)

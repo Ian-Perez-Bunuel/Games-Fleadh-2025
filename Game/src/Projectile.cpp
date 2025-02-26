@@ -1,21 +1,34 @@
 #include "../include/Projectile.h"
 #include <cmath>
+#include "raymath.h"
 
 #include "../include/Globals.h"
 
-Projectile::Projectile(Vector3 t_pos, Vector3 t_targetPos)
-    : position(t_pos), targetPos(t_targetPos)
+Projectile::Projectile(Color t_color, Vector3 t_pos, Vector3 t_targetPos, Player& t_player)
+    : position(t_pos), targetPos(t_targetPos), player(t_player), color(t_color)
 {
     active = true;
 
     model = LoadModel("resources/Art/3D/missile.obj");
+
+    particleSpawner.addColor(color);
 }
 
 void Projectile::draw()
 {
     if (active)
     {
-        DrawModel(model, position, 0.1f, RED);
+        DrawModel(model, position, 0.1f, color);
+        DrawModelWires(model, position, 0.1f, BLACK);
+    }
+}
+
+void Projectile::drawParticles()
+{
+    if (explode || !particleSpawner.checkIfParticalsActive())
+    {
+        // DrawCircleV(convertToGameCoords(position), explosionRadius, RED);
+        particleSpawner.draw();
     }
 }
 
@@ -53,6 +66,9 @@ void Projectile::moveToTarget()
     position.x += direction.x * speed;
     position.y += direction.y * speed;
     position.z += direction.z * speed;
+    
+    // Rotating the model to point at its target pot
+    
 
     if (position.z >= targetPos.z)
     {
@@ -61,11 +77,45 @@ void Projectile::moveToTarget()
     }
 }
 
-void Projectile::explosion(Vector3 t_playerPos)
+void Projectile::explosion()
 {
-    float dist = sqrtf(pow(t_playerPos.x - position.x, 2) + pow(t_playerPos.y - position.y, 2) + pow(t_playerPos.z - position.z, 2));
-    if (dist <= 33 + radius); // 33 is the player's radius
+    if (explode)
     {
+        if (explosionTimer < EXPLOSION_DURATION)
+        {
+            Vector2 position2D = convertToGameCoords(position);
 
+            particleSpawner.setValues(position2D, 360, 0);
+            particleSpawner.spawn();
+
+
+            float dist = Vector2Distance(position2D, player.getPos());
+            if (dist <= player.getRadius() + explosionRadius)
+            {
+                player.takeDamage(25);
+            }
+
+            explosionTimer += GetFrameTime();
+        }
+        else
+        {
+            explosionTimer =  0.0f;
+            explode = false;
+        }
     }
+
+    if (!particleSpawner.checkIfParticalsActive())
+    {
+        particleSpawner.update();
+    }
+}
+
+
+
+Vector2 Projectile::convertToGameCoords(Vector3 t_originalCoords)
+{
+    float normalizedX = Normalize(t_originalCoords.x, -SCREEN_BOUNDS_X, SCREEN_BOUNDS_X);
+    float normalizedY = Normalize(t_originalCoords.y, -SCREEN_BOUNDS_Y, SCREEN_BOUNDS_Y);
+    
+    return {normalizedX * SCREEN_WIDTH, -(normalizedY * SCREEN_HEIGHT) + SCREEN_HEIGHT};
 }

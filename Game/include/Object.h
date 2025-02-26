@@ -6,7 +6,9 @@
 #include <memory>
 
 #include "../include/ParticleSpawner.h"
-#include "../include/Planet.h"
+
+
+class Planet;
 
 
 class Object

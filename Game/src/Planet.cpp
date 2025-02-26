@@ -57,11 +57,11 @@ void Planet::updateRotation()
     core.transform = rotation;
 }
 
-void Planet::update(Vector3 t_playerPos3D, Vector2 t_playerPos2D)
+void Planet::update(Vector3 t_playerPos3D, Player& t_player)
 {
     if (defeated)
     {
-        whileDead(t_playerPos3D, t_playerPos2D);
+        whileDead(t_playerPos3D, t_player.getPos());
     }
     else
     {
@@ -70,7 +70,7 @@ void Planet::update(Vector3 t_playerPos3D, Vector2 t_playerPos2D)
             explosion();
         }
 
-        shotClock(t_playerPos3D);
+        shotClock(t_playerPos3D, t_player);
 
         for (Projectile& projectile : projectiles)
         {
@@ -78,9 +78,9 @@ void Planet::update(Vector3 t_playerPos3D, Vector2 t_playerPos2D)
             {
                 projectile.update();
             }
-            else if (projectile.isExploding())
+            else
             {
-                projectile.explosion(t_playerPos3D);
+                projectile.explosion();
             }
         }
         
@@ -95,17 +95,16 @@ void Planet::draw()
     {
         rlSetLineWidth(2.0f);
         DrawModelWires(model, position, 0.75f, color);
+        for (Projectile projectile : projectiles)
+        {
+            projectile.draw();
+        }
     }
     if (!coreConsumed)
     {
         rlSetLineWidth(0.1f);
         DrawModel(core, position, 0.5, color);
         DrawModelWires(core, position, 0.5f, color + coreTint);
-    }
-
-    for (Projectile projectile : projectiles)
-    {
-        projectile.draw();
     }
 
     // rlSetLineWidth(10.0f);
@@ -116,6 +115,13 @@ void Planet::draw()
 void Planet::drawParticles()
 {
     deathParticles.draw();
+    if (!defeated)
+    {
+        for (Projectile projectile : projectiles)
+        {
+            projectile.drawParticles();
+        }
+    }
 }
 
 void Planet::whileDead(Vector3 t_playerPos3D, Vector2 t_playerPos2D)
@@ -287,12 +293,12 @@ void Planet::genExplosionTexture()
     UnloadImage(radialGradientImage);
 }
 
-void Planet::shoot(Vector3 t_playerPos)
+void Planet::shoot(Vector3 t_playerPos, Player& t_player)
 {
-    projectiles.push_back(Projectile(position, t_playerPos));
+    projectiles.push_back(Projectile(color, position, t_playerPos, t_player));
 }
 
-void Planet::shotClock(Vector3 t_playerPos)
+void Planet::shotClock(Vector3 t_playerPos, Player& t_player)
 {
     if (shootingTimer < shootingWait)
     {
@@ -301,6 +307,6 @@ void Planet::shotClock(Vector3 t_playerPos)
     else
     {
         shootingTimer = 0.0f;
-        shoot(t_playerPos);
+        shoot(t_playerPos, t_player);
     }
 }

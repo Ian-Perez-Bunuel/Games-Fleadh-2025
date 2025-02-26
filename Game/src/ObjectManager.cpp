@@ -1,5 +1,6 @@
 #include "../include/ObjectManager.h"
 #include "../include/Globals.h"
+#include <bits/stdc++.h>
 
 
 const int ObjectManager::SMALL = 15;
@@ -26,25 +27,60 @@ void ObjectManager::setObjects()
     objects.clear();
     pickups.clear();
 
-    for (int i = 0; i < OBJECT_AMOUNT; i++)
+    for (int i = 0; i < OBJECT_MIN; i++)
     {
-        setRandomTexture();
-        Vector2 position = {(float)(rand() % SCREEN_WIDTH), (float)(rand() % SCREEN_HEIGHT)};
-        int randSize = rand() % 3;
-        switch (randSize)
-        {
-        case 0:
-            objects.push_back(std::make_shared<Object>(texture, position, MEDIUM));
-            break;
-        case 1:
-            objects.push_back(std::make_shared<Object>(texture, position,  MEDIUM));
-            break;
-        case 2:
-            objects.push_back(std::make_shared<Object>(texture, position, LARGE));
-            checkForPickup(objects[i]);  
-            break;
-        }
+        addObject();
     }
+}
+
+void ObjectManager::addObject()
+{
+    setRandomTexture();
+    // Vector2 position = {-(rand() % 100) - LARGE, (float)(rand() % SCREEN_HEIGHT)}; // Spawns them all on the left side of the screen
+    Vector2 position = genOffScreenPos();
+    float randDir = atan2f((SCREEN_WIDTH / 2) - position.x, (SCREEN_HEIGHT / 2) - position.y) * RAD2DEG;
+
+    printf("\n\nPOS: %f, %f", position.x, position.y);
+    printf("\nDIRECTION: %f\n\n", randDir);
+
+    int randSize = rand() % 3;
+    switch (randSize)
+    {
+    case 0:
+        objects.push_back(std::make_shared<Object>(texture, position, MEDIUM, randDir));
+        break;
+    case 1:
+        objects.push_back(std::make_shared<Object>(texture, position,  MEDIUM, randDir));
+        break;
+    case 2:
+        objects.push_back(std::make_shared<Object>(texture, position, LARGE, randDir));
+        checkForPickup(objects[objects.size() - 1]);  
+        break;
+    }
+}
+
+Vector2 ObjectManager::genOffScreenPos()
+{
+    Vector2 pos;
+    if (rand() % 2 == 0)
+    {
+        pos.x = -(rand() % 10) - LARGE;
+    }
+    else
+    {
+        pos.x = (rand() % SCREEN_WIDTH + LARGE) + SCREEN_WIDTH;
+    }
+
+    if (rand() % 2 == 0)
+    {
+        pos.y = -(rand() % 10) - LARGE;
+    }
+    else
+    {
+        pos.y = (rand() % SCREEN_HEIGHT + LARGE) + SCREEN_HEIGHT;
+    }
+
+    return pos;
 }
 
 void ObjectManager::setRandomTexture()
@@ -149,6 +185,25 @@ void ObjectManager::checkCollisions()
     // Split objects that need splitting
     splitObject();
 
+    removeNotActives();          
+}
+
+void ObjectManager::keepObjectsAboveMin()
+{
+    int objectAmountNeeded = 0;
+    if (objects.size() < OBJECT_MIN)
+    {
+        objectAmountNeeded = OBJECT_MIN - objects.size();
+
+        for (int i = 0; i < objectAmountNeeded; i++)
+        {
+            addObject();
+        }   
+    }
+}
+
+void ObjectManager::removeNotActives()
+{
     // Remove all objects that are marked as not active (Including their particles).
     objects.erase(std::remove_if(objects.begin(), objects.end(),
                    [](const std::shared_ptr<Object>& obj) {
@@ -227,4 +282,6 @@ void ObjectManager::update(Planet& t_planet)
     {
         pickup->update();
     }
+
+    keepObjectsAboveMin();
 }

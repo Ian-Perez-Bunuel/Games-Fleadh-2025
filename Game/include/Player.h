@@ -1,5 +1,4 @@
-#ifndef PLAYER_H
-#define PLAYER_H
+#pragma once
 
 #include "raylib.h"
 #include "stdio.h"
@@ -7,6 +6,7 @@
 #include <memory>
 
 #include "../include/Grapple.h"
+class Object;
 
 class Player
 {
@@ -64,5 +64,3 @@ private:
 
     float pointToPointDist(Vector2 t_p1, Vector2 t_p2) { return sqrt(((t_p2.x - t_p1.x) * (t_p2.x - t_p1.x)) + ((t_p2.y - t_p1.y) * (t_p2.y - t_p1.y))); }
 };
-
-#endif // PLAYER_H

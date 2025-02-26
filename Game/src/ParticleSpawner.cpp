@@ -95,6 +95,10 @@ void ParticleSpawner::update()
             }
         }
     }
+    else if (paused)
+    {
+        printf("Particles are paused");
+    }
 }
 
 void ParticleSpawner::draw()

@@ -13,7 +13,7 @@ class Planet
 public:
     void init(Vector3 t_pos = {0.0f, 0.0f, -9.0f}, Color t_color = WHITE);
 
-    void update(Vector3 t_playerPos3D, Vector2 t_playerPos2D);
+    void update(Vector3 t_playerPos3D, Player& t_player);
     void draw();
     void drawParticles();
 
@@ -74,8 +74,8 @@ private:
     const float SPEED = 0.15f;
 
     // Projectiles
-    void shoot(Vector3 t_playerPos);
-    void shotClock(Vector3 t_playerPos);
+    void shoot(Vector3 t_playerPos, Player& t_player);
+    void shotClock(Vector3 t_playerPos, Player& t_player);
     std::vector<Projectile> projectiles;
     float shootingWait = 1.0f;
     float shootingTimer = 0.0f;

@@ -31,10 +31,13 @@ private:
     Texture2D texture3;
     Texture2D texture4;
 
-    const int OBJECT_AMOUNT = 20;
+    const int OBJECT_MIN = 35;
     const int PICKUP_CHANCE = 5; // 1 / 5 chance
 
     void checkForPickup(std::shared_ptr<Object> t_object);
+    void keepObjectsAboveMin();
+    void addObject();
+    Vector2 genOffScreenPos();
     
     std::vector<std::shared_ptr<Object>> objects;
     std::vector<std::weak_ptr<Object>> objectsToSplit;
@@ -49,6 +52,8 @@ private:
     void checkPlayerCollisions(std::shared_ptr<Object>& t_object);
     void checkCollisions();
     void splitObject();
+
+    void removeNotActives();
 
     float pointToPointDist(Vector2 t_p1, Vector2 t_p2) { return sqrt(((t_p2.x - t_p1.x) * (t_p2.x - t_p1.x)) + ((t_p2.y - t_p1.y) * (t_p2.y - t_p1.y))); }
 };

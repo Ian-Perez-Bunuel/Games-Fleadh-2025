@@ -18,6 +18,9 @@ public:
     virtual void update();
 
     void setActive() { active = true; }
+
+    bool isPickedup() { return pickedUp; }
+    bool checkParticlesActive() { return !particleSpawner.checkIfParticalsActive(); }
     
 protected:
     virtual void onPickup() = 0;
