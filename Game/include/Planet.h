@@ -6,13 +6,14 @@
 #include <algorithm>
 
 #include "../include/ParticleSpawner.h"
+#include "../include/Projectile.h"
 
 class Planet
 {
 public:
     void init(Vector3 t_pos = {0.0f, 0.0f, -9.0f}, Color t_color = WHITE);
 
-    void update();
+    void update(Vector3 t_playerPos3D, Vector2 t_playerPos2D);
     void draw();
     void drawParticles();
 
@@ -21,7 +22,7 @@ public:
 
     bool isDefeated() { return defeated; }
     void takeDmg(int t_damage);
-    void whileDead(Vector3 t_playerPos, Vector2 t_playerPos2D);
+    
 
 private:    
     Model model;
@@ -38,9 +39,10 @@ private:
     float roll = 0.0f;
     float yaw = 0.0f;
     
+    void whileDead(Vector3 t_playerPos3D, Vector2 t_playerPos2D);
     void deathAnimation(Vector2 t_playerPos);
     void moveToPos(Vector3 t_targetPos);
-    static const int MAX_HEALTH = 1;
+    static const int MAX_HEALTH = 100;
     int health = MAX_HEALTH;
     bool defeated = false;
     bool coreConsumed = false;
@@ -70,6 +72,14 @@ private:
     float particleRadius = 30.0f;
 
     const float SPEED = 0.15f;
+
+    // Projectiles
+    void shoot(Vector3 t_playerPos);
+    void shotClock(Vector3 t_playerPos);
+    std::vector<Projectile> projectiles;
+    float shootingWait = 1.0f;
+    float shootingTimer = 0.0f;
+    float projectileSpeed = 0.1f;
 };
 
 // Overload the + operator for Raylib's Color type

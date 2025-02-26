@@ -7,17 +7,15 @@ Projectile::Projectile(Vector3 t_pos, Vector3 t_targetPos)
     : position(t_pos), targetPos(t_targetPos)
 {
     active = true;
+
+    model = LoadModel("resources/Art/3D/missile.obj");
 }
 
 void Projectile::draw()
 {
     if (active)
     {
-        DrawSphere(position, radius, RED);
-    }
-    else if (explode)
-    {
-        
+        DrawModel(model, position, 0.1f, RED);
     }
 }
 
@@ -26,10 +24,6 @@ void Projectile::update()
     if (active)
     {
         moveToTarget();
-    }
-    else if (explode)
-    {
-        hit();
     }
 }
 
@@ -67,7 +61,11 @@ void Projectile::moveToTarget()
     }
 }
 
-void Projectile::hit()
+void Projectile::explosion(Vector3 t_playerPos)
 {
-    
+    float dist = sqrtf(pow(t_playerPos.x - position.x, 2) + pow(t_playerPos.y - position.y, 2) + pow(t_playerPos.z - position.z, 2));
+    if (dist <= 33 + radius); // 33 is the player's radius
+    {
+
+    }
 }

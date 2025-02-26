@@ -12,7 +12,7 @@ class PlanetManager
 public:
     void init();
 
-    void update();
+    void update(Vector3 t_playerPos3D, Vector2 t_playerPos2D);
     void drawMainPlanet();
     void drawOtherPlanets();
 

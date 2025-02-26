@@ -98,14 +98,7 @@ void Game::update()
         proj.update();
     } 
 
-    if (planetManager.getMainPlanet().isDefeated())
-    {
-        planetManager.getMainPlanet().whileDead(convertToMiddleCoords(player.getPos()), player.getPos());
-    }
-    else
-    {
-        planetManager.update();
-    }
+    planetManager.update(convertToMiddleCoords(player.getPos()), player.getPos());
 
 
     closestObjectToPlayer = objectManager->findClosestToPlayer();

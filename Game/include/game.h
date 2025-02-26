@@ -11,7 +11,6 @@
 #include "../include/SceneCamera.h"
 #include "../include/PlanetSelector.h"
 #include "../include/ObjectManager.h"
-#include "../include/Projectile.h"
 #include "../include/PlanetManager.h"
 
 

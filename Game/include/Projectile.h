@@ -11,16 +11,19 @@ public:
     Projectile(Vector3 t_pos, Vector3 t_targetPos);
     void draw();
     void update();
+    void explosion(Vector3 t_playerPos);
 
-    
+    bool isExploding() { return explode; }
     bool isActive() { return active; }
     
 private:
+    Model model;
+
     void moveToTarget();
-    void hit();
 
     bool active = false;
     bool explode = false;
+    float explosionRadius = 0.2f;
 
     Vector3 position;
     float radius = 0.1f;
