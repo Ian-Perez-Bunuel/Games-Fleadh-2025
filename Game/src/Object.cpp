@@ -171,26 +171,35 @@ void Object::checkForSpeedIncrease()
 
 void Object::loop()
 {
-	if (position.x > SCREEN_WIDTH + 250)
+	// Left Side
+	if (position.x < -(SCREEN_WIDTH / 2))
 	{
 		active = false;
 	}
-	// If gone completely off screen de-activate
-	else if (position.x < -250)  // Gives leeway for spawning
+	else if (position.x < -radius)
+	{
+		collidable = false;
+	}
+	// Right side
+	else if (position.x > SCREEN_WIDTH + radius)
 	{
 		active = false;
 	}
 
-	if (position.y > SCREEN_HEIGHT + 250)
+	// Top
+	if (position.y > SCREEN_HEIGHT * 2)
 	{
 		active = false;
 	}
-	// If gone completely off screen de-activate
-	else if (position.y < -250)
+	else if (position.y > SCREEN_HEIGHT)
+	{
+		collidable = false;
+	}
+	// Bottom
+	else if (position.y < -radius)
 	{
 		active = false;
 	}
-	
 }
 
 bool Object::checkObjectCollisions(std::shared_ptr<Object> t_otherObject)

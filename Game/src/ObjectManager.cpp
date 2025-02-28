@@ -22,66 +22,45 @@ void ObjectManager::initPickupTextures()
     healthPackTexture = LoadTexture("resources/Art/2D/heal.png");
 }
 
-void ObjectManager::setObjects()
-{
-    objects.clear();
-    pickups.clear();
-
-    for (int i = 0; i < OBJECT_MIN; i++)
-    {
-        addObject();
-    }
-}
-
 void ObjectManager::addObject()
 {
     setRandomTexture();
-    // Vector2 position = {-(rand() % 100) - LARGE, (float)(rand() % SCREEN_HEIGHT)}; // Spawns them all on the left side of the screen
-    Vector2 position = genOffScreenPos();
-    float randDir = atan2f((SCREEN_WIDTH / 2) - position.x, (SCREEN_HEIGHT / 2) - position.y) * RAD2DEG;
+    Vector2 position = genSpawnPos();
 
-    printf("\n\nPOS: %f, %f", position.x, position.y);
-    printf("\nDIRECTION: %f\n\n", randDir);
+    // Have multiple spawnpoint positions with a queue
 
     int randSize = rand() % 3;
     switch (randSize)
     {
     case 0:
-        objects.push_back(std::make_shared<Object>(texture, position, MEDIUM, randDir));
+        objects.push_back(std::make_shared<Object>(texture, position, MEDIUM));
         break;
     case 1:
-        objects.push_back(std::make_shared<Object>(texture, position,  MEDIUM, randDir));
+        objects.push_back(std::make_shared<Object>(texture, position,  MEDIUM));
         break;
     case 2:
-        objects.push_back(std::make_shared<Object>(texture, position, LARGE, randDir));
+        objects.push_back(std::make_shared<Object>(texture, position, LARGE));
         checkForPickup(objects[objects.size() - 1]);  
         break;
     }
 }
 
-Vector2 ObjectManager::genOffScreenPos()
+Vector2 ObjectManager::genSpawnPos()
 {
-    Vector2 pos;
-    if (rand() % 2 == 0)
-    {
-        pos.x = -(rand() % 10) - LARGE;
-    }
-    else
-    {
-        pos.x = (rand() % SCREEN_WIDTH + LARGE) + SCREEN_WIDTH;
-    }
+    Vector2 start = { -(SCREEN_WIDTH / 2), SCREEN_HEIGHT / 2 };
+    Vector2 end = { (SCREEN_WIDTH * 0.75f), SCREEN_HEIGHT * 2};
 
-    if (rand() % 2 == 0)
-    {
-        pos.y = -(rand() % 10) - LARGE;
-    }
-    else
-    {
-        pos.y = (rand() % SCREEN_HEIGHT + LARGE) + SCREEN_HEIGHT;
-    }
+    // Pick a random t in [0, 1]
+    float t = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);  // yields a float between 0 and 1
 
-    return pos;
+    // Lerp between start and end
+    Vector2 spawnPos;
+    spawnPos.x = start.x + t * (end.x - start.x);
+    spawnPos.y = start.y + t * (end.y - start.y);
+
+    return spawnPos;
 }
+
 
 void ObjectManager::setRandomTexture()
 {
@@ -190,15 +169,21 @@ void ObjectManager::checkCollisions()
 
 void ObjectManager::keepObjectsAboveMin()
 {
-    int objectAmountNeeded = 0;
     if (objects.size() < OBJECT_MIN)
     {
-        objectAmountNeeded = OBJECT_MIN - objects.size();
-
-        for (int i = 0; i < objectAmountNeeded; i++)
+        if (queueTimer < SPAWN_WAIT)
         {
-            addObject();
-        }   
+            queueTimer += GetFrameTime();
+        }
+        else
+        {
+            for (int i = 0; i < AMOUNT_TO_SPAWN; i++)
+            {
+                addObject();
+            }
+
+            queueTimer = 0.0f;
+        }
     }
 }
 

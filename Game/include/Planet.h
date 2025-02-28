@@ -19,6 +19,8 @@ public:
 
     Vector3 getPos() { return position; }
     void setPos(Vector3 t_pos) { position = t_pos; }
+    bool isCoreConsumed() { return coreConsumed; }
+    bool checkIfParticlesActive() { return deathParticles.checkIfParticalsActive(); }
 
     bool isDefeated() { return defeated; }
     void takeDmg(int t_damage);
@@ -27,9 +29,15 @@ public:
 private:    
     Model model;
 
+    Model planet1;
+    Model planet2;
+    Model planet3;
+    Model planet4;
+
     Model core;
     Model shield;
 
+    Model projectileModel;
     
     Vector3 position;
     

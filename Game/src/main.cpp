@@ -10,14 +10,6 @@
 #include <emscripten/emscripten.h>
 #endif
 
-enum class Scene
-{
-    MAIN_MENU,
-    GAME
-};
-
-static Scene currentScene = Scene::GAME;
-
 void run();
 // Initialise Game
 Game game;
@@ -34,6 +26,7 @@ int main(void)
 
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Raylib StarterKit GPPI");
     game.initialize();
+    mainMenu.initialize();
 
     // For web builds, do not use WindowShouldClose
     // see https://github.com/raysan5/raylib/wiki/Working-for-Web-(HTML5)#41-avoid-raylib-whilewindowshouldclose-loop
@@ -65,7 +58,7 @@ void run()
     case Scene::GAME:
         game.update();
         BeginDrawing();
-    
+
         ClearBackground(BLACK);
         game.draw();
         EndDrawing();

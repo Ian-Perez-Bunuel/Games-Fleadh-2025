@@ -13,7 +13,6 @@ class ObjectManager
 public:
     ObjectManager(Player& t_player);
 
-    void setObjects();
     std::shared_ptr<Object> findClosestToPlayer();
 
     void draw();
@@ -32,12 +31,16 @@ private:
     Texture2D texture4;
 
     const int OBJECT_MIN = 35;
+    const int AMOUNT_TO_SPAWN = 5;
     const int PICKUP_CHANCE = 5; // 1 / 5 chance
 
     void checkForPickup(std::shared_ptr<Object> t_object);
     void keepObjectsAboveMin();
+
     void addObject();
-    Vector2 genOffScreenPos();
+    Vector2 genSpawnPos();
+    const float SPAWN_WAIT = 1.0f;
+    float queueTimer = 0.0f;
     
     std::vector<std::shared_ptr<Object>> objects;
     std::vector<std::weak_ptr<Object>> objectsToSplit;

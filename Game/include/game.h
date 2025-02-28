@@ -39,7 +39,12 @@ private:
     std::shared_ptr<Object> closestObjectToPlayer;
 
     // Reticle
+    void animateReticle();
     Texture2D reticle;
+    Rectangle frameRectReticle;
+    int currentFrameReticle;
+    int framesCounter = 0;
+    int framesSpeed = 8;
 
     
     bool CircleCollisions(int t_r1, int t_r2, Vector2 pos1, Vector2 pos2);

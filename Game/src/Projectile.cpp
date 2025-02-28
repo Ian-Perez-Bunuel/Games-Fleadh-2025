@@ -4,12 +4,10 @@
 
 #include "../include/Globals.h"
 
-Projectile::Projectile(Color t_color, Vector3 t_pos, Vector3 t_targetPos, Player& t_player)
-    : position(t_pos), targetPos(t_targetPos), player(t_player), color(t_color)
+Projectile::Projectile(Model& t_model, Color t_color, Vector3 t_pos, Vector3 t_targetPos, Player& t_player)
+    : model(t_model), position(t_pos), targetPos(t_targetPos), player(t_player), color(t_color)
 {
     active = true;
-
-    model = LoadModel("resources/Art/3D/missile.obj");
 
     particleSpawner.addColor(color);
 }
@@ -68,7 +66,7 @@ void Projectile::moveToTarget()
     position.z += direction.z * speed;
     
     // Rotating the model to point at its target pot
-    
+    // Cross product for rotation. (Used for getting forward)
 
     if (position.z >= targetPos.z)
     {

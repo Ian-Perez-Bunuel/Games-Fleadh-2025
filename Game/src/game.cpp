@@ -19,10 +19,12 @@ void Game::initialize()
     backgroundTexture = LoadTexture("resources/Art/2D/background.png");
     astroidBeltTexture = LoadTexture("resources/Art/2D/bgAsteroidsStraight.png");
 
-    reticle = LoadTexture("resources/Art/2D/target.png");
+    reticle = LoadTexture("resources/Art/2D/gyro.png");
 
     planetSelector.init();
     planetManager.init();
+
+    frameRectReticle = { 0.0f, 0.0f, (float)reticle.width / 8, (float)reticle.height };
 
     // Camera initializing
     SceneCamera::initialize();
@@ -129,6 +131,24 @@ void Game::draw()
     }
 }
 
+void Game::animateReticle()
+{
+    framesCounter++;
+
+    if (framesCounter >= (60 / framesSpeed))
+    {
+        framesCounter = 0;
+        currentFrameReticle++;
+
+        if (currentFrameReticle > 5) 
+        {
+            currentFrameReticle = 0;
+        }
+
+        frameRectReticle.x = (float)currentFrameReticle * (float)reticle.width / 8;
+    }
+}
+
 void Game::drawMiddleground()
 {
     // First Pass : Get starting scene
@@ -147,7 +167,16 @@ void Game::drawMiddleground()
 
         if (closestObjectToPlayer != nullptr)
         {
-            DrawTextureEx(reticle, {closestObjectToPlayer->getPos().x - 25, closestObjectToPlayer->getPos().y - 25}, 0, 1.25f, WHITE);
+            animateReticle();
+            // Calculate destination rectangle with scaled width and height
+            Rectangle destRec = {
+                closestObjectToPlayer->getPos().x,
+                closestObjectToPlayer->getPos().y,
+                frameRectReticle.width * 0.5f,   // scaled width
+                frameRectReticle.height * 0.5f   // scaled height
+            };
+
+            DrawTexturePro(reticle, frameRectReticle, destRec, {destRec.width / 2.0f, destRec.height / 2.0f}, 0.0f, WHITE);
         }
         
 
@@ -242,17 +271,6 @@ void Game::mouseInput()
             player.shootGrapple(closestObjectToPlayer);
         }
     }
-    
-    if (IsKeyPressed(KEY_SPACE))
-    {
-        objectManager->setObjects();
-    }
-    
-    if (IsKeyPressed(KEY_M))
-    {
-        planetSelector.activate();
-        planetManager.nextPlanet();
-    }
 }
 
 void Game::controllerInput()
@@ -271,11 +289,6 @@ void Game::controllerInput()
         {
             player.shootGrapple(closestObjectToPlayer);
         }
-    }
-    
-    if (IsGamepadButtonDown(0, GAMEPAD_BUTTON_RIGHT_FACE_DOWN))
-    {
-        objectManager->setObjects();
     }
 }
 

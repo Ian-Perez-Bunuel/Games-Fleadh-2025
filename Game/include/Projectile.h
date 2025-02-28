@@ -9,7 +9,7 @@ class Player;
 class Projectile
 {
 public:
-    Projectile(Color t_color, Vector3 t_pos, Vector3 t_targetPos, Player& t_player);
+    Projectile(Model& t_model, Color t_color, Vector3 t_pos, Vector3 t_targetPos, Player& t_player);
     void draw();
     void drawParticles();
     void update();
@@ -19,7 +19,7 @@ public:
     bool isActive() { return active; }
     
 private:
-    Model model;
+    Model& model;
     float pitch = 0.0f;
     float roll = 0.0f;
     float yaw = 0.0f;

@@ -11,3 +11,12 @@ static Vector3 MIDDLEGROUND_POS = {0.0f, 0.0f, 1.0f};
 static Vector3 BACKGROUND_POS = {0.0f, 0.0f, -500.0f};
 
 const float MAIN_PLANET_Z = -9.0f;
+
+// Scene Control
+enum class Scene
+{
+    MAIN_MENU,
+    GAME
+};
+
+static Scene currentScene = Scene::GAME;

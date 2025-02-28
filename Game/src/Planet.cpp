@@ -7,10 +7,36 @@
 void Planet::init(Vector3 t_pos, Color t_color)
 {
     position = t_pos;
-    model = LoadModel("resources/Art/3D/planet4.obj");
 
+    //  Load each planet type
+    planet1 = LoadModel("resources/Art/3D/planet1.obj");
+    planet2 = LoadModel("resources/Art/3D/planet2.obj");
+    planet3 = LoadModel("resources/Art/3D/planet3.obj");
+    planet4 = LoadModel("resources/Art/3D/planet4.obj");
+    
+    // Randomize Planet model
+    int randNum = rand() % 4;
+    switch (randNum)
+    {
+    case 0:
+        model = planet1;
+        break;
+    case 1:
+        model = planet2;
+        break;
+    case 2:
+        model = planet3;
+        break;
+    case 3:
+        model = planet4;
+        break;
+    }
+
+    // Load other models
     core = LoadModel("resources/Art/3D/core.glb");
     shield = LoadModel("resources/Art/3D/shield.obj");
+
+    projectileModel = LoadModel("resources/Art/3D/missile.obj");
 
     color = t_color;
     genExplosionTexture();
@@ -295,7 +321,7 @@ void Planet::genExplosionTexture()
 
 void Planet::shoot(Vector3 t_playerPos, Player& t_player)
 {
-    projectiles.push_back(Projectile(color, position, t_playerPos, t_player));
+    projectiles.push_back(Projectile(projectileModel, color, position, t_playerPos, t_player));
 }
 
 void Planet::shotClock(Vector3 t_playerPos, Player& t_player)
