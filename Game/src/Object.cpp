@@ -277,13 +277,15 @@ void Object::move()
 	if (beenPickedUp)
 	{
 		// Spawn trail particles
-		Vector2 nextPos = {position.x + velocity.x, position.y + velocity.y};
-		float oppositeAngle = atan2f(nextPos.y - position.y, nextPos.x - position.x) * RAD2DEG + 270;
-		particleSpawner.setValues(position, 15, oppositeAngle);
-		particleSpawner.spawn();
+		if (sqrt(pow(velocity.x, 2) + pow(velocity.y, 2)) >= 15)
+		{
+			float velMag = sqrt(pow(velocity.x, 2) + pow(velocity.y, 2));
 
-		// Reset timer
-		trailTimer = 0;
+			Vector2 nextPos = {position.x + velocity.x, position.y + velocity.y};
+			float oppositeAngle = atan2f(nextPos.y - position.y, nextPos.x - position.x) * RAD2DEG + 270;
+			particleSpawner.setValues(position, 15, oppositeAngle);
+			particleSpawner.spawn();
+		}
 	}
 }
 

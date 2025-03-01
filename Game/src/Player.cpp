@@ -17,6 +17,8 @@ void Player::initialize()
         grapples[i].init();
     }
 
+    initHealthBar();
+
     // Achievements
     AchievementManager::addGoalToAchievement("GRAB, GRAB, GRAB!!!", &objectsGrabbed, 1);
 }
@@ -148,6 +150,9 @@ void Player::draw()
         Vector2 origin = { texture.width / 2.0f, texture.height / 2.0f };
 
         DrawTexturePro(texture, sourceRec, destRec, origin, rotation, color);
+
+        // HP
+        drawHealthBar();
     }
 }
 
@@ -320,4 +325,17 @@ void Player::takeDamage(int t_amount)
             kill();
         }
     }
+}
+
+void Player::initHealthBar()
+{
+    barPos = {SCREEN_WIDTH * 0.25f, SCREEN_HEIGHT * 0.9f};
+    barLength = SCREEN_WIDTH / 2.0f;
+}
+
+void Player::drawHealthBar()
+{
+    DrawRectangle(barPos.x, barPos.y, barLength, barHeight, BLACK);
+
+    DrawRectangle(barPos.x, barPos.y, (health * barLength) / 100, barHeight, YELLOW);
 }

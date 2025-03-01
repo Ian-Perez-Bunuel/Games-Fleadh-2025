@@ -8,7 +8,7 @@
 Achievement::Achievement(std::string t_title, std::string t_description, AchievementType t_type)
     : title(t_title), description(t_description), type(t_type)
 {
-    font = LoadFont("resources/dogicapixelbold.ttf");
+    font = LoadFontEx("resources/dogicapixelbold.ttf", FONT_SIZE, 0, 0);
 
     position = {100, 50};
 

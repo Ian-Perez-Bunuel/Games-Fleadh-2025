@@ -71,6 +71,13 @@ private:
     float invincibilityTimer = 0;
     bool invincible = false;
 
+    // Health bar
+    void initHealthBar();
+    void drawHealthBar();
+    Vector2 barPos;
+    int barHeight = 25;
+    int barLength = 0;
+
     // Achivement trackers
     int objectsGrabbed = 0;
 

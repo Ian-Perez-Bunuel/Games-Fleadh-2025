@@ -79,9 +79,6 @@ private:
 
     Color color;
 
-    const float TRAIL_PARTICLE_WAIT = 0.1f;
-    float trailTimer = 0.0f;
-
     // Particals
     ParticleSpawner particleSpawner;
 
