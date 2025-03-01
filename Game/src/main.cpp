@@ -25,6 +25,9 @@ int main(void)
     SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_WINDOW_UNDECORATED | FLAG_FULLSCREEN_MODE);
 
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Raylib StarterKit GPPI");
+
+    InitAudioDevice();
+
     game.initialize();
     mainMenu.initialize();
 
@@ -42,6 +45,7 @@ int main(void)
     }
 #endif
 
+    CloseAudioDevice();
     CloseWindow();
 
     return 0;

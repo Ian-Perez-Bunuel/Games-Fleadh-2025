@@ -48,7 +48,7 @@ void ObjectManager::addObject()
 Vector2 ObjectManager::genSpawnPos()
 {
     Vector2 start = { -(SCREEN_WIDTH / 2), SCREEN_HEIGHT / 2 };
-    Vector2 end = { (SCREEN_WIDTH * 0.75f), SCREEN_HEIGHT * 2};
+    Vector2 end = { (SCREEN_WIDTH * 0.75f), -(SCREEN_HEIGHT * 0.75f)};
 
     // Pick a random t in [0, 1]
     float t = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);  // yields a float between 0 and 1

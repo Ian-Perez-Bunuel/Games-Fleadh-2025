@@ -12,6 +12,7 @@
 #include "../include/PlanetSelector.h"
 #include "../include/ObjectManager.h"
 #include "../include/PlanetManager.h"
+#include "../include/AchievementManager.h"
 
 
 class Game
@@ -34,6 +35,10 @@ private:
     void mouseInput();
     void controllerInput();
     Controller controller;
+
+    // Achievements
+    AchievementManager achievementManager;
+    int amountOfClicks = 0;
     
     Player player;
     std::shared_ptr<Object> closestObjectToPlayer;

@@ -187,16 +187,16 @@ void Object::loop()
 	}
 
 	// Top
-	if (position.y > SCREEN_HEIGHT * 2)
+	if (position.y < -(SCREEN_HEIGHT * 0.75f))
 	{
 		active = false;
 	}
-	else if (position.y > SCREEN_HEIGHT)
+	else if (position.y < -radius)
 	{
 		collidable = false;
 	}
 	// Bottom
-	else if (position.y < -radius)
+	else if (position.y > SCREEN_HEIGHT + radius)
 	{
 		active = false;
 	}

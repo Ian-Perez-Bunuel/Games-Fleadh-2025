@@ -28,6 +28,10 @@ void Game::initialize()
 
     // Camera initializing
     SceneCamera::initialize();
+
+    // Initialize all achievements
+    achievementManager.init();
+    AchievementManager::addGoalToAchievement("Welcome To The World!", &framesSpeed, 8);
 }
 void Game::initializeShaders()
 {
@@ -84,6 +88,9 @@ void Game::update()
 {
     input();
     SceneCamera::update();
+
+    // Achievements
+    achievementManager.checkForChanges();
 
     
     player.update(controller.getLeftStickDir());
@@ -178,7 +185,9 @@ void Game::drawMiddleground()
 
             DrawTexturePro(reticle, frameRectReticle, destRec, {destRec.width / 2.0f, destRec.height / 2.0f}, 0.0f, WHITE);
         }
-        
+
+
+        achievementManager.draw();
 
     EndTextureMode();
 
@@ -188,7 +197,8 @@ void Game::drawMiddleground()
         ClearBackground(BLANK);
         BeginBlendMode(BLEND_ALPHA_PREMULTIPLY);
         BeginShaderMode(blurHorizontal);
-            DrawTextureRec(targetScene.texture, {0, 0, (float)SCREEN_WIDTH, (float)-SCREEN_HEIGHT}, {0, 0}, WHITE);
+            // Removed the negative sign on SCREEN_HEIGHT
+            DrawTextureRec(targetScene.texture, {0, 0, (float)SCREEN_WIDTH, (float)SCREEN_HEIGHT}, {0, 0}, WHITE);
         EndShaderMode();
         EndBlendMode();
     EndTextureMode();
@@ -198,7 +208,8 @@ void Game::drawMiddleground()
         ClearBackground(BLANK);
         BeginBlendMode(BLEND_ALPHA_PREMULTIPLY);
         BeginShaderMode(blurVertical);
-            DrawTextureRec(targetBlur1.texture, {0, 0, (float)SCREEN_WIDTH, (float)-SCREEN_HEIGHT}, {0, 0}, WHITE);
+            // Changed negative height to positive
+            DrawTextureRec(targetBlur1.texture, {0, 0, (float)SCREEN_WIDTH, (float)SCREEN_HEIGHT}, {0, 0}, WHITE);
         EndShaderMode();
         EndBlendMode();
     EndTextureMode();
@@ -207,18 +218,21 @@ void Game::drawMiddleground()
         // Final Pass: Combine Glow with Original Scene
         BeginShaderMode(combineShader);
             ClearBackground(BLANK);
-    
+        
             // First, draw the normal scene
             BeginBlendMode(BLEND_ALPHA);
-                DrawTextureRec(targetScene.texture, {0, 0, (float)SCREEN_WIDTH, (float)-SCREEN_HEIGHT}, {0, 0}, WHITE);
+                // Use positive height
+                DrawTextureRec(targetScene.texture, {0, 0, (float)SCREEN_WIDTH, (float)SCREEN_HEIGHT}, {0, 0}, WHITE);
             EndBlendMode();
 
             // Then, add the glow effect on top using additive blending
             BeginBlendMode(BLEND_ADDITIVE);
-                DrawTextureRec(targetBlur2.texture, {0, 0, (float)SCREEN_WIDTH, (float)-SCREEN_HEIGHT}, {0, 0}, WHITE);
+                // Again, change to positive height
+                DrawTextureRec(targetBlur2.texture, {0, 0, (float)SCREEN_WIDTH, (float)SCREEN_HEIGHT}, {0, 0}, WHITE);
             EndBlendMode();
-            EndShaderMode();
+        EndShaderMode();
     EndTextureMode();
+
 }
 
 void Game::drawBackground()
@@ -242,8 +256,6 @@ void Game::coreCollection()
 
 void Game::input()
 {
-    mousePos = {GetMousePosition().x, SCREEN_HEIGHT - GetMousePosition().y};
-
     if (IsGamepadAvailable(0))
     {
         controllerInput();
@@ -260,7 +272,9 @@ void Game::mouseInput()
 {
     if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
     {
-        player.releaseGrapple(mousePos, isMouseOverSphere(SceneCamera::camera, mousePos, planetManager.getMainPlanet().getPos(), 2));
+        player.releaseGrapple(GetMousePosition(), isMouseOverSphere(SceneCamera::camera, GetMousePosition(), planetManager.getMainPlanet().getPos(), 2));
+
+        amountOfClicks++;
     }
     
     // Used to grab objects

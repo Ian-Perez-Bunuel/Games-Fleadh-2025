@@ -42,7 +42,7 @@ private:
     Vector3 position;
     
     void updateRotation();
-    float tilt = -45.0f;
+    float tilt = 45.0f;
     float pitch = 0.0f;
     float roll = 0.0f;
     float yaw = 0.0f;

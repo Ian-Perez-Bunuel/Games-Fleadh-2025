@@ -60,7 +60,11 @@ void Planet::init(Vector3 t_pos, Color t_color)
     SetShaderValue(explosionShader, colorLocationInShader, &normalizedColor, SHADER_UNIFORM_VEC4);
 
     // Assign shader to the planet model
-    model.materials[0].shader = explosionShader;
+    TraceLog(LOG_INFO, "Assign shader to model materials");
+    for (int i = 0; i < model.materialCount; i++)
+    {
+        model.materials[i].shader = explosionShader;
+    }
     core.materials[0].shader = explosionShader;
 
     deathParticles.addColor(color);

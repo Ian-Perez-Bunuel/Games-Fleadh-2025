@@ -14,7 +14,7 @@ class Planet;
 class Object
 {
 public:
-    Object(Texture2D& t_texture, Vector2 t_pos = {0.0f, 0.0f}, int t_size = 10, int dirAngle = -30);
+    Object(Texture2D& t_texture, Vector2 t_pos = {0.0f, 0.0f}, int t_size = 10, int dirAngle = 35);
 
     void update();
     void draw();

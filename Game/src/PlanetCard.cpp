@@ -13,7 +13,7 @@ void PlanetCard::draw()
 {
     DrawTextureEx(base, position, 0, 1.5f, WHITE);
     DrawTextureEx(planet, {position.x + 125, position.y + 75}, 0, 0.6f, WHITE);
-    DrawTextEx(font, description.c_str(), {position.x + 25, position.y + 325}, 15, 2, WHITE);
+    DrawTextEx(font, description.c_str(), {position.x + 25, position.y + 325}, 12, 2, WHITE);
 }
 
 void PlanetCard::moveTo(Vector2 t_targetPos, float t_speed)

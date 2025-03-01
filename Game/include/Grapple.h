@@ -68,6 +68,9 @@ private:
     // Particles
     ParticleSpawner particleSpawnpoint;
 
+    // Sound
+    Sound grabSound;
+
     float degreesToRadians(float t_degrees) { return t_degrees * (3.14f / 180); }
     float radiansToDegrees(float t_radians) { return t_radians * (180/3.14f); }
     float pointToPointDist(Vector2 t_p1, Vector2 t_p2) { return sqrt(((t_p2.x - t_p1.x) * (t_p2.x - t_p1.x)) + ((t_p2.y - t_p1.y) * (t_p2.y - t_p1.y))); }

@@ -26,6 +26,9 @@ Grapple::Grapple()
 
     //  Set particle colors
     particleSpawnpoint.addColor(YELLOW);
+
+    // Sound
+    grabSound = LoadSound("resources/Sound/attack.wav");
 }
 
 void Grapple::setStartPos(Vector2 t_startPos, Vector2& t_userPos)
@@ -43,6 +46,8 @@ void Grapple::shoot(std::shared_ptr<Object> t_target)
         aiming = true;
         grappledObject = t_target;
         currentState = 1; // Aiming
+
+        PlaySound(grabSound);
     }
 }
 

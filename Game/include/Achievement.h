@@ -1,0 +1,58 @@
+#pragma once
+
+#include "raylib.h"
+#include "stdio.h"
+#include <string>
+
+enum class AchievementType
+{
+    NONE,
+    OBJECT,
+    PLANET,
+    PLAYER
+};
+
+class Achievement
+{
+public:
+    Achievement(std::string t_title, std::string t_description, AchievementType t_type);
+    void addGoal(int* t_valueToKeepTrackOf, int t_goal);
+
+    void draw();
+
+    std::string getTitle() { return title; }
+    bool hasBeenCompleted() { return completed; }
+
+    void checkIfCompleted();
+
+private:
+    bool completed = false;
+    bool showClock();
+    bool show = false;
+    const float SHOW_DURATION = 3.0f;
+    float showTimer = 0.0f;
+
+    Vector2 position;
+
+    static const int WIDTH = 275;
+    static const int HEIGHT = 150;
+
+    // Description
+    Font font;
+    const int FONT_SIZE = 12;
+    const int CHARACTERS_PER_LINE = 18;
+
+    std::string title;
+    Color titleColor;
+
+    std::string description;
+    
+    AchievementType type;
+
+    // Goal
+    int* value = nullptr;
+    int goal = 0;
+
+
+    std::string splitSentence(std::string t_original);
+};
