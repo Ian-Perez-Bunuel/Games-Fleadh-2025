@@ -23,6 +23,6 @@ private:
 
     std::vector<Planet> planets;
 
-    static const int PLANET_AMOUNT = 5;
+    static const int PLANET_AMOUNT = 6;
     int currentPlanet = 0;
 };

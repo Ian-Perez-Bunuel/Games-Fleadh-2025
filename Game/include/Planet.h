@@ -11,7 +11,7 @@
 class Planet
 {
 public:
-    void init(Vector3 t_pos = {0.0f, 0.0f, -9.0f}, Color t_color = WHITE);
+    void init(Vector3 t_pos = {0.0f, 0.0f, -9.0f}, int t_maxHealth = 100, Color t_color = WHITE);
 
     void update(Vector3 t_playerPos3D, Player& t_player);
     void draw();
@@ -50,8 +50,8 @@ private:
     void whileDead(Vector3 t_playerPos3D, Vector2 t_playerPos2D);
     void deathAnimation(Vector2 t_playerPos);
     void moveToPos(Vector3 t_targetPos);
-    static const int MAX_HEALTH = 100;
-    int health = MAX_HEALTH;
+    int maxHealth = 100;
+    int health = 0;
     bool defeated = false;
     bool coreConsumed = false;
 

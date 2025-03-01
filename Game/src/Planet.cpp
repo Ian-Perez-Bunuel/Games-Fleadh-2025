@@ -5,9 +5,12 @@
 #include <random>
 #include "rlgl.h"
 
-void Planet::init(Vector3 t_pos, Color t_color)
+void Planet::init(Vector3 t_pos, int t_maxHealth, Color t_color)
 {
     position = t_pos;
+
+    maxHealth = t_maxHealth;
+    health = maxHealth;
 
     //  Load each planet type
     planet1 = LoadModel("resources/Art/3D/planet1.obj");

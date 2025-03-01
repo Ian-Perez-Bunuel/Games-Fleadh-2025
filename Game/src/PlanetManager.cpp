@@ -41,7 +41,9 @@ void PlanetManager::init()
         float randX = static_cast<float>((rand() % (2 * SCREEN_BOUNDS_X)) - SCREEN_BOUNDS_X);
         float randY = static_cast<float>((rand() % (2 * SCREEN_BOUNDS_Y)) - SCREEN_BOUNDS_Y);
 
-        planets[i].init({randX, randY, MAIN_PLANET_Z - (i * PLANET_SPACING)}, randomColor);
+        // Health goes from 100 up in 50
+
+        planets[i].init({randX, randY, MAIN_PLANET_Z - (i * PLANET_SPACING)}, 100 + i * 50, randomColor);
     }
 }
 
