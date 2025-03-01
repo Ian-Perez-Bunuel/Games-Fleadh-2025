@@ -3,6 +3,8 @@
 #include <iostream>
 #include "../include/SceneCamera.h"
 
+#include "rlgl.h"
+
 Grapple::Grapple()
 {   
     // Idle
@@ -26,9 +28,13 @@ Grapple::Grapple()
 
     //  Set particle colors
     particleSpawnpoint.addColor(YELLOW);
+}
 
+void Grapple::init()
+{
     // Sound
-    grabSound = LoadSound("resources/Sound/attack.wav");
+    grabSound = LoadSound("resources/Sound/attackFaster.wav");
+    SetSoundVolume(grabSound, 0.1f);
 }
 
 void Grapple::setStartPos(Vector2 t_startPos, Vector2& t_userPos)
@@ -37,7 +43,7 @@ void Grapple::setStartPos(Vector2 t_startPos, Vector2& t_userPos)
     startPos = t_startPos;
 }
 
-void Grapple::shoot(std::shared_ptr<Object> t_target)
+void Grapple::shoot(std::shared_ptr<Object> t_target, int& t_objectsPicked)
 {
     float distToTarget = pointToPointDist(*userPos, t_target->getPos());
 
@@ -47,6 +53,9 @@ void Grapple::shoot(std::shared_ptr<Object> t_target)
         grappledObject = t_target;
         currentState = 1; // Aiming
 
+        t_objectsPicked++;
+
+        SetSoundPitch(grabSound, 0.8 + static_cast<double>(std::rand()) / RAND_MAX * (1.2 - 0.8));
         PlaySound(grabSound);
     }
 }
@@ -59,6 +68,7 @@ void Grapple::release(Vector2 t_releaseDir, bool t_toPlanet)
     
         grappledObject.reset();
 
+        hookAngleShown = 0;
         currentState = 0;
     }
 
@@ -178,12 +188,34 @@ void Grapple::updateSpline()
 
 void Grapple::draw()
 {
-    // if (active)
-    // {
-    //     DrawLineV(*userPos, grappledObject->getPos(), color);
-    // }
-
     DrawSplineCatmullRom(points, NUM_POINTS, states[currentState].thickness, color);
+
+    if (active)
+    {
+        rlSetLineWidth(5.0f);
+
+        // Animate hook coming out
+        if (hookAngleShown < MAX_HOOK_ANGLE)
+        {
+            hookAngleShown++;
+        }
+
+        float dirAngle = atan2f(grappledObject->getPos().y - userPos->y, grappledObject->getPos().x - userPos->x) * RAD2DEG;
+        // Center, radius, and angle range for the arc
+        Vector2 center = points[2];
+        float startAngle = (dirAngle - hookAngleShown) * DEG2RAD;  // converting degrees to radians
+        float endAngle   = (dirAngle + hookAngleShown) * DEG2RAD;
+        for (int i = 0; i <= SMOOTHNESS; i++) 
+        {
+            float t = (float)i / SMOOTHNESS;
+            float angle = startAngle + t * (endAngle - startAngle);
+            hookPoints[i].x = center.x + cosf(angle) * HOOK_RADIUS;
+            hookPoints[i].y = center.y + sinf(angle) * HOOK_RADIUS;
+        }
+
+        // Draw the arc as a continuous line strip
+        DrawLineStrip(hookPoints, SMOOTHNESS+1, color);
+    }
 
     particleSpawnpoint.draw();
 }

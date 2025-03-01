@@ -7,8 +7,8 @@
 #include "../include/Planet.h"
 
 
-Object::Object(Texture2D& t_texture, Vector2 t_pos, int t_size, int dirAngle) 
-	: texture(t_texture), position(t_pos)
+Object::Object(Sound& t_breakSound, Sound& t_grabbedSound, Texture2D& t_texture, Vector2 t_pos, int t_size, int dirAngle) 
+	: texture(t_texture), position(t_pos), breakSound(t_breakSound), grabbedSound(t_grabbedSound)
 {
 	radius = t_size;
 	mass = radius * 2;
@@ -69,6 +69,9 @@ void Object::grab()
 {
 	if (!grabbed)
 	{
+		SetSoundPitch(grabbedSound, 0.8 + static_cast<double>(std::rand()) / RAND_MAX * (1.2 - 0.8));
+		PlaySound(grabbedSound);
+
 		grabbed = true;
 		beenPickedUp = true;
 		color = YELLOW;
@@ -212,6 +215,8 @@ bool Object::checkObjectCollisions(std::shared_ptr<Object> t_otherObject)
 	float dist = pointToPointDist(position, t_otherObject->getPos());
 	if (dist < radius + t_otherObject->getRadius())
 	{	
+		SetSoundPitch(breakSound, 0.8 + static_cast<double>(std::rand()) / RAND_MAX * (1.2 - 0.8));
+		PlaySound(breakSound);
 		return true;
 	}
 

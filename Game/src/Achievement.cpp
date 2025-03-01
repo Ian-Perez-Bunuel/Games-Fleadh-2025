@@ -64,15 +64,18 @@ bool Achievement::showClock()
     }
     else
     {
+        show = false;
         return false;
     }
 }
 
 
-void Achievement::draw()
+void Achievement::draw(float t_yOffset)
 {
     if (completed && showClock())
     {
+        position.y = (t_yOffset * HEIGHT) + 55;
+
         DrawRectangleLines(position.x, position.y, WIDTH, HEIGHT, BLUE);
 
         Vector2 titlePos = {position.x + 8, position.y + 15};

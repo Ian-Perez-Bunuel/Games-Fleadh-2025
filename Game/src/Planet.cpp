@@ -1,6 +1,7 @@
 #include "../include/Planet.h"
 #include "../include/SceneCamera.h"
 #include "../include/Globals.h"
+#include "../include/DifficultyManager.h"
 #include <random>
 #include "rlgl.h"
 
@@ -13,6 +14,9 @@ void Planet::init(Vector3 t_pos, Color t_color)
     planet2 = LoadModel("resources/Art/3D/planet2.obj");
     planet3 = LoadModel("resources/Art/3D/planet3.obj");
     planet4 = LoadModel("resources/Art/3D/planet4.obj");
+
+    destructionSound = LoadSound("resources/Sound/planetExplosion.wav");
+    SetSoundVolume(destructionSound, 0.75f);
     
     // Randomize Planet model
     int randNum = rand() % 4;
@@ -246,7 +250,11 @@ void Planet::takeDmg(int t_damage)
     }
     else
     {
-        defeated = true;
+        if (!defeated)
+        {
+            defeated = true;
+            PlaySound(destructionSound);
+        }
     }  
 }
 
@@ -330,7 +338,7 @@ void Planet::shoot(Vector3 t_playerPos, Player& t_player)
 
 void Planet::shotClock(Vector3 t_playerPos, Player& t_player)
 {
-    if (shootingTimer < shootingWait)
+    if (shootingTimer < DifficultyManager::getOrdinanceSpacing())
     {
         shootingTimer += GetFrameTime();
     }

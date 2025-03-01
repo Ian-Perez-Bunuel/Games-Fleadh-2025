@@ -18,4 +18,6 @@ public:
 
 private:
     static std::vector<Achievement> achievements;
+
+    int achievementAmount = 0;
 };

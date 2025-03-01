@@ -1,6 +1,7 @@
 #include "../include/Projectile.h"
 #include <cmath>
 #include "raymath.h"
+#include "../include/DifficultyManager.h"
 
 #include "../include/Globals.h"
 
@@ -61,9 +62,9 @@ void Projectile::moveToTarget()
     }   
 
     // Move projectile
-    position.x += direction.x * speed;
-    position.y += direction.y * speed;
-    position.z += direction.z * speed;
+    position.x += direction.x * DifficultyManager::getOrdinanceSpeed();
+    position.y += direction.y * DifficultyManager::getOrdinanceSpeed();
+    position.z += direction.z * DifficultyManager::getOrdinanceSpeed();
     
     // Rotating the model to point at its target pot
     // Cross product for rotation. (Used for getting forward)

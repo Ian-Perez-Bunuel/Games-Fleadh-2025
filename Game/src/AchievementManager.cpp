@@ -8,7 +8,7 @@ void AchievementManager::init()
     achievements.push_back(Achievement("Welcome To The World!", "You litterly did nothing", AchievementType::NONE));
 
     // Type::PLAYER
-
+    achievements.push_back(Achievement("GRAB, GRAB, GRAB!!!", "Grabbed your first Object", AchievementType::PLAYER));
 
     // Type::OBJECT
 
@@ -27,9 +27,15 @@ void AchievementManager::checkForChanges()
 
 void AchievementManager::draw()
 {
+    achievementAmount = -1;
     for (Achievement& a : achievements)
     {
-        a.draw();
+        if (a.isOnShow())
+        {
+            achievementAmount++;
+            a.draw(achievementAmount);
+        }
+
     }
 }
 

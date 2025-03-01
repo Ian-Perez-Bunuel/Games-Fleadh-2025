@@ -14,7 +14,7 @@ class Planet;
 class Object
 {
 public:
-    Object(Texture2D& t_texture, Vector2 t_pos = {0.0f, 0.0f}, int t_size = 10, int dirAngle = 35);
+    Object(Sound& t_breakSound, Sound& t_grabbedSound, Texture2D& t_texture, Vector2 t_pos = {0.0f, 0.0f}, int t_size = 10, int dirAngle = 35);
 
     void update();
     void draw();
@@ -84,6 +84,10 @@ private:
 
     // Particals
     ParticleSpawner particleSpawner;
+
+    // Sounds
+    Sound& breakSound;
+    Sound& grabbedSound;
 
     float pointToPointDist(Vector2 t_p1, Vector2 t_p2) { return sqrt(((t_p2.x - t_p1.x) * (t_p2.x - t_p1.x)) + ((t_p2.y - t_p1.y) * (t_p2.y - t_p1.y))); }
     float radiansToDegrees(float t_radians) { return t_radians * (180/3.14f); }

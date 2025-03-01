@@ -90,6 +90,10 @@ private:
 
     Vector2 mousePos;
 
+    // Music
+    Music music;
+    float musicVolume = 0.2f; 
+
 
     // Normalize to -1 to 1 range
     float normalizeSigned(float x, float t_min, float t_max) 

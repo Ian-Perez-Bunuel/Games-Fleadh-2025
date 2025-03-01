@@ -1,5 +1,6 @@
 #include "../include/ObjectManager.h"
 #include "../include/Globals.h"
+#include "../include/DifficultyManager.h"
 #include <bits/stdc++.h>
 
 
@@ -15,11 +16,21 @@ ObjectManager::ObjectManager(Player& t_player) : player(t_player)
     texture4 = LoadTexture("resources/Art/2D/object4.png");
 
     initPickupTextures();
+    initSounds();
 }
 
 void ObjectManager::initPickupTextures()
 {
     healthPackTexture = LoadTexture("resources/Art/2D/heal.png");
+}
+
+void ObjectManager::initSounds()
+{
+    objectBreak = LoadSound("resources/Sound/asteroidBreak.wav");
+    SetSoundVolume(objectBreak, 0.1f);
+
+    objectGrabbed = LoadSound("resources/Sound/asteroidPierced.wav");
+    SetSoundVolume(objectGrabbed, 0.2f);
 }
 
 void ObjectManager::addObject()
@@ -33,13 +44,13 @@ void ObjectManager::addObject()
     switch (randSize)
     {
     case 0:
-        objects.push_back(std::make_shared<Object>(texture, position, MEDIUM));
+        objects.push_back(std::make_shared<Object>(objectBreak, objectGrabbed, texture, position, MEDIUM));
         break;
     case 1:
-        objects.push_back(std::make_shared<Object>(texture, position,  MEDIUM));
+        objects.push_back(std::make_shared<Object>(objectBreak, objectGrabbed, texture, position,  MEDIUM));
         break;
     case 2:
-        objects.push_back(std::make_shared<Object>(texture, position, LARGE));
+        objects.push_back(std::make_shared<Object>(objectBreak, objectGrabbed, texture, position, LARGE));
         checkForPickup(objects[objects.size() - 1]);  
         break;
     }
@@ -88,7 +99,7 @@ void ObjectManager::setRandomTexture()
 
 void ObjectManager::checkForPickup(std::shared_ptr<Object> t_object)
 {
-    int pickupChance = rand() % PICKUP_CHANCE;
+    int pickupChance = rand() % DifficultyManager::getPickupChance();
     if (pickupChance == 0)
     {
         // Make a switch statement if multiple pickups in the future
@@ -169,7 +180,7 @@ void ObjectManager::checkCollisions()
 
 void ObjectManager::keepObjectsAboveMin()
 {
-    if (objects.size() < OBJECT_MIN)
+    if (objects.size() < DifficultyManager::getObjectMin())
     {
         if (queueTimer < SPAWN_WAIT)
         {
@@ -177,7 +188,7 @@ void ObjectManager::keepObjectsAboveMin()
         }
         else
         {
-            for (int i = 0; i < AMOUNT_TO_SPAWN; i++)
+            for (int i = 0; i < DifficultyManager::getBatchSpawnAmount(); i++)
             {
                 addObject();
             }
@@ -213,14 +224,14 @@ void ObjectManager::splitObject()
                 case MEDIUM:
                 for (int i = 0; i < 4; i++)
                 {
-                    objects.push_back(std::make_shared<Object>(texture, splittingObject.lock()->getPos(), SMALL, i * (90 + randAngleOffset)));
+                    objects.push_back(std::make_shared<Object>(objectBreak, objectGrabbed, texture, splittingObject.lock()->getPos(), SMALL, i * (90 + randAngleOffset)));
                 }
                 break;
 
             case LARGE:
                 for (int i = 0; i < 4; i++)
                 {
-                    objects.push_back(std::make_shared<Object>(texture, splittingObject.lock()->getPos(), MEDIUM, i * (90 + randAngleOffset)));
+                    objects.push_back(std::make_shared<Object>(objectBreak, objectGrabbed, texture, splittingObject.lock()->getPos(), MEDIUM, i * (90 + randAngleOffset)));
                 }
                 break;
     

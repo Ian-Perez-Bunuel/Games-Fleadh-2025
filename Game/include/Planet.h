@@ -85,9 +85,9 @@ private:
     void shoot(Vector3 t_playerPos, Player& t_player);
     void shotClock(Vector3 t_playerPos, Player& t_player);
     std::vector<Projectile> projectiles;
-    float shootingWait = 1.0f;
     float shootingTimer = 0.0f;
-    float projectileSpeed = 0.1f;
+
+    Sound destructionSound;
 };
 
 // Overload the + operator for Raylib's Color type

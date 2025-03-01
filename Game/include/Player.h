@@ -28,14 +28,23 @@ public:
     void takeDamage(int t_amount);
 
 private:
-    const int RADIUS = 33;
+    const int RADIUS = 40;
     Texture2D texture;
     Color color = WHITE;
 
     Vector2 position;
 
+    void animation();
+    bool expand = false;
+    float scale = 1.0f;
+
+    // Mouse Rotation
+    void rotateToMouse();
+    float rotation = 0;
+
     // Movement
     void move();
+    void boundryChecking();
     void controllerMovement(Vector2 t_stickDir);
     void capSpeed();
     const float SPEED = 0.25;
@@ -61,6 +70,9 @@ private:
     const float INVINCIBILITY_DURATION = 0.5f; // 0.5 seconds
     float invincibilityTimer = 0;
     bool invincible = false;
+
+    // Achivement trackers
+    int objectsGrabbed = 0;
 
     float pointToPointDist(Vector2 t_p1, Vector2 t_p2) { return sqrt(((t_p2.x - t_p1.x) * (t_p2.x - t_p1.x)) + ((t_p2.y - t_p1.y) * (t_p2.y - t_p1.y))); }
 };

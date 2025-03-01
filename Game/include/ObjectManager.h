@@ -23,6 +23,7 @@ public:
     static const int LARGE;
 
 private:
+
     void setRandomTexture();
     Texture2D texture;
     Texture2D texture1;
@@ -30,9 +31,6 @@ private:
     Texture2D texture3;
     Texture2D texture4;
 
-    const int OBJECT_MIN = 35;
-    const int AMOUNT_TO_SPAWN = 5;
-    const int PICKUP_CHANCE = 5; // 1 / 5 chance
 
     void checkForPickup(std::shared_ptr<Object> t_object);
     void keepObjectsAboveMin();
@@ -51,6 +49,12 @@ private:
     void initPickupTextures();
     std::vector<std::shared_ptr<PickUp>> pickups;
     Texture2D healthPackTexture;
+
+    // Sounds 
+    void initSounds();
+    Sound objectBreak;
+    Sound objectGrabbed;
+    
 
     void checkPlayerCollisions(std::shared_ptr<Object>& t_object);
     void checkCollisions();

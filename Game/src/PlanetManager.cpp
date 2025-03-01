@@ -1,6 +1,8 @@
 #include "../include/PlanetManager.h"
 #include "../include/Globals.h"
 
+#include "../include/DifficultyManager.h"
+
 void PlanetManager::init()
 {
     planets.clear();
@@ -71,6 +73,7 @@ void PlanetManager::nextPlanet()
     if (currentPlanet < planets.size())
     {
         currentPlanet++;
+        DifficultyManager::increaseDifficulty();
         
         for (Planet& planet : planets)
         {

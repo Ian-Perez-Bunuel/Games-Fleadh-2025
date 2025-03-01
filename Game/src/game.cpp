@@ -1,5 +1,6 @@
 #include "../include/game.h"
 #include "../include/Globals.h"
+#include "../include/DifficultyManager.h"
 
 
 Game::Game()
@@ -12,6 +13,10 @@ Game::Game()
 void Game::initialize()
 {
     initializeShaders();
+
+    // Initialize all achievements
+    achievementManager.init();
+    AchievementManager::addGoalToAchievement("Welcome To The World!", &framesSpeed, 8);
 
     player.initialize();
     objectManager = std::make_unique<ObjectManager>(player);
@@ -29,9 +34,14 @@ void Game::initialize()
     // Camera initializing
     SceneCamera::initialize();
 
-    // Initialize all achievements
-    achievementManager.init();
-    AchievementManager::addGoalToAchievement("Welcome To The World!", &framesSpeed, 8);
+    // Music
+    music = LoadMusicStream("resources/Sound/balanceSong.mp3");
+    PlayMusicStream(music);
+    SetMusicVolume(music, musicVolume);
+
+    DifficultyManager::initBaseDifficulties();
+    // SET DIFFICULTY TEMP
+    DifficultyManager::setDifficulty(DifficultyManager::getDifficulty(1));
 }
 void Game::initializeShaders()
 {
@@ -86,6 +96,7 @@ Game::~Game()
 
 void Game::update() 
 {
+    UpdateMusicStream(music);   // Update music buffer with new stream data
     input();
     SceneCamera::update();
 

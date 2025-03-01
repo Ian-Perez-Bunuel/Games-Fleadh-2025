@@ -1,5 +1,7 @@
 #include "../include/Player.h"
 #include "../include/SceneCamera.h"
+#include "../include/AchievementManager.h"
+#include "../include/Globals.h"
 
 Player::Player()
 {
@@ -9,10 +11,47 @@ void Player::initialize()
 {
     texture = LoadTexture("resources/Art/2D/player.png");
     position = {GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f};
+
+    for (int i = 0; i < GRAPPLE_AMOUNT; i++)
+    {
+        grapples[i].init();
+    }
+
+    // Achievements
+    AchievementManager::addGoalToAchievement("GRAB, GRAB, GRAB!!!", &objectsGrabbed, 1);
+}
+
+void Player::rotateToMouse()
+{
+    rotation = atan2f(GetMousePosition().y  - position.y, GetMousePosition().x  - position.x) * RAD2DEG;
+}
+
+void Player::boundryChecking()
+{
+    if (position.x < RADIUS)
+    {
+        position.x = RADIUS;
+    }
+    else if (position.x > SCREEN_WIDTH - RADIUS)
+    {
+        position.x = SCREEN_WIDTH - RADIUS;
+    }
+    
+    if (position.y < RADIUS)
+    {
+        position.y = RADIUS;
+    }
+    else if (position.y > SCREEN_HEIGHT - RADIUS)
+    {
+        position.y = SCREEN_HEIGHT - RADIUS;
+    }
 }
 
 void Player::move()
 {
+    rotateToMouse();
+    boundryChecking();
+
     // key inputs
     if (IsKeyDown(KEY_W))
     {
@@ -48,6 +87,8 @@ void Player::move()
 
 void Player::controllerMovement(Vector2 t_stickDir)
 {
+    boundryChecking();
+
     velocity.x += t_stickDir.x * 0.4f;
     velocity.y -= t_stickDir.y * 0.4f;
 
@@ -86,17 +127,27 @@ void Player::capSpeed()
     }
 }
 
+void Player::animation()
+{
+    scale = 1.0f + 0.05f * sin(GetTime() * 2.0f * PI);
+}
+
 void Player::draw()
 {
     if (alive)
     {
+        animation();
+
         for (int i = 0; i < GRAPPLE_AMOUNT; i++)
         {
             grapples[i].draw(); 
         }
-    
-        //DrawCircleV(position, RADIUS, BLUE);
-        DrawTextureEx(texture, {position.x - RADIUS, position.y - RADIUS}, 0, 1.0f, color);
+        SetTextureFilter(texture, TEXTURE_FILTER_BILINEAR);
+        Rectangle sourceRec = { 0, 0, (float)texture.width, (float)texture.height };
+        Rectangle destRec = { position.x, position.y, texture.width * scale, texture.height * scale };
+        Vector2 origin = { texture.width / 2.0f, texture.height / 2.0f };
+
+        DrawTexturePro(texture, sourceRec, destRec, origin, rotation, color);
     }
 }
 
@@ -124,7 +175,7 @@ void Player::shootGrapple(std::shared_ptr<Object> t_object)
         }
         if (closestGrappleIndex >= 0)
         {
-            grapples[closestGrappleIndex].shoot(t_object);
+            grapples[closestGrappleIndex].shoot(t_object, objectsGrabbed);
         }
     }
 }
@@ -145,11 +196,11 @@ void Player::setGrapplePos()
     {
         Vector2 pointOnCir;
         // Convert degrees to radians
-        float radians = angle * (PI / 180.0f);
+        float radians = (rotation + angle) * (PI / 180.0f);
 
         // Get evenly spaced point on the circle
-        pointOnCir.x = position.x + (RADIUS * cos(radians));
-        pointOnCir.y = position.y + (RADIUS * sin(radians));
+        pointOnCir.x = position.x + ((RADIUS - 10) * cos(radians));
+        pointOnCir.y = position.y + ((RADIUS - 10) * sin(radians));
 
         // Assign to the corresponding grapple slot
         grapples[currentGrapple].setStartPos(pointOnCir, this->position);
@@ -160,11 +211,11 @@ void Player::setGrapplePos()
     {
         Vector2 pointOnCir;
         // Convert degrees to radians
-        float radians = angle * (PI / 180.0f);
+        float radians = (rotation + angle) * (PI / 180.0f);
 
         // Get evenly spaced point on the circle
-        pointOnCir.x = position.x + (RADIUS * cos(radians));
-        pointOnCir.y = position.y + (RADIUS * sin(radians));
+        pointOnCir.x = position.x + ((RADIUS - 10) * cos(radians));
+        pointOnCir.y = position.y + ((RADIUS - 10) * sin(radians));
 
         // Assign to the corresponding grapple slot
         grapples[currentGrapple].setStartPos(pointOnCir, this->position);

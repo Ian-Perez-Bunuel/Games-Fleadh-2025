@@ -53,6 +53,7 @@
         "xlocmes": "cpp",
         "xlocmon": "cpp",
         "xloctime": "cpp",
-        "*.m": "cpp"
+        "*.m": "cpp",
+        "sstream": "cpp"
     }
 }

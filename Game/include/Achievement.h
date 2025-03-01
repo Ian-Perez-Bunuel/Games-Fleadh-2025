@@ -18,7 +18,8 @@ public:
     Achievement(std::string t_title, std::string t_description, AchievementType t_type);
     void addGoal(int* t_valueToKeepTrackOf, int t_goal);
 
-    void draw();
+    void draw(float t_yOffset);
+    bool isOnShow() { return show; }
 
     std::string getTitle() { return title; }
     bool hasBeenCompleted() { return completed; }
@@ -29,7 +30,7 @@ private:
     bool completed = false;
     bool showClock();
     bool show = false;
-    const float SHOW_DURATION = 3.0f;
+    const float SHOW_DURATION = 5.0f;
     float showTimer = 0.0f;
 
     Vector2 position;

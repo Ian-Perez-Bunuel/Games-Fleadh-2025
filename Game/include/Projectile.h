@@ -35,7 +35,6 @@ private:
 
     Vector3 position;
     float radius = 0.1f;
-    float speed = 0.1f;
 
     Vector3 targetPos;
     Vector3 axis;

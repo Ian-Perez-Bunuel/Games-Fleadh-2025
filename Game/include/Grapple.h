@@ -21,10 +21,12 @@ class Grapple
 {
 public:
     Grapple();
+    void init();
+
     void setStartPos(Vector2 t_startPos, Vector2& t_userPos);
     void setAggressionLevel(int t_aggression) { aggression = t_aggression + 1; }
 
-    void shoot(std::shared_ptr<Object> t_target);
+    void shoot(std::shared_ptr<Object> t_target, int& t_objectsPicked);
     void release(Vector2 t_releaseDir, bool t_toPlanet);
     void update();
     void draw();
@@ -64,6 +66,13 @@ private:
     bool aiming = false;
     const int AIM_DURATION = 60 * 0.2; // 0.2 seconds
     int aimClock = 0;
+
+    // Hook
+    static const int SMOOTHNESS = 10;
+    Vector2 hookPoints[SMOOTHNESS + 1];
+    const int HOOK_RADIUS = 80;
+    const int MAX_HOOK_ANGLE = 45;
+    int hookAngleShown = 0;
 
     // Particles
     ParticleSpawner particleSpawnpoint;
