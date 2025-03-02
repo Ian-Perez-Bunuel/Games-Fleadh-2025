@@ -45,7 +45,7 @@ void Player::initAchievements()
     // Object Achievements
     AchievementManager::addGoalToAchievement("Baby's first toy", &objectsGrabbed, 1);
     AchievementManager::addGoalToAchievement("GRAB, GRAB, GRAB!", &objectsGrabbed, 5);
-    AchievementManager::addGoalToAchievement("ALL FULL!!!", &maxGrappledObjects, GRAPPLE_AMOUNT);
+    AchievementManager::addGoalToAchievement("ALL FULL!!!", &maxGrappledObjects, GRAPPLE_AMOUNT + 1);
     AchievementManager::addGoalToAchievement("Asteroid Lover", &objectsGrabbed, 20);
     // Movement Achievements
     AchievementManager::addGoalToAchievement("Engines On!", &movementDone, 5);

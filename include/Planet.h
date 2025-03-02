@@ -29,6 +29,9 @@ public:
 
     void changeColor(Color t_color);
 
+    void setAlive(); 
+    void setOriginalPos(Vector3 t_pos) { originalPos = t_pos; }
+
 private:    
     Model model;
 
@@ -43,6 +46,7 @@ private:
     Model projectileModel;
     
     Vector3 position;
+    Vector3 originalPos = {0, 0, 0};
     
     void updateRotation();
     float tilt = 45.0f;

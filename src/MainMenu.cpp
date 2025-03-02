@@ -193,11 +193,6 @@ void MainMenu::controllerInput()
 
 void MainMenu::update()
 {
-    for (int i = 0; i < 6; i++)
-    {
-        printf("\n\n\nPosition: %f, %f\n\n\n", options[i]->getPos().x, options[i]->getPos().y);
-    }
-
     input();
 
     findClosestButton();
@@ -211,6 +206,11 @@ void MainMenu::update()
         if (options[i]->checkToPlanet())
         {
             options[i]->movementToPlanet(planet);
+        }
+
+        if (options[i]->getScale() <= 0.0f)
+        {
+            options[i]->reset();
         }
     }
 
@@ -387,6 +387,7 @@ void MainMenu::playEffect()
     for (int i = 0; i < 6; i++)
     {
         options[i]->reset();
+        planet.setAlive();
     }
 }
 

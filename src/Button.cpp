@@ -102,4 +102,6 @@ void Button::reset()
 	active = true;
 	position = originalPos;
 	scale = originalScale;
+
+	toPlanet = false;
 }

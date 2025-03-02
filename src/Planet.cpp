@@ -7,10 +7,13 @@
 
 void Planet::init(Vector3 t_pos, int t_maxHealth, Color t_color)
 {
+    setOriginalPos(t_pos);
     position = t_pos;
 
     maxHealth = t_maxHealth;
     health = maxHealth;
+
+    defeated = false;
 
     //  Load each planet type
     planet1 = LoadModel("resources/Art/3D/planet1.obj");
@@ -19,9 +22,9 @@ void Planet::init(Vector3 t_pos, int t_maxHealth, Color t_color)
     planet4 = LoadModel("resources/Art/3D/planet4.obj");
 
     destructionSound = LoadSound("resources/Sound/planetExplosion.wav");
-    SetSoundVolume(destructionSound, 0.6f);
+    SetSoundVolume(destructionSound, 0.2f);
     coreCollectingSound = LoadSound("resources/Sound/coreCollect.wav");
-    SetSoundVolume(destructionSound, 0.3f);
+    SetSoundVolume(coreCollectingSound, 0.2f);
     damageSound = LoadSound("resources/Sound/asteroidBreak.wav");
     SetSoundVolume(damageSound, 0.3f);
     
@@ -380,4 +383,18 @@ void Planet::changeColor(Color t_color)
     };
     int colorLocationInShader = GetShaderLocation(explosionShader, "color");
     SetShaderValue(explosionShader, colorLocationInShader, &normalizedColor, SHADER_UNIFORM_VEC4);
+}
+
+void Planet::setAlive()
+{
+    defeated = false; 
+    health = maxHealth;
+
+    coreStart = false;
+    coreConsumed = false;
+
+    maxRadiusHit = false;
+    particleRadius = 30.0f;
+
+    position = originalPos;
 }

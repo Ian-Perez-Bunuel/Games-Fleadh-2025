@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "any": "cpp",
+        "bitset": "cpp",
+        "future": "cpp",
+        "memory": "cpp",
+        "optional": "cpp",
+        "random": "cpp"
+    }
+}
