@@ -16,10 +16,7 @@
 			"options": {
 				"cwd": "${workspaceFolder}/.."
 			},
-			"group": {
-				"kind": "build",
-				"isDefault": true
-			},
+			"group": "build",
 			"problemMatcher": [],
 			"detail": "Build all targets in Debug mode."
 		},
@@ -40,7 +37,7 @@
 			},
 			"group": {
 				"kind": "build",
-				"isDefault": false
+				"isDefault": true
 			},
 			"problemMatcher": [
 				"$gcc"
