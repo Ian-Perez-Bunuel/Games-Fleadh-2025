@@ -47,7 +47,7 @@ void Planet::init(Vector3 t_pos, int t_maxHealth, Color t_color)
     core = LoadModel("resources/Art/3D/core.glb");
     shield = LoadModel("resources/Art/3D/shield.obj");
 
-    projectileModel = LoadModel("resources/Art/3D/missile.obj");
+    projectileModel = LoadModel("resources/Art/3D/missile.glb");
 
     color = t_color;
     genExplosionTexture();

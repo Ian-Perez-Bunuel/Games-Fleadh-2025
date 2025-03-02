@@ -9,7 +9,6 @@
 
 #include "../include/Controller.h"
 #include "../include/SceneCamera.h"
-#include "../include/PlanetSelector.h"
 #include "../include/ObjectManager.h"
 #include "../include/PlanetManager.h"
 #include "../include/AchievementManager.h"

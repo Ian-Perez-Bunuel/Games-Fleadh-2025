@@ -83,10 +83,7 @@ void MainMenu::initialize()
 
     for (int i = 0; i < 6; i++)
     {
-        if (!options[i]->isActive())
-        {
-            printf("\n\n\nNOT ACTIVE\n\n\n");
-        }
+        printf("\n\n\nScale: %f\n\n\n", options[i]->getScale());
     }
 }
 

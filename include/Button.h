@@ -17,8 +17,9 @@ public:
 
     void movementToPlanet(Planet& t_planet) override;
 
-    void setCanDamage() { canDamage = true; }
+    float getScale() { return scale; }
 
+    void setCanDamage() { canDamage = true; }
     void reset();
 
     void (*effect)(); // Define a pointer funtions. This will allow it to copy another function's definition

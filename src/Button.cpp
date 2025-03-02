@@ -9,6 +9,8 @@ Button::Button(Sound &t_breakSound, Sound &t_grabbedSound, Texture2D &t_texture,
 
     originalScale = 0.5f;
 	scale = originalScale;
+
+	velocity = {0.0f, 0.0f};
 }
 
 void Button::update()
