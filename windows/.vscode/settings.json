@@ -1,5 +1,18 @@
 {
+    "terminal.integrated.defaultProfile.windows": "MSYS",
     "terminal.integrated.profiles.windows": {
+        "MSYS": {
+            "path": "C:\\msys64\\usr\\bin\\bash.exe",
+            "args": [
+                "--login",
+                "-i"
+            ],
+            "icon": "terminal-bash",
+            "env": {
+                "MSYSTEM": "UCRT64",
+                "CHERE_INVOKING": "1"
+            }
+        },
         "PowerShell": {
             "source": "PowerShell",
             "icon": "terminal-powershell"
@@ -15,18 +28,6 @@
         "Git Bash": {
             "source": "Git Bash"
         },
-        "MYSYS": {
-            "path": "C:\\msys64\\usr\\bin\\bash.exe",
-            "args": [
-                "--login",
-                "-i"
-            ],
-            "icon": "terminal-bash",
-            "env": {
-                "MSYSTEM": "UCRT64",
-                "CHERE_INVOKING": "1"
-            }
-        },
         "WSL": {
             "path": "wsl.exe",
             "args": ["--login"],
@@ -34,3 +35,4 @@
         }
     }
 }
+

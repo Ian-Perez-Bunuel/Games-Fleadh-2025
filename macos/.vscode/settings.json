@@ -6,11 +6,11 @@
         },
         "zsh": {
             "path": "zsh",
-            "icon": "terminal-bash"  // Optional icon
+            "icon": "terminal-bash"
         },
         "fish": {
             "path": "fish",
-            "icon": "terminal-bash"  // Optional icon
+            "icon": "terminal-bash"
         },
         "tmux": {
             "path": "tmux",
@@ -21,5 +21,5 @@
             "icon": "terminal-powershell"
         }
     },
-    "terminal.integrated.defaultProfile.osx": "zsh" // Set the default terminal profile
+    "terminal.integrated.defaultProfile.osx": "zsh"
 }
