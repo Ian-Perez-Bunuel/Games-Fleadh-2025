@@ -20,10 +20,14 @@ void Game::initialize()
     AchievementManager::addGoalToAchievement("Welcome To The World!", &framesSpeed, 8);
 
     player.initialize();
+    player.initAchievements();
+    player.turnOnHpBar();
+
+
     objectManager = std::make_unique<ObjectManager>(player);
     // Sprites
     backgroundTexture = LoadTexture("resources/Art/2D/background.png");
-    astroidBeltTexture = LoadTexture("resources/Art/2D/bgAsteroidsStraight.png");
+    astroidBeltTexture = LoadTexture("resources/Art/2D/bgAsteroids.png");
 
     reticle = LoadTexture("resources/Art/2D/gyro.png");
 
@@ -116,6 +120,9 @@ void Game::update()
         UpdateMusicStream(musicStart); 
     }
 
+    // Achievements
+    AchievementManager::checkForChanges();
+
     if (Transition::isActive())
     {
         objectManager->reset();
@@ -126,9 +133,6 @@ void Game::update()
     {
         input();
         SceneCamera::update();
-
-        // Achievements
-        achievementManager.checkForChanges();
 
         
         player.update(controller.getLeftStickDir(), controller.getCursorPos());
@@ -277,7 +281,7 @@ void Game::drawBackground()
 {
     BeginTextureMode(background);
         DrawTextureEx(backgroundTexture, {0, 0}, 0, 1.0, WHITE);
-        DrawTextureEx(astroidBeltTexture, {-100, 700}, -25, 1.0, BLUE );
+        DrawTextureEx(astroidBeltTexture, {0, 0}, 0, 1.0, BLUE );
     EndTextureMode();
 }
 

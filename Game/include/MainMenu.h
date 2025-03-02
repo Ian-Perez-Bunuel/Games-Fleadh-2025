@@ -5,6 +5,8 @@
 #include "stdio.h"
 #include <vector>
 #include "../include/Button.h"
+#include "../include/Player.h"
+#include "../include/Controller.h"
 
 
 
@@ -24,6 +26,7 @@ private:
     void input();
     void mouseInput();
     void controllerInput();
+    Controller controller;
 
     Texture2D backgroundTexture;
 
@@ -32,14 +35,18 @@ private:
     const float MAX_BUTTON_SCALE = 1.1f;
 
     Texture2D playTexture;
-    Button playButton;
-    Vector2 playPos;
-    float playScale = 1.0f;
-
     Texture2D exitTexture;
-    Button exitButton;
-    Vector2 exitPos;
-    float exitScale = 1.0f;
+
+    bool checkIfAnOptionPickedup();
+    std::vector<std::shared_ptr<Button>> options;
+    std::shared_ptr<Button> closestButtonToPlayer;
+
+    Sound buttonBreak;
+    Sound buttonGrabbed;
+
+    void findClosestButton();
+    Player player;
+    
 
     // Shaders
     float glowRadius = 15.0f;
@@ -52,6 +59,9 @@ private:
     RenderTexture2D targetBlur1;
     RenderTexture2D targetBlur2;
     RenderTexture2D middleground;
+
+
+    float pointToPointDist(Vector2 t_p1, Vector2 t_p2) { return sqrt(((t_p2.x - t_p1.x) * (t_p2.x - t_p1.x)) + ((t_p2.y - t_p1.y) * (t_p2.y - t_p1.y))); }
 };
 
 #endif // MAINMENU_H

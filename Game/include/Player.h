@@ -14,6 +14,7 @@ class Player
 public:
     Player();
     void initialize();
+    void initAchievements();
 
     void update(Vector2 t_stickDir, Vector2 t_cursorPos);
     void draw();
@@ -28,6 +29,8 @@ public:
 
     void heal(int t_amount);
     void takeDamage(int t_amount);
+
+    void turnOnHpBar() { barOn = true; }
 
     static void increase3DStage() { stage++; }
 
@@ -88,6 +91,7 @@ private:
     // Health bar
     void initHealthBar();
     void drawHealthBar();
+    bool barOn = false;
     Vector2 barPos;
     int barHeight = 25;
     int barLength = 0;

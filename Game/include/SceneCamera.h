@@ -1,5 +1,13 @@
+#pragma once
+
 #include "raylib.h"
 #include "stdio.h"
+
+enum class Scene
+{
+    MAIN_MENU,
+    GAME
+};
 
 class SceneCamera
 {
@@ -10,12 +18,13 @@ public:
     static void update();
     static void screenShake(float t_shake, int t_duration);
 
-    static void moveToNextPlanet();
-
     // Pre-set Shake values
     static const int SMALL_SHAKE = 2.0f;
     static const int MEDIUM_SHAKE = 5.0f;
     static const int LARGE_SHAKE = 15.0f;
+
+    // Scene Control
+    static Scene currentScene;
 
 private:
     static void updateShake();

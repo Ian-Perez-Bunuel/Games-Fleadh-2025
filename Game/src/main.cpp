@@ -4,6 +4,7 @@
 #include "../include/Globals.h"
 #include "../include/game.h"
 #include "../include/MainMenu.h"
+#include "../include/SceneCamera.h"
 
 // Specific include for build_web
 #if defined(WEB_BUILD)
@@ -56,7 +57,7 @@ char message[11];
 void run()
 {
     // Update Game Data
-    switch (currentScene)
+    switch (SceneCamera::currentScene)
     {
     case Scene::GAME:
         game.update();

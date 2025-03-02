@@ -1,6 +1,7 @@
 #include "../include/AchievementManager.h"
 
 std::vector<Achievement> AchievementManager::achievements;
+Sound AchievementManager::achievementComplete;
 
 void AchievementManager::init()
 {

@@ -13,6 +13,8 @@ float SceneCamera::offsetX = 0.0f;
 float SceneCamera::offsetY = 0.0f;
 float SceneCamera::offsetZ = 0.0f;
 
+Scene SceneCamera::currentScene = Scene::GAME;
+
 void SceneCamera::initialize()
 {
     camera.position = {0.0f, 0.0f, 10.0f};

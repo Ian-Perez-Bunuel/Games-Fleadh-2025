@@ -16,9 +16,9 @@ void Player::initialize()
 
     // Models
     printf("\n\n");
-    ring = LoadModel("resources/Art/3D/playerRing.obj");
-    beams = LoadModel("resources/Art/3D/playerBeam.obj");
-    hull = LoadModel("resources/Art/3D/playerHull.obj");
+    ring = LoadModel("resources/Art/3D/playerRing.glb");
+    beams = LoadModel("resources/Art/3D/playerBeam.glb");
+    hull = LoadModel("resources/Art/3D/playerHull.glb");
     printf("\n\n");
 
     damageSound = LoadSound("resources/Sound/playerDamage.wav");
@@ -32,7 +32,10 @@ void Player::initialize()
     }
 
     initHealthBar();
+}
 
+void Player::initAchievements()
+{
     // Object Achievements
     AchievementManager::addGoalToAchievement("Baby's first toy", &objectsGrabbed, 1);
     AchievementManager::addGoalToAchievement("GRAB, GRAB, GRAB!", &objectsGrabbed, 5);
@@ -362,7 +365,7 @@ void Player::updateModels()
 
     // Apply the combined rotation to the planet models
     ring.transform = rotationMatrix;
-    beams.transform = rotationMatrix;
+    // beams.transform = rotationMatrix;
     hull.transform = rotationMatrix;
 }
 
@@ -437,9 +440,12 @@ void Player::initHealthBar()
 
 void Player::drawHealthBar()
 {
-    DrawRectangle(barPos.x, barPos.y, barLength, barHeight, BLACK);
+    if (barOn)
+    {
+        DrawRectangle(barPos.x, barPos.y, barLength, barHeight, BLACK);
 
-    DrawRectangle(barPos.x, barPos.y, (health * barLength) / 100, barHeight, YELLOW);
+        DrawRectangle(barPos.x, barPos.y, (health * barLength) / 100, barHeight, YELLOW);
+    }
 }
 
 Vector3 Player::convertToMiddleCoords(Vector2 t_originalCoords)

@@ -1,5 +1,7 @@
 #include "../include/MainMenu.h"
 #include "../include/Globals.h"
+#include "../include/SceneCamera.h"
+#include <memory>
 
 MainMenu::MainMenu()
 {
@@ -20,9 +22,21 @@ void MainMenu::initialize()
     exitTexture = LoadTexture("resources/Art/2D/exit.png");
     initializeShaders();
 
+    // Sounds
+    buttonBreak = LoadSound("resources/Sound/asteroidBreak.wav");
+    SetSoundVolume(buttonBreak, 0.1f);
+
+    buttonGrabbed = LoadSound("resources/Sound/asteroidPierced.wav");
+    SetSoundVolume(buttonGrabbed, 0.2f);
+
+    Vector2 playPos = { SCREEN_WIDTH  / 2.0f, 500.0f };
+    Vector2 exitPos = { SCREEN_WIDTH  / 2.0f, 700.0f };
+
+    player.initialize();
+
     // Setup Buttons
-    playButton.setup({(SCREEN_WIDTH / 2.0f) - 25, (SCREEN_HEIGHT / 2.0f) + 125}, 300, 100);
-    exitButton.setup({(SCREEN_WIDTH / 2.0f) - 25, (SCREEN_HEIGHT / 2.0f) + 330}, 225, 100);
+    options.push_back(std::make_shared<Button>(buttonBreak, buttonGrabbed, playTexture, playPos, 50));
+    options.push_back(std::make_shared<Button>(buttonBreak, buttonGrabbed, exitTexture, exitPos, 50));
 }
 
 void MainMenu::initializeShaders()
@@ -55,49 +69,57 @@ void MainMenu::initializeShaders()
 
 void MainMenu::input()
 {
+    if (IsGamepadAvailable(0))
+    {
+        controllerInput();
+    }
+    else
+    {
+        mouseInput();
+    }
+}
+
+void MainMenu::findClosestButton()
+{
+    float lowestDist = 100000.0f;
+
+    for (std::shared_ptr<Button>& button : options)
+    {
+        float distToButton = pointToPointDist(button->getPos(), player.getPos());
+        if (distToButton < lowestDist && !button->checkGrabbed() && button->isActive() && !button->checkToPlanet())
+        {
+            lowestDist = distToButton;
+            closestButtonToPlayer = button;
+        }
+    }
+}
+
+bool MainMenu::checkIfAnOptionPickedup()
+{
+    for (std::shared_ptr<Button>& button : options)
+    {
+        if (button->checkGrabbed())
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 void MainMenu::mouseInput()
 {
-    if (playButton.checkForMouse())
+    if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
     {
-        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
-        {
-            printf("\n\nON PLAY\n\n");
-            currentScene = Scene::GAME;
-            printf("SCENE: %d\n\n", currentScene);
-        }
-
-        if (playScale < MAX_BUTTON_SCALE)
-        {
-            playScale += 0.01f;
-        }
-    }
-    else
-    {
-        if (playScale > 1)
-        {
-            playScale -= 0.01f;
-        }
-    }
+        player.releaseGrapple(GetMousePosition(), false);
+    } 
     
-    if (exitButton.checkForMouse())
+    // Used to grab Buttons
+    if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT))
     {
-        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+        if (closestButtonToPlayer != nullptr && !checkIfAnOptionPickedup())
         {
-            CloseWindow();
-        }
-
-        if (exitScale < MAX_BUTTON_SCALE)
-        {
-            exitScale += 0.01f;
-        }
-    }
-    else
-    {
-        if (exitScale > 1)
-        {
-            exitScale -= 0.01f;
+            player.shootGrapple(closestButtonToPlayer);
         }
     }
 }
@@ -109,7 +131,16 @@ void MainMenu::controllerInput()
 
 void MainMenu::update()
 {
-    mouseInput();
+    input();
+
+    findClosestButton();
+
+    player.update(controller.getLeftStickDir(), controller.getCursorPos());
+
+    for (std::shared_ptr<Button>& button : options)
+    {
+        button->update();
+    }
 }
 
 
@@ -119,13 +150,21 @@ void MainMenu::draw()
     BeginTextureMode(targetScene);
         ClearBackground(BLANK);
 
-        DrawTextureEx(logoTexture, {0, 0}, 0, 1.0, WHITE);
+        DrawTextureEx(logoTexture, {0, 100}, 0, 1.0, WHITE);
 
-        DrawTextureEx(playTexture, {0, 0}, 0, playScale, WHITE);
-        DrawTextureEx(exitTexture, {0, 0}, 0, exitScale, WHITE);
+        for (std::shared_ptr<Button>& button : options)
+        {
+            button->draw();
+        }
 
-        exitButton.draw();
-        playButton.draw();
+        player.draw();
+
+        // Controller cursor
+        if (IsGamepadAvailable(0))
+        {
+            controller.drawCursor();
+        }
+        
     EndTextureMode();
 
 

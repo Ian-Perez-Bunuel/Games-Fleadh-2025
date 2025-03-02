@@ -55,5 +55,6 @@
         "xloctime": "cpp",
         "*.m": "cpp",
         "sstream": "cpp"
-    }
+    },
+    "C_Cpp.errorSquiggles": "disabled"
 }

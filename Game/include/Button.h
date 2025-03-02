@@ -2,29 +2,17 @@
 
 #include "raylib.h"
 #include "stdio.h"
+#include "../include/Object.h"
 
-class Button
+class Button : public Object
 {
 public:
+    Button(Sound& t_breakSound, Sound& t_grabbedSound, Texture2D& t_texture, Vector2 t_pos = {0.0f, 0.0f}, int t_size = 10);
 
-	Button();
 
-	void setup(Vector2 t_pos, float t_width, float t_height);
-    float getHeight() { return height; }
-    float getWidth() { return width; }
-
-    void draw();
-
-	bool checkForMouse();
-
+    void update() override;
+    void draw() override;
 
 private:
-
-	float width;
-	float height;
-
-	Vector2 position;
-
-	bool colliding = false;
-
+    Vector2 originalPos;
 };

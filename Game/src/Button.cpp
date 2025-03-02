@@ -1,42 +1,28 @@
-// IAN PEREZ BUNUEL
-
 #include "../include/Button.h"
 
 
-Button::Button()
+Button::Button(Sound &t_breakSound, Sound &t_grabbedSound, Texture2D &t_texture, Vector2 t_pos, int t_size)
+    : Object(t_breakSound, t_grabbedSound, t_texture, t_pos, t_size)
 {
+    originalPos = t_pos;
 }
 
-void Button::setup(Vector2 t_pos, float t_width, float t_height)
+void Button::update()
 {
-	// Get the dimensions
-	width = t_width;
-	height = t_height;
+    if (beenPickedUp)
+    {
+        
+    }
 
-	position = t_pos;
-}
-
-bool Button::checkForMouse()
-{
-	// Check if the mouse is within the button on the x-axis
-	if (GetMousePosition().x >= position.x - ((width) / 2) && GetMousePosition().x <= position.x + ((width) / 2))
-	{
-		// Check if the mouse is within the button on the y-axis
-		if (GetMousePosition().y <= position.y + (height / 2) && GetMousePosition().y >= position.y - (height / 2))
-		{
-			// if colliding
-			colliding = true;
-			return colliding; 
-		}
-	}
-
-	// if not colliding 
-	colliding = false;
-
-	return colliding; // if not colliding
+	particleSpawner.update();
 }
 
 void Button::draw()
 {
-    DrawRectangleLines(position.x - width / 2, position.y - height / 2, width, height, RED);
+    if (active)
+	{
+		// DrawCircleV(position, radius, RED);
+		DrawTextureEx(texture, {position.x - radius, position.y - radius}, 0, scale, WHITE);
+	}
+	particleSpawner.draw();
 }

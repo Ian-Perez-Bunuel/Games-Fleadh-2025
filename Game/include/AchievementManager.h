@@ -13,7 +13,7 @@ public:
     void init();
     static void addGoalToAchievement(std::string t_achievementTitle, int* t_valueToKeepTrackOf, int t_goal);
 
-    void checkForChanges();
+    static void checkForChanges();
     void draw();
 
 private:
@@ -22,5 +22,5 @@ private:
     int achievementAmount = 0;
 
     Texture2D box;
-    Sound achievementComplete;
+    static Sound achievementComplete;
 };

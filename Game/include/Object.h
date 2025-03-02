@@ -16,8 +16,8 @@ class Object
 public:
     Object(Sound& t_breakSound, Sound& t_grabbedSound, Texture2D& t_texture, Vector2 t_pos = {0.0f, 0.0f}, int t_size = 10, int dirAngle = 35);
 
-    void update();
-    void draw();
+    virtual void update();
+    virtual void draw();
 
     Vector2 getPos() { return position; }
     int getRadius() { return radius; }
@@ -42,16 +42,30 @@ public:
     // Achievement
     bool getRotationMaxHit() { return hitMaxRotationSpeed; }
     
-private:
-    void move();    
+protected:
+
+    bool active = false;
+    bool beenPickedUp = false;
+
+    int radius = 20;
+    Texture2D texture;
+
+    float scale = 1.0f;
+
+    Vector2 position = {0.0f, 0.0f};
+    Vector2 velocity;
+
+    // Particals
+    ParticleSpawner particleSpawner;
+
+private:   
+    void move(); 
     bool moveToRotationArea(Vector2 t_anchorPos, float t_targetDist);
-    
+
     void checkForSpeedIncrease();
     void invinsabilityCheck();
 
     void loop();
-    
-    bool active = false;
 
     // Movement towards planet
     bool toPlanet = false;
@@ -62,29 +76,19 @@ private:
     const int INVINCIBILITY_DURATION = 60 * 0.5;
     int invincibilityTimer = 0;
 
-    int radius = 20;
-    Texture2D texture;
-
     bool grabbed = false;
-    bool beenPickedUp = false;
     bool correctDist = false;
     float angle = -1.0f;
-
-    Vector2 position = {0.0f, 0.0f};
-    float scale = 1.0f;
 
     // Physics
     float mass = 10;
     float speed = 2.0f;
     float rotationSpeed = 150.0f;
     const int MAX_ROTATION_SPEED = 260;
-    Vector2 velocity;
     float anchorDist = -1.0f;
 
     Color color;
 
-    // Particals
-    ParticleSpawner particleSpawner;
 
     // Sounds
     Sound& breakSound;
