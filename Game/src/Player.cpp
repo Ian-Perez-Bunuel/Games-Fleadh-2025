@@ -3,6 +3,7 @@
 #include "../include/AchievementManager.h"
 #include "../include/Globals.h"
 #include "../include/Controller.h"
+#include "../include/Transition.h"
 
 int Player::stage = 0;
 
@@ -446,6 +447,33 @@ void Player::drawHealthBar()
 
         DrawRectangle(barPos.x, barPos.y, (health * barLength) / 100, barHeight, YELLOW);
     }
+}
+
+bool Player::respawn()
+{
+    if (!alive)
+    {
+        if (respawnTimer < RESPAWN_DUR)
+        {
+            respawnTimer += GetFrameTime();
+        }
+        else
+        {
+            respawnTimer = 0.0f;
+            position = {SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f};
+    
+            alive = true;
+            health = MAX_HEALTH;
+
+            stage = 0;
+
+            Transition::begin();
+    
+            return true;
+        }
+    }
+
+    return false;
 }
 
 Vector3 Player::convertToMiddleCoords(Vector2 t_originalCoords)

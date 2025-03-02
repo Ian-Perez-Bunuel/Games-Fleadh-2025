@@ -22,6 +22,8 @@ void Planet::init(Vector3 t_pos, int t_maxHealth, Color t_color)
     SetSoundVolume(destructionSound, 0.6f);
     coreCollectingSound = LoadSound("resources/Sound/coreCollect.wav");
     SetSoundVolume(destructionSound, 0.3f);
+    damageSound = LoadSound("resources/Sound/asteroidBreak.wav");
+    SetSoundVolume(damageSound, 0.3f);
     
     // Randomize Planet model
     int randNum = rand() % 4;
@@ -253,6 +255,8 @@ void Planet::takeDmg(int t_damage)
     if (health > t_damage)
     {
         health -= t_damage;
+        SetSoundPitch(damageSound, 0.5 + static_cast<double>(std::rand()) / RAND_MAX * (0.8 - 0.5));
+        PlaySound(damageSound);
 
         explosionActive = true;
         
@@ -348,13 +352,32 @@ void Planet::shoot(Vector3 t_playerPos, Player& t_player)
 
 void Planet::shotClock(Vector3 t_playerPos, Player& t_player)
 {
-    if (shootingTimer < DifficultyManager::getOrdinanceSpacing())
+    if (firePorjectiles)
     {
-        shootingTimer += GetFrameTime();
+        if (shootingTimer < DifficultyManager::getOrdinanceSpacing())
+        {
+            shootingTimer += GetFrameTime();
+        }
+        else
+        {
+            shootingTimer = 0.0f;
+            shoot(t_playerPos, t_player);
+        }
     }
-    else
-    {
-        shootingTimer = 0.0f;
-        shoot(t_playerPos, t_player);
-    }
+}
+
+
+void Planet::changeColor(Color t_color)
+{
+    color = t_color;
+
+    // used to pass to the shader
+    Vector4 normalizedColor = {
+        color.r / 255.0f,
+        color.g / 255.0f,
+        color.b / 255.0f,
+        color.a / 255.0f
+    };
+    int colorLocationInShader = GetShaderLocation(explosionShader, "color");
+    SetShaderValue(explosionShader, colorLocationInShader, &normalizedColor, SHADER_UNIFORM_VEC4);
 }

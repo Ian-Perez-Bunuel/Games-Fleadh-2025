@@ -30,10 +30,10 @@ void Game::initialize()
     astroidBeltTexture = LoadTexture("resources/Art/2D/bgAsteroids.png");
 
     reticle = LoadTexture("resources/Art/2D/gyro.png");
+    frameRectReticle = { 0.0f, 0.0f, (float)reticle.width / 8, (float)reticle.height };
 
     planetManager.init();
 
-    frameRectReticle = { 0.0f, 0.0f, (float)reticle.width / 8, (float)reticle.height };
 
     // Camera initializing
     SceneCamera::initialize();
@@ -103,6 +103,23 @@ Game::~Game()
 
 void Game::update() 
 {
+    if (IsKeyPressed(KEY_ESCAPE))
+    {
+        SceneCamera::currentScene = Scene::MAIN_MENU;
+    }
+
+    if (player.respawn())
+    {
+        planetManager.reset();
+        objectManager->reset();
+    }
+
+    if (transitionedFromMenu)
+    {
+        transitionedFromMenu = false;
+        Transition::begin();
+    }
+
     if (GetMusicTimePlayed(musicStart) > GetMusicTimeLength(musicStart) - 1 && !musicLooping)
     {
         musicLooping = true;
@@ -133,7 +150,6 @@ void Game::update()
     {
         input();
         SceneCamera::update();
-
         
         player.update(controller.getLeftStickDir(), controller.getCursorPos());
         
@@ -224,7 +240,7 @@ void Game::drawMiddleground()
                 frameRectReticle.height * 0.5f   // scaled height
             };
 
-            DrawTexturePro(reticle, frameRectReticle, destRec, {destRec.width / 2.0f, destRec.height / 2.0f}, 0.0f, WHITE);
+            DrawTexturePro(reticle, frameRectReticle, destRec, {destRec.width / 2.0f, destRec.height / 2.0f}, 45.0f, WHITE);
         }
 
         achievementManager.draw();

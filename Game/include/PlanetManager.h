@@ -19,16 +19,13 @@ public:
     Planet& getMainPlanet() { return planets[currentPlanet]; }
 
     void nextPlanet();
+
+    void reset();
 private:
 
     std::vector<Planet> planets;
 
-    void genModel();
     Model model;
-    Model planet1;
-    Model planet2;
-    Model planet3;
-    Model planet4;
 
     static const int PLANET_AMOUNT = 6;
     int currentPlanet = 0;

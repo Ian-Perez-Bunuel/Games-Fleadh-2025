@@ -13,6 +13,8 @@ float Transition::startElapsedTime = 0.0f;
 
 Sound Transition::sound;
 
+Color Transition::color = {143, 45, 250, 255};
+
 void Transition::initSound()
 {
     sound = LoadSound("resources/Sound/transition.wav");
@@ -96,7 +98,7 @@ void Transition::draw()
         rlSetLineWidth(2.0f);
         for (int i = 0; i < LINES_AMOUNT; i++)
         {
-            DrawLineV(start[i], end[i], WHITE);
+            DrawLineV(start[i], end[i], color);
         }
     }
 }

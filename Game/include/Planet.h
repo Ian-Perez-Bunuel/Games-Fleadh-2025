@@ -25,6 +25,9 @@ public:
     bool isDefeated() { return defeated; }
     void takeDmg(int t_damage);
     
+    void turnOnProjectiles() { firePorjectiles = true; }
+
+    void changeColor(Color t_color);
 
 private:    
     Model model;
@@ -87,9 +90,12 @@ private:
     std::vector<Projectile> projectiles;
     float shootingTimer = 0.0f;
 
+    Sound damageSound;
     Sound destructionSound;
     Sound coreCollectingSound;
     bool coreStart = false;
+
+    bool firePorjectiles = false;
 };
 
 // Overload the + operator for Raylib's Color type

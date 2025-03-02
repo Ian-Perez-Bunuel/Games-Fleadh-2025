@@ -34,6 +34,9 @@ public:
 
     static void increase3DStage() { stage++; }
 
+    bool isAlive() { return alive; }
+    bool respawn();
+
 private:
     const int RADIUS = 40;
     Texture2D texture;
@@ -53,6 +56,9 @@ private:
     void animation();
     bool expand = false;
     float scale = 1.0f;
+
+    const int RESPAWN_DUR = 3;
+    float respawnTimer = 0.0f;
 
     // Mouse Rotation
     void rotateToMouse();

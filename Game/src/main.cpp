@@ -32,6 +32,8 @@ int main(void)
     game.initialize();
     mainMenu.initialize();
 
+    SetExitKey(KEY_BACKSPACE);
+
     // For web builds, do not use WindowShouldClose
     // see https://github.com/raysan5/raylib/wiki/Working-for-Web-(HTML5)#41-avoid-raylib-whilewindowshouldclose-loop
 

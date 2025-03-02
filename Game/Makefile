@@ -18,6 +18,7 @@ CC						:= g++
 DEBUG_DIR				:= ./debug
 RELEASE_DIR				:= ./release
 OBJECTS_DIR				:= ./objects
+RESOURCES_DIR			:= ./resources
 SRC_DIR					:= ./src
 WEB_DIR					:= ./web
 RAYLIB_DIR				:= ./raylib

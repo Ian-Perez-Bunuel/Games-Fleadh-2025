@@ -30,36 +30,47 @@ public:
     
     void grab();
     void held(Vector2 t_anchorPos, float t_dist);
-    void released(Vector2 t_releaseDir, bool t_toPlanet);
+    virtual void released(Vector2 t_releaseDir, bool t_toPlanet);
 
     bool checkObjectCollisions(std::shared_ptr<Object> t_otherObject);
     void destroy();
     void deactivate() { active = false; }
 
     // Planet things
-    void movementToPlanet(Planet& t_planet);
+    virtual void movementToPlanet(Planet& t_planet);
 
     // Achievement
     bool getRotationMaxHit() { return hitMaxRotationSpeed; }
     
 protected:
+    void move(); 
 
     bool active = false;
     bool beenPickedUp = false;
 
     int radius = 20;
     Texture2D texture;
+    Color color;
 
     float scale = 1.0f;
 
     Vector2 position = {0.0f, 0.0f};
     Vector2 velocity;
 
+    bool grabbed = false;
+    // Movement towards planet
+    Vector2 planetPos;
+    bool toPlanet = false;
+
+    float rotationSpeed = 150.0f;
+    const int MAX_ROTATION_SPEED = 260;
+
+    bool correctDist = false;
+
     // Particals
     ParticleSpawner particleSpawner;
 
 private:   
-    void move(); 
     bool moveToRotationArea(Vector2 t_anchorPos, float t_targetDist);
 
     void checkForSpeedIncrease();
@@ -67,27 +78,17 @@ private:
 
     void loop();
 
-    // Movement towards planet
-    bool toPlanet = false;
-    Vector2 planetPos;
-
     // Invinsability
     bool collidable = false;
     const int INVINCIBILITY_DURATION = 60 * 0.5;
     int invincibilityTimer = 0;
 
-    bool grabbed = false;
-    bool correctDist = false;
     float angle = -1.0f;
 
     // Physics
     float mass = 10;
     float speed = 2.0f;
-    float rotationSpeed = 150.0f;
-    const int MAX_ROTATION_SPEED = 260;
     float anchorDist = -1.0f;
-
-    Color color;
 
 
     // Sounds

@@ -31,4 +31,5 @@ private:
     static float startElapsedTime;
 
     static Sound sound;
+    static Color color;
 };
