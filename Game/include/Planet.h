@@ -88,6 +88,8 @@ private:
     float shootingTimer = 0.0f;
 
     Sound destructionSound;
+    Sound coreCollectingSound;
+    bool coreStart = false;
 };
 
 // Overload the + operator for Raylib's Color type

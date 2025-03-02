@@ -33,6 +33,17 @@ void ObjectManager::initSounds()
     SetSoundVolume(objectGrabbed, 0.2f);
 }
 
+void ObjectManager::reset()
+{
+    for (std::shared_ptr<Object>& o : objects)
+    {
+        if (!o->checkGrabbed())
+        {
+            o->deactivate();
+        }
+    }
+}
+
 void ObjectManager::addObject()
 {
     setRandomTexture();

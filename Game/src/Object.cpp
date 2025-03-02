@@ -279,8 +279,6 @@ void Object::move()
 		// Spawn trail particles
 		if (sqrt(pow(velocity.x, 2) + pow(velocity.y, 2)) >= 15)
 		{
-			float velMag = sqrt(pow(velocity.x, 2) + pow(velocity.y, 2));
-
 			Vector2 nextPos = {position.x + velocity.x, position.y + velocity.y};
 			float oppositeAngle = atan2f(nextPos.y - position.y, nextPos.x - position.x) * RAD2DEG + 270;
 			particleSpawner.setValues(position, 15, oppositeAngle);
@@ -300,8 +298,9 @@ void Object::movementToPlanet(Planet& t_planet)
 		if (fabs(position.x - planetPos.x) < leeway && fabs(position.y - planetPos.y) < leeway)
 		{
 			destroy();
-	
-			t_planet.takeDmg(10);
+			
+			int damage = (radius * (sqrt(pow(velocity.x, 2) + pow(velocity.y, 2)))) / 40;
+			t_planet.takeDmg(damage); 
 	
 			active = false;
 			toPlanet = false;

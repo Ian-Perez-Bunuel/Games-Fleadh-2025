@@ -34,6 +34,7 @@ public:
 
     bool checkObjectCollisions(std::shared_ptr<Object> t_otherObject);
     void destroy();
+    void deactivate() { active = false; }
 
     // Planet things
     void movementToPlanet(Planet& t_planet);

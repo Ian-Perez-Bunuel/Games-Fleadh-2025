@@ -1,5 +1,6 @@
 #include "../include/Projectile.h"
 #include <cmath>
+#include <random>
 #include "raymath.h"
 #include "../include/DifficultyManager.h"
 
@@ -11,6 +12,9 @@ Projectile::Projectile(Model& t_model, Color t_color, Vector3 t_pos, Vector3 t_t
     active = true;
 
     particleSpawner.addColor(color);
+
+    explosionSound = LoadSound("resources/Sound/rocketExplosion.wav");
+    SetSoundVolume(explosionSound, 0.2f);
 }
 
 void Projectile::draw()
@@ -74,6 +78,11 @@ void Projectile::moveToTarget()
         active = false;
         explode = true;
     }
+    else if (direction.x == 0 && direction.y == 0 && direction.z == 0)
+    {
+        active = false;
+        explode = true;
+    }
 }
 
 void Projectile::explosion()
@@ -83,6 +92,14 @@ void Projectile::explosion()
         if (explosionTimer < EXPLOSION_DURATION)
         {
             Vector2 position2D = convertToGameCoords(position);
+
+            if (!explosionPlayed)
+            {
+                SetSoundPitch(explosionSound, 0.8 + static_cast<double>(std::rand()) / RAND_MAX * (1.2 - 0.8));
+                PlaySound(explosionSound);
+
+                explosionPlayed = true;
+            }
 
             particleSpawner.setValues(position2D, 360, 0);
             particleSpawner.spawn();

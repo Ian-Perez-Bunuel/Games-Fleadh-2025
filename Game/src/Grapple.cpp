@@ -34,7 +34,9 @@ void Grapple::init()
 {
     // Sound
     grabSound = LoadSound("resources/Sound/attackFaster.wav");
+    releaseSound = LoadSound("resources/Sound/playerThrow.wav");
     SetSoundVolume(grabSound, 0.1f);
+    SetSoundVolume(releaseSound, 0.05f);
 }
 
 void Grapple::setStartPos(Vector2 t_startPos, Vector2& t_userPos)
@@ -70,6 +72,9 @@ void Grapple::release(Vector2 t_releaseDir, bool t_toPlanet)
 
         hookAngleShown = 0;
         currentState = 0;
+
+        SetSoundPitch(releaseSound, 0.8 + static_cast<double>(std::rand()) / RAND_MAX * (1.2 - 0.8));
+        PlaySound(releaseSound);
     }
 
     active = false;

@@ -1,6 +1,7 @@
 #include "../include/game.h"
 #include "../include/Globals.h"
 #include "../include/DifficultyManager.h"
+#include "../include/Transition.h"
 
 
 Game::Game()
@@ -26,7 +27,6 @@ void Game::initialize()
 
     reticle = LoadTexture("resources/Art/2D/gyro.png");
 
-    planetSelector.init();
     planetManager.init();
 
     frameRectReticle = { 0.0f, 0.0f, (float)reticle.width / 8, (float)reticle.height };
@@ -35,9 +35,12 @@ void Game::initialize()
     SceneCamera::initialize();
 
     // Music
-    music = LoadMusicStream("resources/Sound/balanceSong.mp3");
-    PlayMusicStream(music);
-    SetMusicVolume(music, musicVolume);
+    musicStart = LoadMusicStream("resources/Sound/themeIntro.wav");
+    musicLoop = LoadMusicStream("resources/Sound/themeLoop.wav");
+    PlayMusicStream(musicStart);
+    SetMusicVolume(musicStart, musicVolume);
+    SetMusicVolume(musicLoop, musicVolume);
+    Transition::initSound();
 
     DifficultyManager::initBaseDifficulties();
     // SET DIFFICULTY TEMP
@@ -96,32 +99,52 @@ Game::~Game()
 
 void Game::update() 
 {
-    UpdateMusicStream(music);   // Update music buffer with new stream data
-    input();
-    SceneCamera::update();
-
-    // Achievements
-    achievementManager.checkForChanges();
-
-    
-    player.update(controller.getLeftStickDir());
-    
-    objectManager->update(planetManager.getMainPlanet());
-
-    if (planetSelector.isActive())
+    if (GetMusicTimePlayed(musicStart) > GetMusicTimeLength(musicStart) - 1 && !musicLooping)
     {
-        planetSelector.transition();
+        musicLooping = true;
+        // Play the Intro music
+        StopMusicStream(musicStart);
+        PlayMusicStream(musicLoop);
     }
 
-    for (Projectile& proj : projectiles)
+    if (musicLooping)
     {
-        proj.update();
-    } 
+        UpdateMusicStream(musicLoop); 
+    }
+    else
+    {
+        UpdateMusicStream(musicStart); 
+    }
 
-    planetManager.update(convertToMiddleCoords(player.getPos()), player);
+    if (Transition::isActive())
+    {
+        objectManager->reset();
+
+        Transition::update();
+    }
+    else
+    {
+        input();
+        SceneCamera::update();
+
+        // Achievements
+        achievementManager.checkForChanges();
+
+        
+        player.update(controller.getLeftStickDir(), controller.getCursorPos());
+        
+        objectManager->update(planetManager.getMainPlanet());
+
+        for (Projectile& proj : projectiles)
+        {
+            proj.update();
+        } 
+
+        planetManager.update(convertToMiddleCoords(player.getPos()), player);
 
 
-    closestObjectToPlayer = objectManager->findClosestToPlayer();
+        closestObjectToPlayer = objectManager->findClosestToPlayer();
+    }
 }
 
 void Game::draw() 
@@ -175,6 +198,8 @@ void Game::drawMiddleground()
 
         BeginMode3D(SceneCamera::camera);
             planetManager.drawMainPlanet();
+
+            player.draw3D();
         EndMode3D();
 
         planetManager.getMainPlanet().drawParticles();
@@ -199,6 +224,8 @@ void Game::drawMiddleground()
 
 
         achievementManager.draw();
+
+        Transition::draw();
 
     EndTextureMode();
 
@@ -252,11 +279,6 @@ void Game::drawBackground()
         DrawTextureEx(backgroundTexture, {0, 0}, 0, 1.0, WHITE);
         DrawTextureEx(astroidBeltTexture, {-100, 400}, -25, 1.0, BLUE );
     EndTextureMode();
-
-    if (planetSelector.isActive())
-    {
-        planetSelector.draw();
-    }
 }
 
 void Game::coreCollection()
@@ -295,6 +317,11 @@ void Game::mouseInput()
         {
             player.shootGrapple(closestObjectToPlayer);
         }
+    }
+
+    if (IsKeyPressed(KEY_UP))
+    {
+        Player::increase3DStage();
     }
 }
 

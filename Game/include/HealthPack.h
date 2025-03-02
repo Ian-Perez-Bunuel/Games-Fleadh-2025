@@ -18,4 +18,6 @@ private:
     Texture2D texture;
 
     const int HEAL_AMOUNT = 20;
+
+    Sound pickupSound;
 };

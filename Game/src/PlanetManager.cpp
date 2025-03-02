@@ -2,6 +2,7 @@
 #include "../include/Globals.h"
 
 #include "../include/DifficultyManager.h"
+#include "../include/Transition.h"
 
 void PlanetManager::init()
 {
@@ -53,6 +54,7 @@ void PlanetManager::update(Vector3 t_playerPos3D, Player& t_player)
 
     if (planets[currentPlanet].isCoreConsumed() && planets[currentPlanet].checkIfParticlesActive())
     {
+        Transition::begin();
         nextPlanet();
     }
 }

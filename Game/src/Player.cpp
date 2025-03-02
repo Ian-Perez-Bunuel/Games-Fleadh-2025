@@ -2,6 +2,9 @@
 #include "../include/SceneCamera.h"
 #include "../include/AchievementManager.h"
 #include "../include/Globals.h"
+#include "../include/Controller.h"
+
+int Player::stage = 0;
 
 Player::Player()
 {
@@ -10,6 +13,17 @@ Player::Player()
 void Player::initialize()
 {
     texture = LoadTexture("resources/Art/2D/player.png");
+
+    // Models
+    printf("\n\n");
+    ring = LoadModel("resources/Art/3D/playerRing.obj");
+    beams = LoadModel("resources/Art/3D/playerBeam.obj");
+    hull = LoadModel("resources/Art/3D/playerHull.obj");
+    printf("\n\n");
+
+    damageSound = LoadSound("resources/Sound/playerDamage.wav");
+    SetSoundVolume(damageSound, 0.3f);
+
     position = {GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f};
 
     for (int i = 0; i < GRAPPLE_AMOUNT; i++)
@@ -26,6 +40,11 @@ void Player::initialize()
 void Player::rotateToMouse()
 {
     rotation = atan2f(GetMousePosition().y  - position.y, GetMousePosition().x  - position.x) * RAD2DEG;
+}
+
+void Player::rotateToController(Vector2 t_cursorPos)
+{
+    rotation = atan2f(t_cursorPos.y - position.y, t_cursorPos.x - position.x) * RAD2DEG;
 }
 
 void Player::boundryChecking()
@@ -46,6 +65,34 @@ void Player::boundryChecking()
     else if (position.y > SCREEN_HEIGHT - RADIUS)
     {
         position.y = SCREEN_HEIGHT - RADIUS;
+    }
+}
+
+void Player::draw3D()
+{
+    if (stage >= 1)
+    {
+        DrawModelWires(ring, position3D, 1.0, color);
+    }
+    if (stage >= 2)
+    {
+        DrawModel(ring, position3D, 1.0, color);
+    }
+    if (stage >= 3)
+    {
+        DrawModelWires(beams, position3D, 1.0, color);
+    }
+    if (stage >= 4)
+    {
+        DrawModel(beams, position3D, 1.0, color);
+    }
+    if (stage >= 5)
+    {
+        DrawModelWires(hull, position3D, 1.0, color);
+    }
+    if (stage >= 6)
+    {
+        DrawModel(hull, position3D, 1.0, color);
     }
 }
 
@@ -73,10 +120,13 @@ void Player::move()
     }
 
     // If no movement keys pressed
-    if (!IsKeyDown(KEY_W) && !IsKeyDown(KEY_A) && !IsKeyDown(KEY_S) && !IsKeyDown(KEY_D))
+    if (!IsKeyDown(KEY_W) && !IsKeyDown(KEY_S))
+    {
+        velocity.y *= FRICTION;
+    }
+    if (!IsKeyDown(KEY_A) && !IsKeyDown(KEY_D))
     {
         velocity.x *= FRICTION;
-        velocity.y *= FRICTION;
     }
     
     // Make sure the player doesnt go too fast
@@ -87,12 +137,13 @@ void Player::move()
     position.y += velocity.y;
 }
 
-void Player::controllerMovement(Vector2 t_stickDir)
+void Player::controllerMovement(Vector2 t_stickDir, Vector2 t_cursorPos)
 {
+    rotateToController(t_cursorPos);
     boundryChecking();
 
     velocity.x += t_stickDir.x * 0.4f;
-    velocity.y -= t_stickDir.y * 0.4f;
+    velocity.y += t_stickDir.y * 0.4f;
 
     if (t_stickDir.x == 0 && t_stickDir.y == 0)
     {
@@ -249,12 +300,20 @@ void Player::setGrappleAgression()
     }
 }
 
-void Player::update(Vector2 t_leftStickDir)
+void Player::update(Vector2 t_leftStickDir, Vector2 t_cursorPos)
 {   
     if (alive)
     {
-        controllerMovement(t_leftStickDir);
-        move();
+        updateModels();
+
+        if (IsGamepadAvailable(0))
+        {
+            controllerMovement(t_leftStickDir, t_cursorPos);
+        }
+        else
+        {
+            move();
+        }
     
         if (invincible)
         {
@@ -268,7 +327,23 @@ void Player::update(Vector2 t_leftStickDir)
         {
             grapples[i].update();
         }
+
+        position3D = convertToMiddleCoords(position);
     }
+}
+
+void Player::updateModels()
+{
+    Matrix tiltMatrix = MatrixRotateX(DEG2RAD * tilt);
+    Matrix spinMatrix = MatrixRotateY(DEG2RAD * rotation);
+
+    // Combine the rotations
+    Matrix rotationMatrix = MatrixMultiply(spinMatrix, tiltMatrix);
+
+    // Apply the combined rotation to the planet models
+    ring.transform = rotationMatrix;
+    beams.transform = rotationMatrix;
+    hull.transform = rotationMatrix;
 }
 
 void Player::kill()
@@ -310,6 +385,10 @@ void Player::takeDamage(int t_amount)
         {
             health -= t_amount;
             invincible = true;
+
+            SetSoundPitch(damageSound, 0.8 + static_cast<double>(std::rand()) / RAND_MAX * (1.2 - 0.8));
+            PlaySound(damageSound);
+
             SceneCamera::screenShake(SceneCamera::LARGE_SHAKE, 15);
         }
         else if (health == t_amount && !lastHit)
@@ -317,6 +396,9 @@ void Player::takeDamage(int t_amount)
             health = 1;
             lastHit = true;
             invincible = true;
+
+            SetSoundPitch(damageSound, 0.8 + static_cast<double>(std::rand()) / RAND_MAX * (1.2 - 0.8));
+            PlaySound(damageSound);
 
             SceneCamera::screenShake(SceneCamera::LARGE_SHAKE, 15);
         }
@@ -338,4 +420,12 @@ void Player::drawHealthBar()
     DrawRectangle(barPos.x, barPos.y, barLength, barHeight, BLACK);
 
     DrawRectangle(barPos.x, barPos.y, (health * barLength) / 100, barHeight, YELLOW);
+}
+
+Vector3 Player::convertToMiddleCoords(Vector2 t_originalCoords)
+{
+    float normalizedX = normalizeSigned(t_originalCoords.x, 0.0f, SCREEN_WIDTH);
+    float normalizedY = normalizeSigned(t_originalCoords.y, 0.0f, SCREEN_HEIGHT);
+    
+    return {normalizedX * SCREEN_BOUNDS_X, -normalizedY * SCREEN_BOUNDS_Y, MIDDLEGROUND_POS.z};
 }

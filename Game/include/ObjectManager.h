@@ -17,7 +17,8 @@ public:
 
     void draw();
     void update(Planet& t_planet);
-
+    void reset();
+    
     static const int SMALL;
     static const int MEDIUM;
     static const int LARGE;

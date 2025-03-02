@@ -6,7 +6,6 @@
 #define XBOX_ALIAS_2 "x-box"
 #define PS_ALIAS     "playstation"
 
-
 void Controller::getAllInputs()
 {
     if (IsGamepadAvailable(gamepad))

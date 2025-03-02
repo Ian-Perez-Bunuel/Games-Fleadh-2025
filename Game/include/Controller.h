@@ -44,7 +44,7 @@ public:
     Buttons buttons;
 
     // Cursor
-    Vector2 getCursorPos() { return {cursorPos.x, GetScreenHeight() - cursorPos.y}; }
+    Vector2 getCursorPos() { return cursorPos; }
     int getCursorRadius() { return CURSOR_RADIUS; }
     void drawCursor();
 
@@ -65,7 +65,7 @@ private:
 
     // Cursor
     void updateCursor();
-    Vector2 cursorPos  = { 400.0f, 400.0f};
+    Vector2 cursorPos = { 400.0f, 400.0f};
     const int CURSOR_RADIUS = 40;
     
     // Set axis deadzones

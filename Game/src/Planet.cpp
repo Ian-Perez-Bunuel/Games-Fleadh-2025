@@ -19,7 +19,9 @@ void Planet::init(Vector3 t_pos, int t_maxHealth, Color t_color)
     planet4 = LoadModel("resources/Art/3D/planet4.obj");
 
     destructionSound = LoadSound("resources/Sound/planetExplosion.wav");
-    SetSoundVolume(destructionSound, 0.75f);
+    SetSoundVolume(destructionSound, 0.6f);
+    coreCollectingSound = LoadSound("resources/Sound/coreCollect.wav");
+    SetSoundVolume(destructionSound, 0.3f);
     
     // Randomize Planet model
     int randNum = rand() % 4;
@@ -171,6 +173,11 @@ void Planet::whileDead(Vector3 t_playerPos3D, Vector2 t_playerPos2D)
     }
     else
     {
+        if (!coreStart)
+        {
+            PlaySound(coreCollectingSound);
+            coreStart = true;
+        }
         // Anything in this if  statement will only be called once when the core is consumed
         if (!coreConsumed)
         {

@@ -44,6 +44,9 @@ private:
 
     Color color;
 
+    Sound explosionSound;
+    bool explosionPlayed = false;
+
     // Normalize to -1 to 1 range
     float normalizeSigned(float x, float t_min, float t_max) { return 2 * (x - t_min) / (t_max - t_min) - 1; }
     Vector2 convertToGameCoords(Vector3 t_originalCoords);

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "raylib.h"
+#include "raymath.h"
 #include "stdio.h"
 #include <math.h>
 #include <memory>
@@ -14,8 +15,9 @@ public:
     Player();
     void initialize();
 
-    void update(Vector2 t_stickDir);
+    void update(Vector2 t_stickDir, Vector2 t_cursorPos);
     void draw();
+    void draw3D();
 
     Vector2& getPos() { return position; }
     int getRadius() { return RADIUS; }
@@ -27,11 +29,22 @@ public:
     void heal(int t_amount);
     void takeDamage(int t_amount);
 
+    static void increase3DStage() { stage++; }
+
 private:
     const int RADIUS = 40;
     Texture2D texture;
     Color color = WHITE;
 
+    // 3D
+    void updateModels();
+    Vector3 position3D;
+    Model ring;
+    Model beams;
+    Model hull;
+    static int stage;
+    const int tilt = 90;
+    
     Vector2 position;
 
     void animation();
@@ -40,12 +53,13 @@ private:
 
     // Mouse Rotation
     void rotateToMouse();
+    void rotateToController(Vector2 t_cursorPos);
     float rotation = 0;
 
     // Movement
     void move();
     void boundryChecking();
-    void controllerMovement(Vector2 t_stickDir);
+    void controllerMovement(Vector2 t_stickDir, Vector2 t_cursorPos);
     void capSpeed();
     const float SPEED = 0.25;
     const int MAX_SPEED = 6;
@@ -81,5 +95,10 @@ private:
     // Achivement trackers
     int objectsGrabbed = 0;
 
+    Sound damageSound;
+
+    // Normalize to -1 to 1 range
+    float normalizeSigned(float x, float t_min, float t_max) { return 2 * (x - t_min) / (t_max - t_min) - 1; }
+    Vector3 convertToMiddleCoords(Vector2 t_originalCoords);
     float pointToPointDist(Vector2 t_p1, Vector2 t_p2) { return sqrt(((t_p2.x - t_p1.x) * (t_p2.x - t_p1.x)) + ((t_p2.y - t_p1.y) * (t_p2.y - t_p1.y))); }
 };

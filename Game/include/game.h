@@ -76,8 +76,6 @@ private:
     RenderTexture2D middleground;
     RenderTexture2D foreground;
 
-    PlanetSelector planetSelector;
-
 
     // Projectile testing
     std::vector<Projectile> projectiles;
@@ -91,7 +89,9 @@ private:
     Vector2 mousePos;
 
     // Music
-    Music music;
+    Music musicStart;
+    Music musicLoop;
+    bool musicLooping = false;
     float musicVolume = 0.2f; 
 
 
