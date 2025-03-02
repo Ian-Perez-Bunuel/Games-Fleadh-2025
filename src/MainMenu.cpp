@@ -53,10 +53,10 @@ void MainMenu::initialize()
     playPos = { SCREEN_WIDTH  / 2.0f - 100, SCREEN_HEIGHT / 2.0f - 50};
     exitPos = { SCREEN_WIDTH  / 2.0f - 100, SCREEN_HEIGHT / 2.0f + 50 };
 
-    easyPos = { 200, 500.0f };
-    mediumPos = { 200, 600.0f };
-    hardPos = { 200, 700.0f };
-    extremePos = { 200, 800.0f };
+    easyPos = { 200.0f, SCREEN_HEIGHT * 0.5f };
+    mediumPos = { 200.0f, SCREEN_HEIGHT * 0.6f };
+    hardPos = { 200.0f, SCREEN_HEIGHT * 0.7f };
+    extremePos = { 200.0f, SCREEN_HEIGHT * 0.8f };
     arrowPos = {SCREEN_WIDTH * 0.9f, 400};
 
     player.initialize();
@@ -80,11 +80,6 @@ void MainMenu::initialize()
     options[4]->setBaseColor(RED);
     options.push_back(std::make_shared<Button>(buttonBreak, buttonGrabbed, extremeTexture, extremePos, BUTTON_RADIUS, extremeEffect));
     options[5]->setBaseColor(DARKPURPLE);
-
-    for (int i = 0; i < 6; i++)
-    {
-        printf("\n\n\nScale: %f\n\n\n", options[i]->getScale());
-    }
 }
 
 void MainMenu::initializeShaders()
@@ -198,6 +193,11 @@ void MainMenu::controllerInput()
 
 void MainMenu::update()
 {
+    for (int i = 0; i < 6; i++)
+    {
+        printf("\n\n\nPosition: %f, %f\n\n\n", options[i]->getPos().x, options[i]->getPos().y);
+    }
+
     input();
 
     findClosestButton();

@@ -15,7 +15,7 @@ Button::Button(Sound &t_breakSound, Sound &t_grabbedSound, Texture2D &t_texture,
 
 void Button::update()
 {
-    if (!checkGrabbed())
+    if (!checkGrabbed() && checkIfPickedUp())
     {
         if (!checkToPlanet())
         {

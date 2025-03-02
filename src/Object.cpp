@@ -8,9 +8,8 @@
 
 
 Object::Object(Sound& t_breakSound, Sound& t_grabbedSound, Texture2D& t_texture, Vector2 t_pos, int t_size, int dirAngle) 
-	: texture(t_texture), position(t_pos), breakSound(t_breakSound), grabbedSound(t_grabbedSound)
+	: texture(t_texture), position(t_pos), breakSound(t_breakSound), grabbedSound(t_grabbedSound), radius(t_size)
 {
-	radius = t_size;
 	mass = radius * 2;
 	rotationSpeed -= mass;
 
@@ -32,7 +31,6 @@ Object::Object(Sound& t_breakSound, Sound& t_grabbedSound, Texture2D& t_texture,
 		scale = 0.56f;
 	}
 	// Large is 1 so no change needed
-
 }
 
 void Object::update()
