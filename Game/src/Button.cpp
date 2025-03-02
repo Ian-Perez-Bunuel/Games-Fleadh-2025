@@ -7,18 +7,15 @@ Button::Button(Sound &t_breakSound, Sound &t_grabbedSound, Texture2D &t_texture,
 {
     originalPos = t_pos;
 
-    scale = 0.5f;
+    originalScale = 0.5f;
+	scale = originalScale;
 }
 
 void Button::update()
 {
     if (!checkGrabbed())
     {
-        if (checkToPlanet())
-        {
-            
-        }
-        else
+        if (!checkToPlanet())
         {
             if (elapsedTimeBounce < TIME_TAKEN_TO_POS)
             {
@@ -96,4 +93,11 @@ void Button::movementToPlanet(Planet &t_planet)
 			active = false;
 		}
 	}
+}
+
+void Button::reset()
+{
+	active = true;
+	position = originalPos;
+	scale = originalScale;
 }

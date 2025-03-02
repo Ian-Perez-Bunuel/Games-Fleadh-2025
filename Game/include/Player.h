@@ -108,6 +108,9 @@ private:
     int movementDone = 0;
 
     Sound damageSound;
+    Sound deathSound;
+
+    ParticleSpawner particles;
 
     // Normalize to -1 to 1 range
     float normalizeSigned(float x, float t_min, float t_max) { return 2 * (x - t_min) / (t_max - t_min) - 1; }

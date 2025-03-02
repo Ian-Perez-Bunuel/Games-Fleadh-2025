@@ -24,6 +24,8 @@ void Player::initialize()
 
     damageSound = LoadSound("resources/Sound/playerDamage.wav");
     SetSoundVolume(damageSound, 0.3f);
+    deathSound = LoadSound("resources/Sound/playerDeatch.wav");
+    SetSoundVolume(damageSound, 0.45f);
 
     position = {GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f};
 
@@ -31,6 +33,9 @@ void Player::initialize()
     {
         grapples[i].init();
     }
+
+    particles.addColor(YELLOW);
+    particles.addColor(RED);
 
     initHealthBar();
 }
@@ -373,6 +378,11 @@ void Player::updateModels()
 void Player::kill()
 {
     alive = false;
+
+    particles.setValues(position, 360, 0);
+    particles.spawn(5);
+
+    PlaySound(deathSound);
 }
 
 void Player::invincibleClock()
@@ -413,6 +423,9 @@ void Player::takeDamage(int t_amount)
             SetSoundPitch(damageSound, 0.8 + static_cast<double>(std::rand()) / RAND_MAX * (1.2 - 0.8));
             PlaySound(damageSound);
 
+            particles.setValues(position, 360, 0);
+            particles.spawn();
+
             SceneCamera::screenShake(SceneCamera::LARGE_SHAKE, 15);
         }
         else if (health == t_amount && !lastHit)
@@ -423,6 +436,9 @@ void Player::takeDamage(int t_amount)
 
             SetSoundPitch(damageSound, 0.8 + static_cast<double>(std::rand()) / RAND_MAX * (1.2 - 0.8));
             PlaySound(damageSound);
+
+            particles.setValues(position, 360, 0);
+            particles.spawn();
 
             SceneCamera::screenShake(SceneCamera::LARGE_SHAKE, 15);
         }

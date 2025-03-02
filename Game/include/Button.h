@@ -19,6 +19,8 @@ public:
 
     void setCanDamage() { canDamage = true; }
 
+    void reset();
+
     void (*effect)(); // Define a pointer funtions. This will allow it to copy another function's definition
 
 private:
@@ -26,6 +28,8 @@ private:
     Vector2 originalPos;
 
     bool canDamage = false;
+
+    float originalScale;
 
     const int TIME_TAKEN_TO_POS = 2;
     float elapsedTimeBounce = 0.0f;

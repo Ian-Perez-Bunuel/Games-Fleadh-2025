@@ -49,7 +49,7 @@ private:
     Texture2D extremeTexture;
 
     bool checkIfAnOptionPickedup();
-    std::vector<std::shared_ptr<Button>> options;
+    static std::vector<std::shared_ptr<Button>> options;
     std::shared_ptr<Button> closestButtonToPlayer;
 
     Sound buttonBreak;
@@ -99,7 +99,7 @@ private:
     const int BUTTON_RADIUS = 25;
     
     // Button effects
-    static void playEffect() { SceneCamera::currentScene = Scene::GAME; }
+    static void playEffect();
     static void exitEffect() { CloseWindow(); }
     static void easyEffect();
     static void mediumEffect();

@@ -3,6 +3,7 @@
 #include "../include/Globals.h"
 
 Planet MainMenu::planet;
+std::vector<std::shared_ptr<Button>> MainMenu::options;
 
 MainMenu::MainMenu()
 {
@@ -13,6 +14,13 @@ MainMenu::~MainMenu()
     UnloadTexture(logoTexture);
     UnloadTexture(playTexture);
     UnloadTexture(exitTexture);
+
+    UnloadTexture(easyTexture);
+    UnloadTexture(mediumTexture);
+    UnloadTexture(hardTexture);
+    UnloadTexture(extremeTexture);
+
+    UnloadTexture(arrow);
 }
 
 void MainMenu::initialize()
@@ -72,6 +80,14 @@ void MainMenu::initialize()
     options[4]->setBaseColor(RED);
     options.push_back(std::make_shared<Button>(buttonBreak, buttonGrabbed, extremeTexture, extremePos, BUTTON_RADIUS, extremeEffect));
     options[5]->setBaseColor(DARKPURPLE);
+
+    for (int i = 0; i < 6; i++)
+    {
+        if (!options[i]->isActive())
+        {
+            printf("\n\n\nNOT ACTIVE\n\n\n");
+        }
+    }
 }
 
 void MainMenu::initializeShaders()
@@ -364,6 +380,17 @@ bool MainMenu::checkIfMouseOnPlanet(Vector2 mousePos, Vector3 spherePos, float s
     
     // Check if the ray intersects the sphere
     return CheckCollisionRaySphere(ray, spherePos, sphereRadius);
+}
+
+
+void MainMenu::playEffect()
+{
+    SceneCamera::currentScene = Scene::GAME;
+
+    for (int i = 0; i < 6; i++)
+    {
+        options[i]->reset();
+    }
 }
 
 void MainMenu::easyEffect()
