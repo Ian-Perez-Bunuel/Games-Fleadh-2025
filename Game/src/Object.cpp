@@ -169,6 +169,10 @@ void Object::checkForSpeedIncrease()
 		{
 			rotationSpeed *= 1.05f; // Adjust acceleration factor as needed
 		}
+		else
+		{
+			hitMaxRotationSpeed = true;
+		}
 	}
 }
 

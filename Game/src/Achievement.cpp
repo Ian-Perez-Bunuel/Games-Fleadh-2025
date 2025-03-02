@@ -5,12 +5,12 @@
 #include <sstream>
 
 
-Achievement::Achievement(std::string t_title, std::string t_description, AchievementType t_type)
-    : title(t_title), description(t_description), type(t_type)
+Achievement::Achievement(Texture2D& t_texture, std::string t_title, std::string t_description, AchievementType t_type)
+    : texture(t_texture), title(t_title), description(t_description), type(t_type)
 {
     font = LoadFontEx("resources/dogicapixelbold.ttf", FONT_SIZE, 0, 0);
 
-    position = {100, 50};
+    position = {-100, 50};
 
     switch (type)
     {
@@ -39,11 +39,12 @@ void Achievement::addGoal(int* t_valueToKeepTrackOf, int t_goal)
     goal = t_goal;
 }
 
-void Achievement::checkIfCompleted()
+bool Achievement::checkIfCompleted()
 {
     if (value == nullptr)
     {
         printf("\n\n\"%s\" s value and goal hasn't been set.\n\n", title.c_str());
+        return false;
     }
 
     if (*value >= goal && !completed)
@@ -52,7 +53,11 @@ void Achievement::checkIfCompleted()
         show = true;
 
         printf("\n%s - Has been completed\n", title.c_str());
+
+        return true;
     }
+
+    return false;
 }
 
 bool Achievement::showClock()
@@ -74,14 +79,21 @@ void Achievement::draw(float t_yOffset)
 {
     if (completed && showClock())
     {
+        if (animationTimer < 1.0f)
+        {
+            animationTimer += 0.1f;
+        }
+
+        position.x = lerp(-WIDTH, X_POSITION, animationTimer);
         position.y = (t_yOffset * HEIGHT) + 55;
 
-        DrawRectangleLines(position.x, position.y, WIDTH, HEIGHT, BLUE);
+        // DrawRectangleLines(position.x, position.y, WIDTH, HEIGHT, BLUE);
+        DrawTextureEx(texture, position, 0, 0.6f, WHITE);
 
-        Vector2 titlePos = {position.x + 8, position.y + 15};
+        Vector2 titlePos = {position.x + 15, position.y + 25};
         DrawTextEx(font, splitSentence(title).c_str(), titlePos, FONT_SIZE, 0.5f, titleColor);
 
-        Vector2 descriptionPos = {position.x + 8, position.y + 65};
+        Vector2 descriptionPos = {position.x + 15, position.y + 80};
         DrawTextEx(font, splitSentence(description).c_str(), descriptionPos, FONT_SIZE, 0.5f, WHITE);
     }
 }

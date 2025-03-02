@@ -15,7 +15,7 @@ enum class AchievementType
 class Achievement
 {
 public:
-    Achievement(std::string t_title, std::string t_description, AchievementType t_type);
+    Achievement(Texture2D& t_texture, std::string t_title, std::string t_description, AchievementType t_type);
     void addGoal(int* t_valueToKeepTrackOf, int t_goal);
 
     void draw(float t_yOffset);
@@ -24,7 +24,7 @@ public:
     std::string getTitle() { return title; }
     bool hasBeenCompleted() { return completed; }
 
-    void checkIfCompleted();
+    bool checkIfCompleted();
 
 private:
     bool completed = false;
@@ -54,6 +54,11 @@ private:
     int* value = nullptr;
     int goal = 0;
 
+    Texture2D& texture;
 
+    const float X_POSITION = 100;
+    float animationTimer = 0.0f;
+
+    float lerp(float start, float end, float t) { return start + t * (end - start); }
     std::string splitSentence(std::string t_original);
 };

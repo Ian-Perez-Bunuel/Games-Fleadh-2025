@@ -1,6 +1,7 @@
 #include "../include/ObjectManager.h"
 #include "../include/Globals.h"
 #include "../include/DifficultyManager.h"
+#include "../include/AchievementManager.h"
 #include <bits/stdc++.h>
 
 
@@ -17,6 +18,12 @@ ObjectManager::ObjectManager(Player& t_player) : player(t_player)
 
     initPickupTextures();
     initSounds();
+    initAchievements();
+}
+
+void ObjectManager::initAchievements()
+{
+    AchievementManager::addGoalToAchievement("Particle Accelerator", &hitMaxRotationSpeed, 1);
 }
 
 void ObjectManager::initPickupTextures()
@@ -282,6 +289,12 @@ void ObjectManager::update(Planet& t_planet)
 	    }
 
         checkPlayerCollisions(object);
+
+        // Achievement checking
+        if (!hitMaxRotationSpeed)
+        {
+            hitMaxRotationSpeed = static_cast<int>(object->getRotationMaxHit());
+        }
     }
     checkCollisions();
 

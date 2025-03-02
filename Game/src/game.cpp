@@ -197,7 +197,8 @@ void Game::drawMiddleground()
         ClearBackground(BLANK);
 
         BeginMode3D(SceneCamera::camera);
-            planetManager.drawMainPlanet();
+            if (!Transition::isActive())
+                planetManager.drawMainPlanet();
 
             player.draw3D();
         EndMode3D();
@@ -221,7 +222,6 @@ void Game::drawMiddleground()
 
             DrawTexturePro(reticle, frameRectReticle, destRec, {destRec.width / 2.0f, destRec.height / 2.0f}, 0.0f, WHITE);
         }
-
 
         achievementManager.draw();
 
@@ -277,7 +277,7 @@ void Game::drawBackground()
 {
     BeginTextureMode(background);
         DrawTextureEx(backgroundTexture, {0, 0}, 0, 1.0, WHITE);
-        DrawTextureEx(astroidBeltTexture, {-100, 400}, -25, 1.0, BLUE );
+        DrawTextureEx(astroidBeltTexture, {-100, 700}, -25, 1.0, BLUE );
     EndTextureMode();
 }
 

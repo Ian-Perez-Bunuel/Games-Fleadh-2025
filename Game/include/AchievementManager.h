@@ -20,4 +20,7 @@ private:
     static std::vector<Achievement> achievements;
 
     int achievementAmount = 0;
+
+    Texture2D box;
+    Sound achievementComplete;
 };

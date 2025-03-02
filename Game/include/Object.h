@@ -38,6 +38,9 @@ public:
 
     // Planet things
     void movementToPlanet(Planet& t_planet);
+
+    // Achievement
+    bool getRotationMaxHit() { return hitMaxRotationSpeed; }
     
 private:
     void move();    
@@ -86,6 +89,9 @@ private:
     // Sounds
     Sound& breakSound;
     Sound& grabbedSound;
+
+    // Achievement Tracking
+    bool hitMaxRotationSpeed = false;
 
     float pointToPointDist(Vector2 t_p1, Vector2 t_p2) { return sqrt(((t_p2.x - t_p1.x) * (t_p2.x - t_p1.x)) + ((t_p2.y - t_p1.y) * (t_p2.y - t_p1.y))); }
     float radiansToDegrees(float t_radians) { return t_radians * (180/3.14f); }

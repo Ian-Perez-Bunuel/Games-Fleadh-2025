@@ -64,4 +64,8 @@ private:
     void removeNotActives();
 
     float pointToPointDist(Vector2 t_p1, Vector2 t_p2) { return sqrt(((t_p2.x - t_p1.x) * (t_p2.x - t_p1.x)) + ((t_p2.y - t_p1.y) * (t_p2.y - t_p1.y))); }
+
+    // Achievements
+    void initAchievements();
+    int hitMaxRotationSpeed = 0;
 };

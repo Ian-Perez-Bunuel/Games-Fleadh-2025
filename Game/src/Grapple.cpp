@@ -45,7 +45,7 @@ void Grapple::setStartPos(Vector2 t_startPos, Vector2& t_userPos)
     startPos = t_startPos;
 }
 
-void Grapple::shoot(std::shared_ptr<Object> t_target, int& t_objectsPicked)
+bool Grapple::shoot(std::shared_ptr<Object> t_target)
 {
     float distToTarget = pointToPointDist(*userPos, t_target->getPos());
 
@@ -55,11 +55,13 @@ void Grapple::shoot(std::shared_ptr<Object> t_target, int& t_objectsPicked)
         grappledObject = t_target;
         currentState = 1; // Aiming
 
-        t_objectsPicked++;
-
         SetSoundPitch(grabSound, 0.8 + static_cast<double>(std::rand()) / RAND_MAX * (1.2 - 0.8));
         PlaySound(grabSound);
+
+        return true;
     }
+
+    return false;
 }
 
 void Grapple::release(Vector2 t_releaseDir, bool t_toPlanet)

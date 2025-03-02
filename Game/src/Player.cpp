@@ -33,8 +33,14 @@ void Player::initialize()
 
     initHealthBar();
 
-    // Achievements
-    AchievementManager::addGoalToAchievement("GRAB, GRAB, GRAB!!!", &objectsGrabbed, 1);
+    // Object Achievements
+    AchievementManager::addGoalToAchievement("Baby's first toy", &objectsGrabbed, 1);
+    AchievementManager::addGoalToAchievement("GRAB, GRAB, GRAB!", &objectsGrabbed, 5);
+    AchievementManager::addGoalToAchievement("ALL FULL!!!", &maxGrappledObjects, GRAPPLE_AMOUNT);
+    AchievementManager::addGoalToAchievement("Asteroid Lover", &objectsGrabbed, 20);
+    // Movement Achievements
+    AchievementManager::addGoalToAchievement("Engines On!", &movementDone, 5);
+    AchievementManager::addGoalToAchievement("Marathon Runner", &movementDone, 1500);
 }
 
 void Player::rotateToMouse()
@@ -105,18 +111,22 @@ void Player::move()
     if (IsKeyDown(KEY_W))
     {
         velocity.y -= SPEED;
+        movementDone++;
     }
     else if (IsKeyDown(KEY_S))
     {
         velocity.y += SPEED;
+        movementDone++;
     } 
     if (IsKeyDown(KEY_A))
     {
         velocity.x -= SPEED;
+        movementDone++;
     }
     else if (IsKeyDown(KEY_D))
     {
         velocity.x += SPEED;
+        movementDone++;
     }
 
     // If no movement keys pressed
@@ -144,6 +154,11 @@ void Player::controllerMovement(Vector2 t_stickDir, Vector2 t_cursorPos)
 
     velocity.x += t_stickDir.x * 0.4f;
     velocity.y += t_stickDir.y * 0.4f;
+
+    if (velocity.x >= 0.2f || velocity.y >= 0.2f)
+    {
+        movementDone++;
+    }
 
     if (t_stickDir.x == 0 && t_stickDir.y == 0)
     {
@@ -231,7 +246,11 @@ void Player::shootGrapple(std::shared_ptr<Object> t_object)
         }
         if (closestGrappleIndex >= 0)
         {
-            grapples[closestGrappleIndex].shoot(t_object, objectsGrabbed);
+            if (grapples[closestGrappleIndex].shoot(t_object)) // Returns true if an object was grabbed
+            {
+                objectsGrabbed++;
+                maxGrappledObjects++;
+            }
         }
     }
 }
@@ -241,6 +260,7 @@ void Player::releaseGrapple(Vector2 t_releaseDir, bool t_toPlanet)
     for (int i = 0; i < GRAPPLE_AMOUNT; i++)
     {
         grapples[i].release(t_releaseDir, t_toPlanet);
+        maxGrappledObjects = 0;
     }
 }
 

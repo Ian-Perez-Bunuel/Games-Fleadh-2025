@@ -94,6 +94,8 @@ private:
 
     // Achivement trackers
     int objectsGrabbed = 0;
+    int maxGrappledObjects = 0;
+    int movementDone = 0;
 
     Sound damageSound;
 
