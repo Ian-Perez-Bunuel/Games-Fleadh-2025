@@ -23,7 +23,7 @@ void Controller::getAllInputs()
 
 void Controller::drawCursor()
 {
-    DrawCircleLinesV(cursorPos, CURSOR_RADIUS, BLUE); 
+    DrawCircleLinesV(cursorPos, CURSOR_RADIUS, YELLOW); 
 }
 
 void Controller::updateCursor()

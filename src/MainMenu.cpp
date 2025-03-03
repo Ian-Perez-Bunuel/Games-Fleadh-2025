@@ -482,22 +482,38 @@ void MainMenu::easyEffect()
 {
     DifficultyManager::setDifficulty(DifficultyManager::getDifficulty(0)); 
     planet.changeColor(GREEN);
+
+    ParticleSpawner& particles = planet.getParticles();
+    particles.clearColors();
+    particles.addColor(GREEN);
 }
 
 void MainMenu::mediumEffect()
 {
     DifficultyManager::setDifficulty(DifficultyManager::getDifficulty(1)); 
     planet.changeColor(ORANGE);
+    
+    ParticleSpawner& particles = planet.getParticles();
+    particles.clearColors();
+    particles.addColor(ORANGE);
 }
 
 void MainMenu::hardEffect()
 {
     DifficultyManager::setDifficulty(DifficultyManager::getDifficulty(2)); 
     planet.changeColor(RED);
+    
+    ParticleSpawner& particles = planet.getParticles();
+    particles.clearColors();
+    particles.addColor(RED);
 }
 
 void MainMenu::extremeEffect()
 {
     DifficultyManager::setDifficulty(DifficultyManager::getDifficulty(3)); 
     planet.changeColor(DARKPURPLE);
+    
+    ParticleSpawner& particles = planet.getParticles();
+    particles.clearColors();
+    particles.addColor(DARKPURPLE);
 }

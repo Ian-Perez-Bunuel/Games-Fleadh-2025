@@ -83,6 +83,9 @@
         "__node_handle": "cpp",
         "execution": "cpp",
         "string_view": "cpp",
-        "*.m": "cpp"
+        "*.m": "cpp",
+        "regex": "cpp",
+        "strstream": "cpp",
+        "__hash_table": "cpp"
     }
 }

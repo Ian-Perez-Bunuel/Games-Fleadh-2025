@@ -69,7 +69,7 @@ void PlanetManager::initAchievements()
     AchievementManager::addGoalToAchievement("3D Achieved!!!", &coresCollected, 5);
 }
 
-void PlanetManager::update(Vector3 t_playerPos3D, Player& t_player)
+bool PlanetManager::update(Vector3 t_playerPos3D, Player& t_player)
 {
     planets[currentPlanet].update(t_playerPos3D, t_player);
 
@@ -79,7 +79,11 @@ void PlanetManager::update(Vector3 t_playerPos3D, Player& t_player)
         Transition::begin();
         t_player.dropEverything();
         nextPlanet();
+        
+        return true;
     }
+
+    return false;
 }
 
 void PlanetManager::drawMainPlanet()

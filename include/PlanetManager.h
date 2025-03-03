@@ -13,7 +13,7 @@ public:
     void init();
     void initAchievements();
 
-    void update(Vector3 t_playerPos3D, Player& t_player);
+    bool update(Vector3 t_playerPos3D, Player& t_player);
     void drawMainPlanet();
     void drawOtherPlanets();
 

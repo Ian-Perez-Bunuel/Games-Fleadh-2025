@@ -32,6 +32,8 @@ public:
     void setAlive(); 
     void setOriginalPos(Vector3 t_pos) { originalPos = t_pos; }
 
+    ParticleSpawner& getParticles() { return deathParticles; }
+
 private:    
     Model model;
 
