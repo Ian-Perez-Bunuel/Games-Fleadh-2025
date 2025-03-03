@@ -232,6 +232,33 @@ void MainMenu::update()
     }
 }
 
+void MainMenu::animateArrow()
+{
+    // Define target positions based on the direction.
+    // When positiveDir is true, move toward (20, -20), otherwise toward (-20, 20).
+    Vector2 target;
+    if (positiveDir)
+    {
+        target = {20.0f, -20.0f};
+    }
+    else
+    {
+        target = {-20.0f, 20.0f};
+    }
+
+    // Smoothing factor (adjust to taste).
+    float smoothingFactor = 5.0f;
+
+    // Move a fraction of the distance toward the target.
+    arrowOffset.x += (target.x - arrowOffset.x) * smoothingFactor * GetFrameTime();
+    arrowOffset.y += (target.y - arrowOffset.y) * smoothingFactor * GetFrameTime();
+
+    // Check if we're close enough to the target to flip direction.
+    if (fabs(arrowOffset.x - target.x) < 0.1f && fabs(arrowOffset.y - target.y) < 0.1f)
+    {
+        positiveDir = !positiveDir;
+    }
+}
 
 void MainMenu::draw()
 {
@@ -248,7 +275,8 @@ void MainMenu::draw()
 
         if (buttonPickedUp)
         {
-            DrawTextureEx(arrow, arrowPos, 45, 1.0f, RED);
+            animateArrow();
+            DrawTextureEx(arrow, {arrowPos.x + arrowOffset.x, arrowPos.y + arrowOffset.y}, 45, 1.0f, RED);
         }
 
         BeginMode3D(SceneCamera::camera);

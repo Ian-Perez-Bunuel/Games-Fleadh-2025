@@ -506,5 +506,5 @@ Vector3 Player::convertToMiddleCoords(Vector2 t_originalCoords)
     float normalizedX = normalizeSigned(t_originalCoords.x, 0.0f, SCREEN_WIDTH);
     float normalizedY = normalizeSigned(t_originalCoords.y, 0.0f, SCREEN_HEIGHT);
     
-    return {normalizedX * 6.8f, -normalizedY * 3.68f, MIDDLEGROUND_POS.z};
+    return {normalizedX * SCREEN_BOUNDS_X, -normalizedY * SCREEN_BOUNDS_Y, MIDDLEGROUND_POS.z};
 }

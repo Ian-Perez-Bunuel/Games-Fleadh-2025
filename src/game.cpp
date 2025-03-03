@@ -17,7 +17,7 @@ void Game::initialize()
 
     // Initialize all achievements
     achievementManager.init();
-    AchievementManager::addGoalToAchievement("Hello World!", &framesSpeed, 8);
+    AchievementManager::addGoalToAchievement("Hello World!", &amountOfClicks, 0);
 
     player.initialize();
     player.initAchievements();
@@ -29,8 +29,9 @@ void Game::initialize()
     backgroundTexture = LoadTexture("resources/Art/2D/background.png");
     astroidBeltTexture = LoadTexture("resources/Art/2D/bgAsteroids.png");
 
-    reticle = LoadTexture("resources/Art/2D/gyro.png");
-    frameRectReticle = { 0.0f, 0.0f, (float)reticle.width / 8, (float)reticle.height };
+    reticleIn = LoadModel("resources/Art/3D/gyroscope1.glb");
+    reticleMiddle = LoadModel("resources/Art/3D/gyroscope2.glb");
+    reticleOut = LoadModel("resources/Art/3D/gyroscope3.glb");
 
     planetManager.init();
 
@@ -196,20 +197,27 @@ void Game::draw()
 
 void Game::animateReticle()
 {
-    framesCounter++;
+    tilt += ROTATION_SPEED;
+    pitch += ROTATION_SPEED;
+    roll += ROTATION_SPEED;
+    yaw += ROTATION_SPEED;
+    // Rotate gyro
+    Matrix tiltMatrixOut = MatrixRotateY(DEG2RAD * tilt);
+    Matrix spinMatrixOut = MatrixRotateX(DEG2RAD * pitch);
+    Matrix tiltMatrixMiddle = MatrixRotateX(DEG2RAD * tilt);
+    Matrix spinMatrixMiddle = MatrixRotateY(DEG2RAD * roll);
+    Matrix tiltMatrixIn = MatrixRotateY(DEG2RAD * tilt);
+    Matrix spinMatrixIn = MatrixRotateZ(DEG2RAD * yaw);
 
-    if (framesCounter >= (60 / framesSpeed))
-    {
-        framesCounter = 0;
-        currentFrameReticle++;
+    // Combine the rotations
+    Matrix rotationMatrixOut = MatrixMultiply(spinMatrixOut, tiltMatrixOut);
+    Matrix rotationMatrixMiddle = MatrixMultiply(spinMatrixMiddle, tiltMatrixMiddle);
+    Matrix rotationMatrixIn = MatrixMultiply(spinMatrixIn, tiltMatrixIn);
 
-        if (currentFrameReticle > 5) 
-        {
-            currentFrameReticle = 0;
-        }
-
-        frameRectReticle.x = (float)currentFrameReticle * (float)reticle.width / 8;
-    }
+    // Apply the combined rotation to the planet models
+    reticleOut.transform = rotationMatrixOut;
+    reticleMiddle.transform = rotationMatrixMiddle;
+    reticleIn.transform = rotationMatrixIn;
 }
 
 void Game::drawMiddleground()
@@ -222,6 +230,15 @@ void Game::drawMiddleground()
             if (!Transition::isActive())
             {
                 planetManager.drawMainPlanet();
+
+                if (closestObjectToPlayer != nullptr)
+                {
+                    animateReticle();
+                    
+                    DrawModel(reticleIn, convertToMiddleCoords(closestObjectToPlayer->getPos()), 0.25f, WHITE);
+                    DrawModel(reticleMiddle, convertToMiddleCoords(closestObjectToPlayer->getPos()), 0.25f, WHITE);
+                    DrawModel(reticleOut, convertToMiddleCoords(closestObjectToPlayer->getPos()), 0.25f, WHITE);
+                }
             }
 
             player.draw3D();
@@ -232,20 +249,6 @@ void Game::drawMiddleground()
         objectManager->draw();
         
         player.draw();
-
-        if (closestObjectToPlayer != nullptr)
-        {
-            animateReticle();
-            // Calculate destination rectangle with scaled width and height
-            Rectangle destRec = {
-                closestObjectToPlayer->getPos().x,
-                closestObjectToPlayer->getPos().y,
-                frameRectReticle.width * 0.5f,   // scaled width
-                frameRectReticle.height * 0.5f   // scaled height
-            };
-
-            DrawTexturePro(reticle, frameRectReticle, destRec, {destRec.width / 2.0f, destRec.height / 2.0f}, 45.0f, WHITE);
-        }
 
         achievementManager.draw();
 

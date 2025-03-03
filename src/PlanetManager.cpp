@@ -39,8 +39,8 @@ void PlanetManager::init()
 
         printf("\n\n%f, %f, %f\n\n", randomColor.r, randomColor.g, randomColor.b);
 
-        float randX = static_cast<float>((rand() % (2 * SCREEN_BOUNDS_X)) - SCREEN_BOUNDS_X);
-        float randY = static_cast<float>((rand() % (2 * SCREEN_BOUNDS_Y)) - SCREEN_BOUNDS_Y);
+        float randX = static_cast<float>((rand() % (2 * (int)SCREEN_BOUNDS_X)) - SCREEN_BOUNDS_X);
+        float randY = static_cast<float>((rand() % (2 * (int)SCREEN_BOUNDS_Y)) - SCREEN_BOUNDS_Y);
 
         // Health goes from 100 up in 50
 
@@ -119,8 +119,8 @@ void PlanetManager::reset()
         randomColor.b = b;
         randomColor.a = 255;
 
-        float randX = static_cast<float>((rand() % (2 * SCREEN_BOUNDS_X)) - SCREEN_BOUNDS_X);
-        float randY = static_cast<float>((rand() % (2 * SCREEN_BOUNDS_Y)) - SCREEN_BOUNDS_Y);
+        float randX = static_cast<float>((rand() % (2 * (int)SCREEN_BOUNDS_X)) - SCREEN_BOUNDS_X);
+        float randY = static_cast<float>((rand() % (2 * (int)SCREEN_BOUNDS_Y)) - SCREEN_BOUNDS_Y);
 
         planets[i].init({randX, randY, MAIN_PLANET_Z - (i * PLANET_SPACING)}, 100 + i * 50, randomColor);
     }

@@ -35,8 +35,11 @@ private:
     Texture2D backgroundTexture;
     Texture2D logoTexture;
 
+    void animateArrow();
+    bool positiveDir = false;
     Texture2D arrow;
     Vector2 arrowPos;
+    Vector2 arrowOffset = {0.0f, 0.0f};
 
     const float MAX_BUTTON_SCALE = 1.1f;
 
