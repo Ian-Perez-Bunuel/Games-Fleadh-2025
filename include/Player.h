@@ -26,6 +26,7 @@ public:
     // Grapple commands
     void shootGrapple(std::shared_ptr<Object> t_object);
     void releaseGrapple(Vector2 t_releaseDir, bool t_toPlanet);
+    void dropEverything();
 
     void heal(int t_amount);
     void takeDamage(int t_amount);

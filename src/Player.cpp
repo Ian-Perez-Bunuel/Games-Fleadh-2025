@@ -475,6 +475,11 @@ void Player::drawHealthBar()
     }
 }
 
+void Player::dropEverything()
+{
+    releaseGrapple({0, 0}, false);
+}
+
 bool Player::respawn()
 {
     if (!alive)
@@ -485,8 +490,6 @@ bool Player::respawn()
         }
         else
         {
-            releaseGrapple({0, 0}, false);
-
             respawnTimer = 0.0f;
             position = {SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f};
     

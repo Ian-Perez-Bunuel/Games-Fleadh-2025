@@ -25,7 +25,7 @@ public:
     bool isDefeated() { return defeated; }
     void takeDmg(int t_damage);
     
-    void turnOnProjectiles() { firePorjectiles = true; }
+    void turnOnProjectiles() { fireProjectiles = true; }
 
     void changeColor(Color t_color);
 
@@ -100,7 +100,10 @@ private:
     Sound coreCollectingSound;
     bool coreStart = false;
 
-    bool firePorjectiles = false;
+    bool fireProjectiles = false;
+    bool canShoot = false;
+    const int COOLDOWN_DUR = 3;
+    float cooldownTimer = 0.0f;
 };
 
 // Overload the + operator for Raylib's Color type

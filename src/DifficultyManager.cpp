@@ -10,14 +10,14 @@ void DifficultyManager::initBaseDifficulties()
 {
     // Easy
     easy.batchSpawnAmount = 2;
-    easy.objectMinimum = 10;
+    easy.objectMinimum = 20;
     easy.ordinanceSpacing = 5.0f;
     easy.pickupChance = 3;
     easy.ordinanceSpeed = 0.1f;
 
     // Medium
     medium.batchSpawnAmount = 3;
-    medium.objectMinimum = 20;
+    medium.objectMinimum = 30;
     medium.ordinanceSpacing = 3.5f;
     medium.pickupChance = 5;
     medium.ordinanceSpeed = 0.15f;
@@ -27,15 +27,14 @@ void DifficultyManager::initBaseDifficulties()
     hard.objectMinimum = 50;
     hard.ordinanceSpacing = 1.5f;
     hard.pickupChance = 7;
-    hard.ordinanceSpeed = 0.25f;
+    hard.ordinanceSpeed = 0.22f;
 
     // Extreme
     extreme.batchSpawnAmount = 5;
     extreme.objectMinimum = 150;
-    extreme.ordinanceSpacing = 0.5f;
+    extreme.ordinanceSpacing = 0.8f;
     extreme.pickupChance = 10;
-    extreme.ordinanceSpeed = 0.4f;
-    
+    extreme.ordinanceSpeed = 0.3f;
 }
 
 void DifficultyManager::setDifficulty(DifficultySettings t_difficulty)

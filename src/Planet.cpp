@@ -10,6 +10,8 @@
 void Planet::init(Vector3 t_pos, int t_maxHealth, Color t_color)
 {
     projectiles.clear();
+    deathParticles.clearColors();
+
     setOriginalPos(t_pos);
     position = t_pos;
 
@@ -383,7 +385,7 @@ void Planet::shoot(Vector3 t_playerPos, Player& t_player)
 
 void Planet::shotClock(Vector3 t_playerPos, Player& t_player)
 {
-    if (firePorjectiles)
+    if (fireProjectiles && canShoot)
     {
         if (shootingTimer < DifficultyManager::getOrdinanceSpacing())
         {
@@ -393,6 +395,18 @@ void Planet::shotClock(Vector3 t_playerPos, Player& t_player)
         {
             shootingTimer = 0.0f;
             shoot(t_playerPos, t_player);
+        }
+    }
+    else if (!canShoot)
+    {
+        if (cooldownTimer < COOLDOWN_DUR)
+        {
+            cooldownTimer += GetFrameTime();
+        }
+        else
+        {
+            canShoot = true;
+            cooldownTimer = 0.0f;
         }
     }
 }

@@ -91,3 +91,11 @@ void AchievementManager::addGoalToAchievement(std::string t_achievementTitle, in
         printf("\n\nVALUE IS NULLPTR\n\n");
     }
 }
+
+void AchievementManager::lockAll()
+{
+    for (Achievement& a : achievements)
+    {
+        a.lock();
+    }
+}

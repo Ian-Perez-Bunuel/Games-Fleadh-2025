@@ -14,6 +14,8 @@ public:
     static void addGoalToAchievement(std::string t_achievementTitle, int* t_valueToKeepTrackOf, int t_goal);
 
     static void checkForChanges();
+    static void lockAll();
+
     void draw();
 
 private:

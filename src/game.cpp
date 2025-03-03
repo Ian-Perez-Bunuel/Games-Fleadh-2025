@@ -113,6 +113,7 @@ void Game::update()
     {
         planetManager.reset();
         objectManager->reset();
+        AchievementManager::lockAll();
     }
 
     if (transitionedFromMenu)
@@ -351,6 +352,8 @@ void Game::mouseInput()
         SceneCamera::currentScene = Scene::MAIN_MENU;
         planetManager.reset();
         Player::resetStages();
+        player.dropEverything();
+        AchievementManager::lockAll();
     }
 
     if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
@@ -384,6 +387,7 @@ void Game::controllerInput()
         Transition::begin();
         SceneCamera::currentScene = Scene::MAIN_MENU;
         planetManager.reset();
+        player.dropEverything();
         Player::resetStages();
     }
     
