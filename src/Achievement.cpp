@@ -1,12 +1,13 @@
 #include "../include/Achievement.h"
 #include "../include/Globals.h"
+#include "../include/reasings.h"
 #include "rlgl.h"
 
 #include <sstream>
 
 
-Achievement::Achievement(Texture2D& t_texture, std::string t_title, std::string t_description, AchievementType t_type)
-    : texture(t_texture), title(t_title), description(t_description), type(t_type)
+Achievement::Achievement(Texture2D& t_texture, std::string t_title, AchievementType t_type)
+    : texture(t_texture), title(t_title), type(t_type)
 {
     font = LoadFontEx("resources/dogicapixelbold.ttf", FONT_SIZE, 0, 0);
 
@@ -87,37 +88,74 @@ void Achievement::draw(float t_yOffset)
         position.x = lerp(-WIDTH, X_POSITION, animationTimer);
         position.y = (t_yOffset * HEIGHT) + 55;
 
-        // DrawRectangleLines(position.x, position.y, WIDTH, HEIGHT, BLUE);
-        DrawTextureEx(texture, position, 0, 0.6f, WHITE);
+        float difference = END_SCALE - START_SCALE;
+        if (scaleTimer < 1.5f)
+        {
+            scaleTimer += GetFrameTime();
+            scale = EaseElasticOut(scaleTimer, START_SCALE, difference, 1.5f);
+        }
+        else
+        {
+            scale = END_SCALE;
+        }
+
+        printf("\n\nScale: %f\n\n", scale);
+
+        DrawTextureEx(texture, position, 0, scale, WHITE);
 
         Vector2 titlePos = {position.x + 15, position.y + 25};
-        DrawTextEx(font, splitSentence(title).c_str(), titlePos, FONT_SIZE, 0.5f, titleColor);
-
-        Vector2 descriptionPos = {position.x + 15, position.y + 80};
-        DrawTextEx(font, splitSentence(description).c_str(), descriptionPos, FONT_SIZE, 0.5f, WHITE);
+        DrawTextEx(font, splitSentence(title).c_str(), titlePos, FONT_SIZE, 5.0f, titleColor);
     }
 }
 
 
 std::string Achievement::splitSentence(std::string t_original)
 {
+    // Default parameters for text wrapping.
+    const int maxWidth = 50;
+    const float spacing = 5.0f;
+    // Get the default font (requires an initialized window).
+    Font font = GetFontDefault();
+
     std::istringstream words(t_original);
-    std::string word, line, result;
+    std::string word;
+    std::string line;
+    std::string result;
     
-    while (words >> word) {
-        // Check if adding the next word exceeds the line length.
-        if (!line.empty() && (line.size() + word.size() + 1 > CHARACTERS_PER_LINE)) {
-            result += line + "\n";  // Append the current line with newline.
-            line = word;            // Start a new line with the current word.
-        } else {
+    while (words >> word)
+    {
+        // Create a candidate line by adding the next word.
+        std::string testLine = line.empty() ? word : line + " " + word;
+        Vector2 size = MeasureTextEx(font, testLine.c_str(), (float)FONT_SIZE, spacing);
+        
+        // If the test line exceeds maxWidth, append the current line and start a new one.
+        if (size.x > maxWidth)
+        {
             if (!line.empty())
-                line += " "; // Add a space between words.
+            {
+                result += line + "\n\n";
+                line = word;
+            }
+            else
+            {
+                // If a single word exceeds maxWidth, add it as its own line.
+                result += word + "\n\n";
+                line.clear();
+            }
+        }
+        else
+        {
+            if (!line.empty())
+                line += " ";
             line += word;
         }
     }
+    
     // Append any remaining text.
     if (!line.empty())
+    {
         result += line;
+    }
     
     return result;
 }

@@ -23,7 +23,7 @@ ObjectManager::ObjectManager(Player& t_player) : player(t_player)
 
 void ObjectManager::initAchievements()
 {
-    AchievementManager::addGoalToAchievement("Particle Accelerator", &hitMaxRotationSpeed, 1);
+    AchievementManager::addGoalToAchievement("Speed Star!", &hitMaxRotationSpeed, 1);
 }
 
 void ObjectManager::initPickupTextures()

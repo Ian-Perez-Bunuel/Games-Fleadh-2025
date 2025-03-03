@@ -17,7 +17,7 @@ void Game::initialize()
 
     // Initialize all achievements
     achievementManager.init();
-    AchievementManager::addGoalToAchievement("Welcome To The World!", &framesSpeed, 8);
+    AchievementManager::addGoalToAchievement("Hello World!", &framesSpeed, 8);
 
     player.initialize();
     player.initAchievements();
@@ -106,6 +106,8 @@ void Game::update()
     if (IsKeyPressed(KEY_ESCAPE))
     {
         SceneCamera::currentScene = Scene::MAIN_MENU;
+        planetManager.reset();
+        Player::resetStages();
     }
 
     if (player.respawn())
@@ -218,7 +220,9 @@ void Game::drawMiddleground()
 
         BeginMode3D(SceneCamera::camera);
             if (!Transition::isActive())
+            {
                 planetManager.drawMainPlanet();
+            }
 
             player.draw3D();
         EndMode3D();

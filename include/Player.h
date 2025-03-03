@@ -32,6 +32,7 @@ public:
 
     void turnOnHpBar() { barOn = true; }
 
+    static void resetStages() { stage = 0; }
     static void increase3DStage() { stage++; }
 
     bool isAlive() { return alive; }
@@ -39,8 +40,11 @@ public:
 
 private:
     const int RADIUS = 40;
-    Texture2D texture;
+    Texture2D hullTexture;
+    Texture2D beamTexture;
+    Texture2D ringTexture;
     Color color = WHITE;
+    Color outlineColor = RED;
 
     // 3D
     void updateModels();
@@ -113,7 +117,10 @@ private:
     ParticleSpawner particles;
 
     // Normalize to -1 to 1 range
-    float normalizeSigned(float x, float t_min, float t_max) { return 2 * (x - t_min) / (t_max - t_min) - 1; }
+    float normalizeSigned(float x, float t_min, float t_max) 
+    {
+        return 2 * (x - t_min) / (t_max - t_min) - 1;
+    }
     Vector3 convertToMiddleCoords(Vector2 t_originalCoords);
     float pointToPointDist(Vector2 t_p1, Vector2 t_p2) { return sqrt(((t_p2.x - t_p1.x) * (t_p2.x - t_p1.x)) + ((t_p2.y - t_p1.y) * (t_p2.y - t_p1.y))); }
 };

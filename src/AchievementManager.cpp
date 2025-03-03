@@ -13,19 +13,19 @@ void AchievementManager::init()
 
 
     // Type::NONE
-    achievements.push_back(Achievement(box, "Welcome To The World!", "Begin playing the game", AchievementType::NONE));
+    achievements.push_back(Achievement(box, "Hello World!", AchievementType::NONE));
 
     // Type::PLAYER
-    achievements.push_back(Achievement(box, "Baby's first toy", "Grabbed your first Object", AchievementType::PLAYER));
-    achievements.push_back(Achievement(box, "GRAB, GRAB, GRAB!", "Grab 5 objects", AchievementType::PLAYER));
-    achievements.push_back(Achievement(box, "ALL FULL!!!", "Grab 8 objects at once", AchievementType::PLAYER));
-    achievements.push_back(Achievement(box, "Asteroid Lover", "Grab 20 objects", AchievementType::PLAYER));
+    achievements.push_back(Achievement(box, "Baby's first toy", AchievementType::PLAYER));
+    achievements.push_back(Achievement(box, "GRAB, GRAB, GRAB!", AchievementType::PLAYER));
+    achievements.push_back(Achievement(box, "ALL FULL!!!", AchievementType::PLAYER));
+    achievements.push_back(Achievement(box, "Asteroid Lover", AchievementType::PLAYER));
 
-    achievements.push_back(Achievement(box, "Engines On!", "Move for the first time", AchievementType::PLAYER));
-    achievements.push_back(Achievement(box, "Marathon Runner", "Move around a good bit", AchievementType::PLAYER));
+    achievements.push_back(Achievement(box, "Engines On!", AchievementType::PLAYER));
+    achievements.push_back(Achievement(box, "Marathon Runner", AchievementType::PLAYER));
 
     // Type::OBJECT
-    achievements.push_back(Achievement(box, "Particle Accelerator", "Rotating object reached max speed", AchievementType::OBJECT));
+    achievements.push_back(Achievement(box, "Speed Star!", AchievementType::OBJECT));
 
     // Type::PLANET
 

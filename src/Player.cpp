@@ -4,6 +4,7 @@
 #include "../include/Globals.h"
 #include "../include/Controller.h"
 #include "../include/Transition.h"
+#include "rlgl.h"
 
 int Player::stage = 0;
 
@@ -13,18 +14,20 @@ Player::Player()
 
 void Player::initialize()
 {
-    texture = LoadTexture("resources/Art/2D/player.png");
+    hullTexture = LoadTexture("resources/Art/2D/playerHull.png");
+    beamTexture = LoadTexture("resources/Art/2D/playerBeams.png");
+    ringTexture = LoadTexture("resources/Art/2D/playerRing.png");
 
     // Models
     printf("\n\n");
     ring = LoadModel("resources/Art/3D/playerRing.glb");
-    beams = LoadModel("resources/Art/3D/playerBeam.glb");
+    beams = LoadModel("resources/Art/3D/playerBeams.glb");
     hull = LoadModel("resources/Art/3D/playerHull.glb");
     printf("\n\n");
 
     damageSound = LoadSound("resources/Sound/playerDamage.wav");
     SetSoundVolume(damageSound, 0.3f);
-    deathSound = LoadSound("resources/Sound/playerDeatch.wav");
+    deathSound = LoadSound("resources/Sound/playerDeath.wav");
     SetSoundVolume(damageSound, 0.45f);
 
     position = {GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f};
@@ -85,29 +88,17 @@ void Player::boundryChecking()
 
 void Player::draw3D()
 {
-    if (stage >= 1)
-    {
-        DrawModelWires(ring, position3D, 1.0, color);
-    }
     if (stage >= 2)
     {
-        DrawModel(ring, position3D, 1.0, color);
-    }
-    if (stage >= 3)
-    {
-        DrawModelWires(beams, position3D, 1.0, color);
+        DrawModelWires(ring, position3D, scale / 10.0f, color);
     }
     if (stage >= 4)
     {
-        DrawModel(beams, position3D, 1.0, color);
-    }
-    if (stage >= 5)
-    {
-        DrawModelWires(hull, position3D, 1.0, color);
+        DrawModelWires(beams, position3D, scale / 10.0f, color);
     }
     if (stage >= 6)
     {
-        DrawModel(hull, position3D, 1.0, color);
+        DrawModelWires(hull, position3D, scale / 10.0f, color);
     }
 }
 
@@ -219,12 +210,27 @@ void Player::draw()
         {
             grapples[i].draw(); 
         }
-        SetTextureFilter(texture, TEXTURE_FILTER_BILINEAR);
-        Rectangle sourceRec = { 0, 0, (float)texture.width, (float)texture.height };
-        Rectangle destRec = { position.x, position.y, texture.width * scale, texture.height * scale };
-        Vector2 origin = { texture.width / 2.0f, texture.height / 2.0f };
+        SetTextureFilter(hullTexture, TEXTURE_FILTER_BILINEAR);
+        SetTextureFilter(beamTexture, TEXTURE_FILTER_BILINEAR);
+        SetTextureFilter(ringTexture, TEXTURE_FILTER_BILINEAR);
+        Rectangle destRec = { position.x, position.y, ringTexture.width * scale, ringTexture.height * scale };
+        Vector2 origin = { hullTexture.width / 2.0f, hullTexture.height / 2.0f };
 
-        DrawTexturePro(texture, sourceRec, destRec, origin, rotation, color);
+        if (stage <= 1)
+        {
+            Rectangle sourceRecRing = { 0, 0, (float)ringTexture.width, (float)ringTexture.height };
+            DrawTexturePro(ringTexture, sourceRecRing, destRec, origin, rotation, color);
+        }
+        if (stage <= 3)
+        {
+            Rectangle sourceRecBeam = { 0, 0, (float)beamTexture.width, (float)beamTexture.height };
+            DrawTexturePro(beamTexture, sourceRecBeam, destRec, origin, rotation, color);
+        }
+        if (stage <= 5)
+        {
+            Rectangle sourceRecHull = { 0, 0, (float)hullTexture.width, (float)hullTexture.height };
+            DrawTexturePro(hullTexture, sourceRecHull, destRec, origin, rotation, color);
+        }
 
         // HP
         drawHealthBar();
@@ -364,14 +370,14 @@ void Player::update(Vector2 t_leftStickDir, Vector2 t_cursorPos)
 void Player::updateModels()
 {
     Matrix tiltMatrix = MatrixRotateX(DEG2RAD * tilt);
-    Matrix spinMatrix = MatrixRotateY(DEG2RAD * rotation);
+    Matrix spinMatrix = MatrixRotateY(DEG2RAD * -rotation);
 
     // Combine the rotations
     Matrix rotationMatrix = MatrixMultiply(spinMatrix, tiltMatrix);
 
     // Apply the combined rotation to the planet models
     ring.transform = rotationMatrix;
-    // beams.transform = rotationMatrix;
+    beams.transform = rotationMatrix;
     hull.transform = rotationMatrix;
 }
 
@@ -381,6 +387,8 @@ void Player::kill()
 
     particles.setValues(position, 360, 0);
     particles.spawn(5);
+
+    grapples->release({0, 0}, false);
 
     PlaySound(deathSound);
 }
@@ -480,6 +488,7 @@ bool Player::respawn()
     
             alive = true;
             health = MAX_HEALTH;
+            lastHit = false;
 
             stage = 0;
 
@@ -497,5 +506,5 @@ Vector3 Player::convertToMiddleCoords(Vector2 t_originalCoords)
     float normalizedX = normalizeSigned(t_originalCoords.x, 0.0f, SCREEN_WIDTH);
     float normalizedY = normalizeSigned(t_originalCoords.y, 0.0f, SCREEN_HEIGHT);
     
-    return {normalizedX * SCREEN_BOUNDS_X, -normalizedY * SCREEN_BOUNDS_Y, MIDDLEGROUND_POS.z};
+    return {normalizedX * 6.8f, -normalizedY * 3.68f, MIDDLEGROUND_POS.z};
 }

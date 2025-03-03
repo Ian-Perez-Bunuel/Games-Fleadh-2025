@@ -123,6 +123,5 @@ void PlanetManager::reset()
         float randY = static_cast<float>((rand() % (2 * SCREEN_BOUNDS_Y)) - SCREEN_BOUNDS_Y);
 
         planets[i].init({randX, randY, MAIN_PLANET_Z - (i * PLANET_SPACING)}, 100 + i * 50, randomColor);
-        planets[i].setAlive();
     }
 }
