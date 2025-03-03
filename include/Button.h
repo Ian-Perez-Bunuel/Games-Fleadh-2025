@@ -23,6 +23,8 @@ public:
     bool checkIfCanDamage() { return canDamage; }
     void reset();
 
+    bool checkCollidable() override { return true; }
+
     void (*effect)(); // Define a pointer funtions. This will allow it to copy another function's definition
 
 private:

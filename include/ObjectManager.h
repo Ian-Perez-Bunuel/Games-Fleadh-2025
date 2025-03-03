@@ -23,6 +23,8 @@ public:
     static const int MEDIUM;
     static const int LARGE;
 
+    static void increaseAmountMaxed() { amountSpeedMaxed++; }
+
 private:
 
     void setRandomTexture();
@@ -68,4 +70,5 @@ private:
     // Achievements
     void initAchievements();
     int hitMaxRotationSpeed = 0;
+    static int amountSpeedMaxed;
 };

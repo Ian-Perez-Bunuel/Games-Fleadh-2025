@@ -1,6 +1,7 @@
 #include "../include/MainMenu.h"
 #include <memory>
 #include "../include/Globals.h"
+#include "../include/Transition.h"
 
 Planet MainMenu::planet;
 std::vector<std::shared_ptr<Button>> MainMenu::options;
@@ -25,7 +26,13 @@ MainMenu::~MainMenu()
 
 void MainMenu::initialize()
 {
-    backgroundTexture = LoadTexture("resources/Art/2D/background.png");
+    for (int i = 0; i < 2; i ++)
+    {
+        backgroundTexture[i] = LoadTexture("resources/Art/2D/background.png");
+    }
+    backgroundPos[0] = {0, 0};
+    backgroundPos[1] = {(float)backgroundTexture[1].width, 0};
+
     logoTexture = LoadTexture("resources/Art/2D/logo.png");
     playTexture = LoadTexture("resources/Art/2D/play.png");
     exitTexture = LoadTexture("resources/Art/2D/exit.png");
@@ -58,9 +65,9 @@ void MainMenu::initialize()
     extremePos = { 200.0f, SCREEN_HEIGHT * 0.8f };
     arrowPos = {SCREEN_WIDTH * 0.9f, 400};
 
-    player.initialize();
+    player.initialize({SCREEN_WIDTH / 2.0f - 30, SCREEN_HEIGHT * 0.75f});
 
-    planetPos = {6.0, -3.0, MAIN_PLANET_Z  + 3};
+    planetPos = {6.0, -3.0, MAIN_PLANET_Z + 3};
     planet.init(planetPos, 1, ORANGE);
 
     DifficultyManager::setDifficulty(DifficultyManager::getDifficulty(1)); 
@@ -179,14 +186,18 @@ void MainMenu::controllerInput()
     if (IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_TRIGGER_2))
     {
         player.releaseGrapple(controller.getCursorPos(), checkIfMouseOnPlanet(controller.getCursorPos(), planetPos, 2));
+
+        buttonPickedUp = false;
     }
     
     // Used to grab objects
     if (IsGamepadButtonDown(0, GAMEPAD_BUTTON_RIGHT_TRIGGER_2))
     {
-        if (closestButtonToPlayer != nullptr)
+        if (closestButtonToPlayer != nullptr && !checkIfAnOptionPickedup())
         {
             player.shootGrapple(closestButtonToPlayer);
+
+            buttonPickedUp = true;
         }
     }
 }
@@ -195,6 +206,11 @@ void MainMenu::controllerInput()
 void MainMenu::update()
 {
     input();
+
+    if (Transition::isActive())
+    {
+        Transition::update();
+    }
 
     findClosestButton();
 
@@ -323,6 +339,8 @@ void MainMenu::draw()
             controller.drawCursor();
         }
         
+        Transition::draw();
+
     EndTextureMode();
 
 
@@ -350,7 +368,11 @@ void MainMenu::draw()
         ClearBackground(BLANK);
 
         // Draw non-glow objects
-        DrawTextureEx(backgroundTexture, {0, 0}, 0, 1.0, WHITE);
+        moveBackground();
+        for (int i = 0; i < 2; i ++)
+        {
+            DrawTextureEx(backgroundTexture[i], backgroundPos[i], 0, 1.0, WHITE);
+        }
 
         // First, draw the normal scene
         BeginBlendMode(BLEND_ALPHA);
@@ -364,6 +386,19 @@ void MainMenu::draw()
     EndShaderMode();
 
     DrawTextureEx(logoTexture, {0, 100}, 0, 1.0, WHITE);
+}
+
+void MainMenu::moveBackground()
+{
+    for (int i = 0; i < 2; i++)
+    {
+        backgroundPos[i].x -= 0.5f;
+
+        if (backgroundPos[i].x <= -backgroundTexture[i].width)
+        {
+            backgroundPos[i].x = backgroundTexture[i].width - 10;
+        }
+    }
 }
 
 void MainMenu::animateReticle()

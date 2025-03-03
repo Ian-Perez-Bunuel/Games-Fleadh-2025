@@ -13,7 +13,7 @@ class Player
 {
 public:
     Player();
-    void initialize();
+    void initialize(Vector2 t_pos);
     void initAchievements();
 
     void update(Vector2 t_stickDir, Vector2 t_cursorPos);

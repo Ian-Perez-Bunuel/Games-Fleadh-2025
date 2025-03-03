@@ -82,6 +82,7 @@
         "__verbose_abort": "cpp",
         "__node_handle": "cpp",
         "execution": "cpp",
-        "string_view": "cpp"
+        "string_view": "cpp",
+        "*.m": "cpp"
     }
 }

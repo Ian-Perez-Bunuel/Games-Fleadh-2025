@@ -9,6 +9,8 @@ const int ObjectManager::SMALL = 15;
 const int ObjectManager::MEDIUM = 25;
 const int ObjectManager::LARGE = 45;
 
+int ObjectManager::amountSpeedMaxed = 0;
+
 ObjectManager::ObjectManager(Player& t_player) : player(t_player)
 {
     texture1 = LoadTexture("resources/Art/2D/object1.png");
@@ -24,6 +26,7 @@ ObjectManager::ObjectManager(Player& t_player) : player(t_player)
 void ObjectManager::initAchievements()
 {
     AchievementManager::addGoalToAchievement("Speed Star!", &hitMaxRotationSpeed, 1);
+    AchievementManager::addGoalToAchievement("Particle Accelerator", &amountSpeedMaxed, 8);
 }
 
 void ObjectManager::initPickupTextures()

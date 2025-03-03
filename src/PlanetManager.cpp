@@ -3,9 +3,14 @@
 
 #include "../include/DifficultyManager.h"
 #include "../include/Transition.h"
+#include "../include/AchievementManager.h"
+
+int PlanetManager::timesHit = 0;
+int PlanetManager::powerHits = 0;
 
 void PlanetManager::init()
 {
+    initAchievements();
     planets.clear();
 
     for (int i = 0; i < PLANET_AMOUNT; i++)
@@ -49,12 +54,28 @@ void PlanetManager::init()
     }
 }
 
+void PlanetManager::initAchievements()
+{
+    AchievementManager::addGoalToAchievement("First Blood", &timesHit, 1);
+    AchievementManager::addGoalToAchievement("Nice Aim!!", &timesHit, 5);
+    AchievementManager::addGoalToAchievement("Resolve Is Key", &timesHit, 25);
+    AchievementManager::addGoalToAchievement("COMBO!", &timesHit, 50);
+    AchievementManager::addGoalToAchievement("ORA! ORA! ORA!", &timesHit, 100);
+
+    AchievementManager::addGoalToAchievement("Powerful Hit!", &powerHits, 1);
+
+    AchievementManager::addGoalToAchievement("Core Collector", &coresCollected, 1);
+    AchievementManager::addGoalToAchievement("Almost there!", &coresCollected, 3);
+    AchievementManager::addGoalToAchievement("3D Achieved!!!", &coresCollected, 5);
+}
+
 void PlanetManager::update(Vector3 t_playerPos3D, Player& t_player)
 {
     planets[currentPlanet].update(t_playerPos3D, t_player);
 
     if (planets[currentPlanet].isCoreConsumed() && planets[currentPlanet].checkIfParticlesActive())
     {
+        coresCollected++;
         Transition::begin();
         nextPlanet();
     }

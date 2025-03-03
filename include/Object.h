@@ -24,7 +24,7 @@ public:
     bool checkGrabbed() { return grabbed; }
     bool isActive() { return active; }
     bool isParticalsActive() { return particleSpawner.checkIfParticalsActive(); }
-    bool checkCollidable() { return collidable; }
+    virtual bool checkCollidable() { return collidable; }
     bool checkToPlanet() { return toPlanet; }
     bool checkIfPickedUp() { return beenPickedUp; }
     

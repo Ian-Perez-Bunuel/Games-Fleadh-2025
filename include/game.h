@@ -58,7 +58,9 @@ private:
 
     std::unique_ptr<ObjectManager> objectManager;
 
-    Texture2D backgroundTexture;
+    void moveBackground();
+    Vector2 backgroundPos[2];
+    Texture2D backgroundTexture[2];
     Texture2D astroidBeltTexture;
 
 

@@ -169,7 +169,11 @@ void Object::checkForSpeedIncrease()
 		}
 		else
 		{
-			hitMaxRotationSpeed = true;
+			if (!hitMaxRotationSpeed)
+			{
+				hitMaxRotationSpeed = true;
+				ObjectManager::increaseAmountMaxed();
+			}	
 		}
 	}
 }

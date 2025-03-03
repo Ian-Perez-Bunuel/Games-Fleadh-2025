@@ -3,6 +3,7 @@
 #include "../include/Globals.h"
 #include "../include/DifficultyManager.h"
 #include "../include/Player.h"
+#include "../include/PlanetManager.h"
 #include <random>
 #include "rlgl.h"
 
@@ -253,9 +254,21 @@ void Planet::moveToPos(Vector3 t_targetPos)
 
 void Planet::takeDmg(int t_damage)
 {
+    if (t_damage <= 0)
+    {
+        t_damage = 1;
+    }
+
     if (health > t_damage)
     {
         health -= t_damage;
+
+        // Achievements
+        PlanetManager::increaseTimesHit();
+        if (t_damage >= 45)
+        {
+            PlanetManager::increasePowerfulHits();
+        }
 
         mult += t_damage / 20.0f;
         explosionTimer += 0.2f;

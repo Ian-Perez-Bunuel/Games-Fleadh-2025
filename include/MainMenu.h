@@ -32,7 +32,9 @@ private:
     void controllerInput();
     Controller controller;
 
-    Texture2D backgroundTexture;
+    void moveBackground();
+    Vector2 backgroundPos[2];
+    Texture2D backgroundTexture[2];
     Texture2D logoTexture;
 
     void animateArrow();

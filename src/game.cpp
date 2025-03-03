@@ -19,15 +19,20 @@ void Game::initialize()
     achievementManager.init();
     AchievementManager::addGoalToAchievement("Hello World!", &amountOfClicks, 0);
 
-    player.initialize();
+    player.initialize({GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f});
     player.initAchievements();
     player.turnOnHpBar();
 
 
     objectManager = std::make_unique<ObjectManager>(player);
     // Sprites
-    backgroundTexture = LoadTexture("resources/Art/2D/background.png");
-    astroidBeltTexture = LoadTexture("resources/Art/2D/bgAsteroids.png");
+    for (int i = 0; i < 2; i ++)
+    {
+        backgroundTexture[i] = LoadTexture("resources/Art/2D/background.png");
+    }
+    backgroundPos[0] = {0, 0};
+    backgroundPos[1] = {(float)backgroundTexture[1].width, 0};
+    // astroidBeltTexture = LoadTexture("resources/Art/2D/bgAsteroids.png");
 
     reticleIn = LoadModel("resources/Art/3D/gyroscope1.glb");
     reticleMiddle = LoadModel("resources/Art/3D/gyroscope2.glb");
@@ -104,13 +109,6 @@ Game::~Game()
 
 void Game::update() 
 {
-    if (IsKeyPressed(KEY_ESCAPE))
-    {
-        SceneCamera::currentScene = Scene::MAIN_MENU;
-        planetManager.reset();
-        Player::resetStages();
-    }
-
     if (player.respawn())
     {
         planetManager.reset();
@@ -300,11 +298,28 @@ void Game::drawMiddleground()
 
 }
 
+void Game::moveBackground()
+{
+    for (int i = 0; i < 2; i++)
+    {
+        backgroundPos[i].x -= 0.5f;
+
+        if (backgroundPos[i].x <= -backgroundTexture[i].width)
+        {
+            backgroundPos[i].x = backgroundTexture[i].width - 10;
+        }
+    }
+}
+
 void Game::drawBackground()
 {
     BeginTextureMode(background);
-        DrawTextureEx(backgroundTexture, {0, 0}, 0, 1.0, WHITE);
-        DrawTextureEx(astroidBeltTexture, {0, 0}, 0, 1.0, BLUE );
+        moveBackground();
+        for (int i = 0; i < 2; i ++)
+        {
+            DrawTextureEx(backgroundTexture[i], backgroundPos[i], 0, 1.0, WHITE);
+        }
+        // DrawTextureEx(astroidBeltTexture, {0, 0}, 0, 1.0, BLUE );
     EndTextureMode();
 }
 
@@ -330,6 +345,14 @@ void Game::input()
 
 void Game::mouseInput()
 {
+    if (IsKeyPressed(KEY_ESCAPE))
+    {
+        Transition::begin();
+        SceneCamera::currentScene = Scene::MAIN_MENU;
+        planetManager.reset();
+        Player::resetStages();
+    }
+
     if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
     {
         player.releaseGrapple(GetMousePosition(), isMouseOverSphere(SceneCamera::camera, GetMousePosition(), planetManager.getMainPlanet().getPos(), 2));
@@ -355,6 +378,14 @@ void Game::mouseInput()
 void Game::controllerInput()
 {
     controller.getAllInputs();
+
+    if (IsGamepadButtonDown(0, GAMEPAD_BUTTON_MIDDLE_LEFT))
+    {
+        Transition::begin();
+        SceneCamera::currentScene = Scene::MAIN_MENU;
+        planetManager.reset();
+        Player::resetStages();
+    }
     
     if (IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_TRIGGER_2))
     {

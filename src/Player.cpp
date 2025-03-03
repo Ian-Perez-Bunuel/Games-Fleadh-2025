@@ -12,7 +12,7 @@ Player::Player()
 {
 }
 
-void Player::initialize()
+void Player::initialize(Vector2 t_pos)
 {
     hullTexture = LoadTexture("resources/Art/2D/playerHull.png");
     beamTexture = LoadTexture("resources/Art/2D/playerBeams.png");
@@ -30,7 +30,7 @@ void Player::initialize()
     deathSound = LoadSound("resources/Sound/playerDeath.wav");
     SetSoundVolume(damageSound, 0.45f);
 
-    position = {GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f};
+    position = t_pos;
 
     for (int i = 0; i < GRAPPLE_AMOUNT; i++)
     {
@@ -48,8 +48,10 @@ void Player::initAchievements()
     // Object Achievements
     AchievementManager::addGoalToAchievement("Baby's first toy", &objectsGrabbed, 1);
     AchievementManager::addGoalToAchievement("GRAB, GRAB, GRAB!", &objectsGrabbed, 5);
-    AchievementManager::addGoalToAchievement("ALL FULL!!!", &maxGrappledObjects, GRAPPLE_AMOUNT + 1);
+    AchievementManager::addGoalToAchievement("ALL FULL!!!", &maxGrappledObjects, GRAPPLE_AMOUNT);
     AchievementManager::addGoalToAchievement("Asteroid Lover", &objectsGrabbed, 20);
+    AchievementManager::addGoalToAchievement("Rock Collector", &objectsGrabbed, 50);
+
     // Movement Achievements
     AchievementManager::addGoalToAchievement("Engines On!", &movementDone, 5);
     AchievementManager::addGoalToAchievement("Marathon Runner", &movementDone, 1500);
@@ -483,6 +485,8 @@ bool Player::respawn()
         }
         else
         {
+            releaseGrapple({0, 0}, false);
+
             respawnTimer = 0.0f;
             position = {SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f};
     

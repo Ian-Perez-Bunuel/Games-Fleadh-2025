@@ -49,7 +49,7 @@ bool Grapple::shoot(std::shared_ptr<Object> t_target)
 {
     float distToTarget = pointToPointDist(*userPos, t_target->getPos());
 
-    if (distToTarget < RANGE)
+    if (distToTarget < RANGE && t_target->checkCollidable())
     {
         aiming = true;
         grappledObject = t_target;

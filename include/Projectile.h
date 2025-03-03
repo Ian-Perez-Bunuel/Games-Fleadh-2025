@@ -25,6 +25,7 @@ private:
     float yaw = 0.0f;
 
     void moveToTarget();
+    void rotateToTarget();
 
     bool active = false;
     bool explode = false;
@@ -50,6 +51,14 @@ private:
     // Normalize to -1 to 1 range
     float normalizeSigned(float x, float t_min, float t_max) { return 2 * (x - t_min) / (t_max - t_min) - 1; }
     Vector2 convertToGameCoords(Vector3 t_originalCoords);
+
+    // Dot product function
+    double dot(Vector3 a, Vector3 b) const { return a.x * b.x + a.y * b.y + a.z * b.z; }
+    // Magnitude (length) of the vector
+    double magnitude(Vector3 a) const { return std::sqrt(a.x * a.x + a.y * a.y + a.z * a.z); }
+    // Cross product function
+    Vector3 cross(Vector3 a, Vector3 b) const { return { a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x }; }
+    float angleBetweenAtan2(Vector3 t_a, Vector3 t_b);
 };
 
 #include "../include/Player.h"

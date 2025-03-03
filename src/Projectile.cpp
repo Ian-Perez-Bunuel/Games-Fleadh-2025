@@ -45,6 +45,8 @@ void Projectile::update()
 
 void Projectile::moveToTarget()
 {
+    rotateToTarget();
+
     // Compute the direction vector (pointing toward the target)
     Vector3 direction = {
         targetPos.x - position.x,
@@ -83,6 +85,18 @@ void Projectile::moveToTarget()
         active = false;
         explode = true;
     }
+}
+
+void Projectile::rotateToTarget()
+{
+    Matrix tiltMatrix = MatrixRotateX(DEG2RAD * -90);
+    Matrix spinMatrix = MatrixRotateY(DEG2RAD * angleBetweenAtan2(position, targetPos));
+
+    // Combine the rotations: spin is applied after tilt
+    Matrix rotationMatrix = MatrixMultiply(spinMatrix, tiltMatrix);
+
+    // Apply the combined rotation to the planet model
+    model.transform = rotationMatrix;
 }
 
 void Projectile::explosion()
@@ -134,4 +148,14 @@ Vector2 Projectile::convertToGameCoords(Vector3 t_originalCoords)
     float normalizedY = Normalize(t_originalCoords.y, -SCREEN_BOUNDS_Y, SCREEN_BOUNDS_Y);
     
     return {normalizedX * SCREEN_WIDTH, -(normalizedY * SCREEN_HEIGHT) + SCREEN_HEIGHT};
+}
+
+float Projectile::angleBetweenAtan2(Vector3 t_a, Vector3 t_b)
+{
+    Vector3 crossProd = cross(t_a, t_b);
+    double crossMag = magnitude(crossProd);
+    double dotProd = dot(t_a, t_b);
+    
+    // atan2 returns the angle in radians
+    return std::atan2(crossMag, dotProd);
 }
