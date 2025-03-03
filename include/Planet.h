@@ -78,6 +78,7 @@ private:
     float displacementIntensity = 0.0f;
     bool explosionActive = false;
     float explosionTimer = 0.0f;
+    float mult = 1.0f;
     // Change this number for more dramatic effect
     bool maxDistHit = false;
 

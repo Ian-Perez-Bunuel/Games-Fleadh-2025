@@ -85,11 +85,14 @@ private:
 
     // Reticle
     void animateReticle();
-    Texture2D reticle;
-    Rectangle frameRectReticle;
-    int currentFrameReticle;
-    int framesCounter = 0;
-    int framesSpeed = 8;
+    const float ROTATION_SPEED = 0.8f;
+    float tilt = 0.0f;
+    float pitch = 0.0f;
+    float roll = 0.0f;
+    float yaw = 0.0f;
+    Model reticleIn;
+    Model reticleMiddle;
+    Model reticleOut;
 
     // Button variables
     Vector2 playPos;

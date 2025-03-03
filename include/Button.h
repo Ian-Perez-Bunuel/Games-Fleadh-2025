@@ -20,6 +20,7 @@ public:
     float getScale() { return scale; }
 
     void setCanDamage() { canDamage = true; }
+    bool checkIfCanDamage() { return canDamage; }
     void reset();
 
     void (*effect)(); // Define a pointer funtions. This will allow it to copy another function's definition

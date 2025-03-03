@@ -2,11 +2,13 @@
 #include "../include/SceneCamera.h"
 #include "../include/Globals.h"
 #include "../include/DifficultyManager.h"
+#include "../include/Player.h"
 #include <random>
 #include "rlgl.h"
 
 void Planet::init(Vector3 t_pos, int t_maxHealth, Color t_color)
 {
+    projectiles.clear();
     setOriginalPos(t_pos);
     position = t_pos;
 
@@ -150,10 +152,6 @@ void Planet::draw()
         DrawModel(core, position, 0.5, color);
         DrawModelWires(core, position, 0.5f, color + coreTint);
     }
-
-    // rlSetLineWidth(10.0f);
-    // DrawModel(shield, position, 1.0, WHITE);
-    // DrawModelWires(shield, position, 1.0, BLUE);
 }
 
 void Planet::drawParticles()
@@ -258,6 +256,10 @@ void Planet::takeDmg(int t_damage)
     if (health > t_damage)
     {
         health -= t_damage;
+
+        mult += t_damage / 20.0f;
+        explosionTimer += 0.2f;
+
         SetSoundPitch(damageSound, 0.5 + static_cast<double>(std::rand()) / RAND_MAX * (0.8 - 0.5));
         PlaySound(damageSound);
 
@@ -270,6 +272,10 @@ void Planet::takeDmg(int t_damage)
         if (!defeated)
         {
             defeated = true;
+
+            SceneCamera::screenShake(SceneCamera::LARGE_SHAKE, 30);
+            Player::increase3DStage();
+
             PlaySound(destructionSound);
         }
     }  
@@ -283,6 +289,15 @@ void Planet::explosion()
         if (explosionTimer >= 0.0f)
         {
             explosionTimer -= GetFrameTime() * 2;
+
+            if (mult > 1.0f)
+            {
+                mult -= 0.1;
+            }
+            else
+            {
+                mult = 1.0f;
+            }
         }
         else
         {
@@ -302,7 +317,7 @@ void Planet::explosion()
         }
     }
 
-    displacementIntensity = explosionTimer;
+    displacementIntensity = explosionTimer * mult;
 
     SetShaderValue(explosionShader, displacementIntensityLocationInShader, &displacementIntensity, SHADER_UNIFORM_FLOAT);
     SetShaderValue(explosionShader, explosionTimerLocationInShader, &explosionTimer, SHADER_UNIFORM_FLOAT);
@@ -372,6 +387,7 @@ void Planet::shotClock(Vector3 t_playerPos, Player& t_player)
 
 void Planet::changeColor(Color t_color)
 {
+    printf("\n\nCOLOR CHANGE\n\n");
     color = t_color;
 
     // used to pass to the shader

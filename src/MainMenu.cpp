@@ -36,12 +36,11 @@ void MainMenu::initialize()
     extremeTexture = LoadTexture("resources/Art/2D/extreme.png");
 
     // Reticle
-    reticle = LoadTexture("resources/Art/2D/gyro.png");
-    frameRectReticle = { 0.0f, 0.0f, (float)reticle.width / 8, (float)reticle.height };
+    reticleIn = LoadModel("resources/Art/3D/gyroscope1.glb");
+    reticleMiddle = LoadModel("resources/Art/3D/gyroscope2.glb");
+    reticleOut = LoadModel("resources/Art/3D/gyroscope3.glb");
 
     initializeShaders();
-
-    DifficultyManager::setDifficulty(DifficultyManager::getDifficulty(1)); 
 
     // Sounds
     buttonBreak = LoadSound("resources/Sound/asteroidBreak.wav");
@@ -62,7 +61,9 @@ void MainMenu::initialize()
     player.initialize();
 
     planetPos = {6.0, -3.0, MAIN_PLANET_Z  + 3};
-    planet.init(planetPos, 1, RED);
+    planet.init(planetPos, 1, ORANGE);
+
+    DifficultyManager::setDifficulty(DifficultyManager::getDifficulty(1)); 
 
     // Setup Buttons
     options.push_back(std::make_shared<Button>(buttonBreak, buttonGrabbed, playTexture, playPos, BUTTON_RADIUS, playEffect));
@@ -217,9 +218,21 @@ void MainMenu::update()
     planet.update(convertToMiddleCoords(player.getPos()), player);
 
     // Activate specific effect
-    if (planet.isCoreConsumed())
+    for (int i = 0; i < 6; i++)
     {
-        for (int i = 0; i < 6; i++)
+        if (!options[i]->checkIfCanDamage())
+        {
+            if (!options[i]->isActive())
+            {
+                if (options[i]->effect != nullptr)
+                {
+                    options[i]->effect();
+                }
+
+                options[i]->reset();
+            }
+        }
+        else if (planet.isCoreConsumed())
         {
             if (!options[i]->isActive() && planet.checkIfParticlesActive())
             {
@@ -273,32 +286,36 @@ void MainMenu::draw()
 
         player.draw();
 
+        BeginMode3D(SceneCamera::camera);
+            planet.draw();
+            
+            if (closestButtonToPlayer != nullptr)
+            {
+                animateReticle();
+                
+                Vector3 reticlePos = convertToMiddleCoords(closestButtonToPlayer->getPos());
+                reticlePos.x += 0.4f;
+
+                DrawModel(reticleIn, reticlePos, 0.25f, WHITE);
+                DrawModel(reticleMiddle, reticlePos, 0.25f, WHITE);
+                DrawModel(reticleOut, reticlePos, 0.25f, WHITE);
+            }
+
+        EndMode3D();
+
+        for (int i = 0; i < 6; i++)
+        {
+            options[i]->draw();
+        }
+
         if (buttonPickedUp)
         {
             animateArrow();
             DrawTextureEx(arrow, {arrowPos.x + arrowOffset.x, arrowPos.y + arrowOffset.y}, 45, 1.0f, RED);
         }
 
-        BeginMode3D(SceneCamera::camera);
-            planet.draw();
-            // DrawSphere(planetPos, 2, RED);
-        EndMode3D();
 
         planet.drawParticles();
-
-        if (closestButtonToPlayer != nullptr)
-        {
-            animateReticle();
-            // Calculate destination rectangle with scaled width and height
-            Rectangle destRec = {
-                closestButtonToPlayer->getPos().x + 50,
-                closestButtonToPlayer->getPos().y,
-                frameRectReticle.width * 0.5f,   // scaled width
-                frameRectReticle.height * 0.5f   // scaled height
-            };
-
-            DrawTexturePro(reticle, frameRectReticle, destRec, {destRec.width / 2.0f, destRec.height / 2.0f}, 45.0f, WHITE);
-        }
 
         // Controller cursor
         if (IsGamepadAvailable(0))
@@ -351,20 +368,27 @@ void MainMenu::draw()
 
 void MainMenu::animateReticle()
 {
-    framesCounter++;
+    tilt += ROTATION_SPEED;
+    pitch += ROTATION_SPEED;
+    roll += ROTATION_SPEED;
+    yaw += ROTATION_SPEED;
+    // Rotate gyro
+    Matrix tiltMatrixOut = MatrixRotateY(DEG2RAD * tilt);
+    Matrix spinMatrixOut = MatrixRotateX(DEG2RAD * pitch);
+    Matrix tiltMatrixMiddle = MatrixRotateX(DEG2RAD * tilt);
+    Matrix spinMatrixMiddle = MatrixRotateY(DEG2RAD * roll);
+    Matrix tiltMatrixIn = MatrixRotateY(DEG2RAD * tilt);
+    Matrix spinMatrixIn = MatrixRotateZ(DEG2RAD * yaw);
 
-    if (framesCounter >= (60 / framesSpeed))
-    {
-        framesCounter = 0;
-        currentFrameReticle++;
+    // Combine the rotations
+    Matrix rotationMatrixOut = MatrixMultiply(spinMatrixOut, tiltMatrixOut);
+    Matrix rotationMatrixMiddle = MatrixMultiply(spinMatrixMiddle, tiltMatrixMiddle);
+    Matrix rotationMatrixIn = MatrixMultiply(spinMatrixIn, tiltMatrixIn);
 
-        if (currentFrameReticle > 5) 
-        {
-            currentFrameReticle = 0;
-        }
-
-        frameRectReticle.x = (float)currentFrameReticle * (float)reticle.width / 8;
-    }
+    // Apply the combined rotation to the planet models
+    reticleOut.transform = rotationMatrixOut;
+    reticleMiddle.transform = rotationMatrixMiddle;
+    reticleIn.transform = rotationMatrixIn;
 }
 
 Vector3 MainMenu::convertToMiddleCoords(Vector2 t_originalCoords)
