@@ -25,7 +25,7 @@ public:
     bool hasBeenCompleted() { return completed; }
 
     bool checkIfCompleted();
-    void lock() { completed = false; }
+    void lock() { completed = false; value = 0; }
 
 private:
     bool completed = false;

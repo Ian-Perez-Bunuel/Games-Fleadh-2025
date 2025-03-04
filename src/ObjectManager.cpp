@@ -51,6 +51,9 @@ void ObjectManager::reset()
         {
             o->deactivate();
         }
+
+        hitMaxRotationSpeed = 0;
+        amountSpeedMaxed = 0;
     }
 }
 

@@ -57,6 +57,13 @@ void Player::initAchievements()
     AchievementManager::addGoalToAchievement("Marathon Runner", &movementDone, 1500);
 }
 
+void Player::resetAchievements()
+{
+    objectsGrabbed = 0;
+    maxGrappledObjects = 0;
+    movementDone = 0;
+}
+
 void Player::rotateToMouse()
 {
     rotation = atan2f(GetMousePosition().y  - position.y, GetMousePosition().x  - position.x) * RAD2DEG;
@@ -497,6 +504,7 @@ bool Player::respawn()
             health = MAX_HEALTH;
             lastHit = false;
 
+            resetAchievements();
             stage = 0;
 
             Transition::begin();

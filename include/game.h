@@ -96,7 +96,7 @@ private:
     Music musicStart;
     Music musicLoop;
     bool musicLooping = false;
-    float musicVolume = 0.0f; 
+    float musicVolume = 0.7f; 
 
     bool transitionedFromMenu = true;
 

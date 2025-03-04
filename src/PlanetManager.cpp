@@ -116,6 +116,10 @@ void PlanetManager::nextPlanet()
 
 void PlanetManager::reset()
 {
+    timesHit = 0;
+    powerHits = 0;
+    coresCollected = 0;
+
     currentPlanet = 0;
 
     const int TOTAL = 326;

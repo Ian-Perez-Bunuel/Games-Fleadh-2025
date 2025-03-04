@@ -38,6 +38,7 @@ public:
 
     bool isAlive() { return alive; }
     bool respawn();
+    void resetAchievements();
 
 private:
     const int RADIUS = 40;
