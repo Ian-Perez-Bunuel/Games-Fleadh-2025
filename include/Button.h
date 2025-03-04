@@ -7,7 +7,7 @@
 class Button : public Object
 {
 public:
-    Button(Sound& t_breakSound, Sound& t_grabbedSound, Texture2D& t_texture, Vector2 t_pos = {0.0f, 0.0f}, int t_size = 10, void (*t_effect)() = nullptr);
+    Button(Sound& t_breakSound, Sound& t_grabbedSound, Texture2D& t_texture, Vector2 t_pos = {0.0f, 0.0f}, int t_size = 10, float t_width = 10, void (*t_effect)() = nullptr);
 
     void setBaseColor(Color t_color) { baseColor = t_color; color = baseColor; }
 
@@ -37,6 +37,8 @@ private:
 
     const int TIME_TAKEN_TO_POS = 2;
     float elapsedTimeBounce = 0.0f;
+
+    float width;
 
     Color baseColor;
 };

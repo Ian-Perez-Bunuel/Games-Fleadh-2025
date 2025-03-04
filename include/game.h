@@ -42,6 +42,7 @@ private:
     Player player;
     std::shared_ptr<Object> closestObjectToPlayer;
 
+
     // Reticle
     void animateReticle();
     const float ROTATION_SPEED = 0.8f;
@@ -96,7 +97,7 @@ private:
     Music musicStart;
     Music musicLoop;
     bool musicLooping = false;
-    float musicVolume = 0.0f; 
+    float musicVolume = 0.7f; 
 
     bool transitionedFromMenu = true;
 

@@ -39,6 +39,8 @@ public:
     bool isAlive() { return alive; }
     bool respawn();
 
+    bool checkIfGrabbing();
+
 private:
     const int RADIUS = 40;
     Texture2D hullTexture;

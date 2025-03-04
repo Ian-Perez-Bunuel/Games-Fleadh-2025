@@ -515,3 +515,16 @@ Vector3 Player::convertToMiddleCoords(Vector2 t_originalCoords)
     
     return {normalizedX * SCREEN_BOUNDS_X, -normalizedY * SCREEN_BOUNDS_Y, MIDDLEGROUND_POS.z};
 }
+
+bool Player::checkIfGrabbing()
+{
+    for (int i = 0; i < GRAPPLE_AMOUNT; i++)
+    {
+        if (grapples[i].checkIfGrabbing())
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
