@@ -13,19 +13,18 @@ MainMenu::MainMenu()
 MainMenu::~MainMenu()
 {
     UnloadTexture(logoTexture);
-    UnloadTexture(playTexture);
     UnloadTexture(exitTexture);
 
     UnloadTexture(easyTexture);
     UnloadTexture(mediumTexture);
     UnloadTexture(hardTexture);
     UnloadTexture(extremeTexture);
-
-    UnloadTexture(arrow);
 }
 
 void MainMenu::initialize()
 {
+    controller.init();
+
     for (int i = 0; i < 2; i ++)
     {
         backgroundTexture[i] = LoadTexture("resources/Art/2D/background.png");
@@ -34,9 +33,7 @@ void MainMenu::initialize()
     backgroundPos[1] = {(float)backgroundTexture[1].width, 0};
 
     logoTexture = LoadTexture("resources/Art/2D/logo.png");
-    playTexture = LoadTexture("resources/Art/2D/play.png");
     exitTexture = LoadTexture("resources/Art/2D/exit.png");
-    arrow = LoadTexture("resources/Art/2D/arrow.png");
     easyTexture = LoadTexture("resources/Art/2D/easy.png");
     mediumTexture = LoadTexture("resources/Art/2D/medium.png");
     hardTexture = LoadTexture("resources/Art/2D/hard.png");
@@ -56,38 +53,36 @@ void MainMenu::initialize()
     buttonGrabbed = LoadSound("resources/Sound/asteroidPierced.wav");
     SetSoundVolume(buttonGrabbed, 0.2f);
 
-    playPos = { SCREEN_WIDTH  / 2.0f - 100, SCREEN_HEIGHT / 2.0f - 50};
-    exitPos = { SCREEN_WIDTH  / 2.0f - 100, SCREEN_HEIGHT / 2.0f + 50 };
+    exitPos = { SCREEN_WIDTH * 0.85f, SCREEN_HEIGHT * 0.95f };
 
-    easyPos = { 200.0f, SCREEN_HEIGHT * 0.5f };
-    mediumPos = { 200.0f, SCREEN_HEIGHT * 0.6f };
-    hardPos = { 200.0f, SCREEN_HEIGHT * 0.7f };
-    extremePos = { 200.0f, SCREEN_HEIGHT * 0.8f };
-    arrowPos = {SCREEN_WIDTH * 0.9f, 400};
+    easyPos = { 250, SCREEN_HEIGHT * 0.45f };
+    mediumPos = { 250, SCREEN_HEIGHT * 0.6f };
+    hardPos = { 250, SCREEN_HEIGHT * 0.75f };
+    extremePos = { 250, SCREEN_HEIGHT * 0.9f };
 
-    player.initialize({SCREEN_WIDTH / 2.0f - 30, SCREEN_HEIGHT * 0.75f});
+    player.initialize({SCREEN_WIDTH / 2.0f - 30, SCREEN_HEIGHT * 0.45f});
 
-    planetPos = {6.0, -3.0, MAIN_PLANET_Z + 3};
-    planet.init(planetPos, 1, ORANGE);
+    planetPos = {0.0, -1.25, MAIN_PLANET_Z + 8};
+    planet.init(planetPos, 1, RED);
 
     DifficultyManager::setDifficulty(DifficultyManager::getDifficulty(1)); 
 
     // Setup Buttons
-    options.push_back(std::make_shared<Button>(buttonBreak, buttonGrabbed, playTexture, playPos, BUTTON_RADIUS, playEffect));
+    options.push_back(std::make_shared<Button>(buttonBreak, buttonGrabbed, exitTexture, exitPos, BUTTON_RADIUS, 50, exitEffect));
     options[0]->setBaseColor(BLUE);
-    options[0]->setCanDamage();
-    options.push_back(std::make_shared<Button>(buttonBreak, buttonGrabbed, exitTexture, exitPos, BUTTON_RADIUS, exitEffect));
-    options[1]->setBaseColor(BLUE);
-    options[1]->setCanDamage();
     // Difficulties
-    options.push_back(std::make_shared<Button>(buttonBreak, buttonGrabbed, easyTexture, easyPos, BUTTON_RADIUS, easyEffect));
-    options[2]->setBaseColor(GREEN);
-    options.push_back(std::make_shared<Button>(buttonBreak, buttonGrabbed, mediumTexture, mediumPos, BUTTON_RADIUS, mediumEffect));
-    options[3]->setBaseColor(ORANGE);
-    options.push_back(std::make_shared<Button>(buttonBreak, buttonGrabbed, hardTexture, hardPos, BUTTON_RADIUS, hardEffect));
-    options[4]->setBaseColor(RED);
-    options.push_back(std::make_shared<Button>(buttonBreak, buttonGrabbed, extremeTexture, extremePos, BUTTON_RADIUS, extremeEffect));
-    options[5]->setBaseColor(DARKPURPLE);
+    options.push_back(std::make_shared<Button>(buttonBreak, buttonGrabbed, easyTexture, easyPos, BUTTON_RADIUS, 50, easyEffect));
+    options[1]->setBaseColor(GREEN);
+    options[1]->setCanDamage();
+    options.push_back(std::make_shared<Button>(buttonBreak, buttonGrabbed, mediumTexture, mediumPos, BUTTON_RADIUS, 135, mediumEffect));
+    options[2]->setBaseColor(ORANGE);
+    options[2]->setCanDamage();
+    options.push_back(std::make_shared<Button>(buttonBreak, buttonGrabbed, hardTexture, hardPos, BUTTON_RADIUS, 50, hardEffect));
+    options[3]->setBaseColor(RED);
+    options[3]->setCanDamage();
+    options.push_back(std::make_shared<Button>(buttonBreak, buttonGrabbed, extremeTexture, extremePos, BUTTON_RADIUS, 175, extremeEffect));
+    options[4]->setBaseColor(DARKPURPLE);
+    options[4]->setCanDamage();
 }
 
 void MainMenu::initializeShaders()
@@ -134,7 +129,7 @@ void MainMenu::findClosestButton()
 {
     float lowestDist = 100000.0f;
 
-    for (int i = 0; i < 6; i++)
+    for (int i = 0; i < MAX_OPTIONS; i++)
     {
         float distToButton = pointToPointDist(options[i]->getPos(), player.getPos());
         if (distToButton < lowestDist && !options[i]->checkGrabbed() && options[i]->isActive() && !options[i]->checkToPlanet())
@@ -147,7 +142,7 @@ void MainMenu::findClosestButton()
 
 bool MainMenu::checkIfAnOptionPickedup()
 {
-    for (int i = 0; i < 6; i++)
+    for (int i = 0; i < MAX_OPTIONS; i++)
     {
         if (options[i]->checkGrabbed())
         {
@@ -183,7 +178,7 @@ void MainMenu::controllerInput()
 {
     controller.getAllInputs();
     
-    if (IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_TRIGGER_2))
+    if (IsGamepadButtonDown(0, GAMEPAD_BUTTON_RIGHT_TRIGGER_2))
     {
         player.releaseGrapple(controller.getCursorPos(), checkIfMouseOnPlanet(controller.getCursorPos(), planetPos, 2));
 
@@ -191,7 +186,7 @@ void MainMenu::controllerInput()
     }
     
     // Used to grab objects
-    if (IsGamepadButtonDown(0, GAMEPAD_BUTTON_RIGHT_TRIGGER_2))
+    if (IsGamepadButtonDown(0, GAMEPAD_BUTTON_RIGHT_TRIGGER_1))
     {
         if (closestButtonToPlayer != nullptr && !checkIfAnOptionPickedup())
         {
@@ -216,7 +211,7 @@ void MainMenu::update()
 
     player.update(controller.getLeftStickDir(), controller.getCursorPos());
 
-    for (int i = 0; i < 6; i++)
+    for (int i = 0; i < MAX_OPTIONS; i++)
     {
         options[i]->update();
 
@@ -234,7 +229,7 @@ void MainMenu::update()
     planet.update(convertToMiddleCoords(player.getPos()), player);
 
     // Activate specific effect
-    for (int i = 0; i < 6; i++)
+    for (int i = 0; i < MAX_OPTIONS; i++)
     {
         if (!options[i]->checkIfCanDamage())
         {
@@ -261,33 +256,6 @@ void MainMenu::update()
     }
 }
 
-void MainMenu::animateArrow()
-{
-    // Define target positions based on the direction.
-    // When positiveDir is true, move toward (20, -20), otherwise toward (-20, 20).
-    Vector2 target;
-    if (positiveDir)
-    {
-        target = {20.0f, -20.0f};
-    }
-    else
-    {
-        target = {-20.0f, 20.0f};
-    }
-
-    // Smoothing factor (adjust to taste).
-    float smoothingFactor = 5.0f;
-
-    // Move a fraction of the distance toward the target.
-    arrowOffset.x += (target.x - arrowOffset.x) * smoothingFactor * GetFrameTime();
-    arrowOffset.y += (target.y - arrowOffset.y) * smoothingFactor * GetFrameTime();
-
-    // Check if we're close enough to the target to flip direction.
-    if (fabs(arrowOffset.x - target.x) < 0.1f && fabs(arrowOffset.y - target.y) < 0.1f)
-    {
-        positiveDir = !positiveDir;
-    }
-}
 
 void MainMenu::draw()
 {
@@ -295,12 +263,10 @@ void MainMenu::draw()
     BeginTextureMode(targetScene);
         ClearBackground(BLANK);
 
-        for (int i = 0; i < 6; i++)
+        for (int i = 0; i < MAX_OPTIONS; i++)
         {
             options[i]->draw();
         }
-
-        player.draw();
 
         BeginMode3D(SceneCamera::camera);
             planet.draw();
@@ -312,32 +278,28 @@ void MainMenu::draw()
                 Vector3 reticlePos = convertToMiddleCoords(closestButtonToPlayer->getPos());
                 reticlePos.x += 0.4f;
 
-                DrawModel(reticleIn, reticlePos, 0.25f, WHITE);
-                DrawModel(reticleMiddle, reticlePos, 0.25f, WHITE);
-                DrawModel(reticleOut, reticlePos, 0.25f, WHITE);
+                DrawModelWires(reticleIn, reticlePos, 0.25f, WHITE);
+                DrawModelWires(reticleMiddle, reticlePos, 0.25f, WHITE);
+                DrawModelWires(reticleOut, reticlePos, 0.25f, WHITE);
+            }
+
+            // Controller cursor
+            if (IsGamepadAvailable(0) && checkIfAnOptionPickedup())
+            {
+                controller.drawCursor();
             }
 
         EndMode3D();
 
-        for (int i = 0; i < 6; i++)
+        player.draw();
+
+        for (int i = 0; i < MAX_OPTIONS; i++)
         {
             options[i]->draw();
         }
 
-        if (buttonPickedUp)
-        {
-            animateArrow();
-            DrawTextureEx(arrow, {arrowPos.x + arrowOffset.x, arrowPos.y + arrowOffset.y}, 45, 1.0f, RED);
-        }
-
 
         planet.drawParticles();
-
-        // Controller cursor
-        if (IsGamepadAvailable(0))
-        {
-            controller.drawCursor();
-        }
         
         Transition::draw();
 
@@ -471,7 +433,7 @@ void MainMenu::playEffect()
 {
     SceneCamera::currentScene = Scene::GAME;
 
-    for (int i = 0; i < 6; i++)
+    for (int i = 0; i < MAX_OPTIONS; i++)
     {
         options[i]->reset();
         planet.setAlive();
@@ -486,6 +448,8 @@ void MainMenu::easyEffect()
     ParticleSpawner& particles = planet.getParticles();
     particles.clearColors();
     particles.addColor(GREEN);
+
+    playEffect();
 }
 
 void MainMenu::mediumEffect()
@@ -496,6 +460,8 @@ void MainMenu::mediumEffect()
     ParticleSpawner& particles = planet.getParticles();
     particles.clearColors();
     particles.addColor(ORANGE);
+
+    playEffect();
 }
 
 void MainMenu::hardEffect()
@@ -506,6 +472,8 @@ void MainMenu::hardEffect()
     ParticleSpawner& particles = planet.getParticles();
     particles.clearColors();
     particles.addColor(RED);
+
+    playEffect();
 }
 
 void MainMenu::extremeEffect()
@@ -516,4 +484,6 @@ void MainMenu::extremeEffect()
     ParticleSpawner& particles = planet.getParticles();
     particles.clearColors();
     particles.addColor(DARKPURPLE);
+
+    playEffect();
 }

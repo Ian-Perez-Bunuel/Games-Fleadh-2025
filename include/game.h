@@ -42,6 +42,7 @@ private:
     Player player;
     std::shared_ptr<Object> closestObjectToPlayer;
 
+
     // Reticle
     void animateReticle();
     const float ROTATION_SPEED = 0.8f;

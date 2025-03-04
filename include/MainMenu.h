@@ -37,15 +37,9 @@ private:
     Texture2D backgroundTexture[2];
     Texture2D logoTexture;
 
-    void animateArrow();
-    bool positiveDir = false;
-    Texture2D arrow;
-    Vector2 arrowPos;
-    Vector2 arrowOffset = {0.0f, 0.0f};
-
     const float MAX_BUTTON_SCALE = 1.1f;
+    static const int MAX_OPTIONS = 5;
 
-    Texture2D playTexture;
     Texture2D exitTexture;
 
     Texture2D easyTexture;
@@ -97,7 +91,6 @@ private:
     Model reticleOut;
 
     // Button variables
-    Vector2 playPos;
     Vector2 exitPos;
 
     Vector2 easyPos;

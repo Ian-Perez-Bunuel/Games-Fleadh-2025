@@ -2,8 +2,8 @@
 #include "../include/reasings.h"
 #include "../include/Planet.h"
 
-Button::Button(Sound &t_breakSound, Sound &t_grabbedSound, Texture2D &t_texture, Vector2 t_pos, int t_size, void (*t_effect)())
-    : Object(t_breakSound, t_grabbedSound, t_texture, t_pos, t_size), effect(t_effect)
+Button::Button(Sound &t_breakSound, Sound &t_grabbedSound, Texture2D &t_texture, Vector2 t_pos, int t_size, float t_width, void (*t_effect)())
+    : Object(t_breakSound, t_grabbedSound, t_texture, t_pos, t_size), width(t_width), effect(t_effect)
 {
     originalPos = t_pos;
 
@@ -38,7 +38,7 @@ void Button::draw()
 {
     if (active)
 	{
-		DrawTextureEx(texture, {position.x - radius, position.y - radius}, 0, scale, color);
+		DrawTextureEx(texture, {position.x - (width / 2.0f), position.y - radius}, 0, scale, color);
 	}
 	particleSpawner.draw();
 }

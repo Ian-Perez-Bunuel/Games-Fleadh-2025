@@ -14,6 +14,7 @@ Game::Game()
 void Game::initialize()
 {
     initializeShaders();
+    controller.init();
 
     // Initialize all achievements
     achievementManager.init();
@@ -113,6 +114,7 @@ void Game::update()
     {
         planetManager.reset();
         objectManager->reset();
+        DifficultyManager::resetDifficulty();
         AchievementManager::lockAll();
     }
 
@@ -189,12 +191,6 @@ void Game::draw()
 
         DrawBillboard(SceneCamera::camera, middleground.texture, MIDDLEGROUND_POS, 7.8f, WHITE);
     EndMode3D();
-
-    // Controller cursor
-    if (IsGamepadAvailable(0))
-    {
-        controller.drawCursor();
-    }
 }
 
 void Game::animateReticle()
@@ -244,6 +240,12 @@ void Game::drawMiddleground()
             }
 
             player.draw3D();
+
+            // Controller cursor
+            if (IsGamepadAvailable(0) && player.checkIfGrabbing())
+            {
+                controller.drawCursor();
+            }
         EndMode3D();
 
         planetManager.getMainPlanet().drawParticles();
@@ -398,13 +400,13 @@ void Game::controllerInput()
         Player::resetStages();
     }
     
-    if (IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_TRIGGER_2))
+    if (IsGamepadButtonDown(0, GAMEPAD_BUTTON_RIGHT_TRIGGER_2))
     {
         player.releaseGrapple(controller.getCursorPos(), isMouseOverSphere(SceneCamera::camera, controller.getCursorPos(), planetManager.getMainPlanet().getPos(), 2));
     }
     
     // Used to grab objects
-    if (IsGamepadButtonDown(0, GAMEPAD_BUTTON_RIGHT_TRIGGER_2))
+    if (IsGamepadButtonDown(0, GAMEPAD_BUTTON_RIGHT_TRIGGER_1))
     {
         if (closestObjectToPlayer != nullptr)
         {

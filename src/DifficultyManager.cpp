@@ -1,6 +1,8 @@
 #include "../include/DifficultyManager.h"
 
 DifficultySettings DifficultyManager::currentDifficulty;
+DifficultySettings DifficultyManager::originalDifficulty;
+
 DifficultySettings DifficultyManager::easy;
 DifficultySettings DifficultyManager::medium;
 DifficultySettings DifficultyManager::hard;
@@ -39,7 +41,13 @@ void DifficultyManager::initBaseDifficulties()
 
 void DifficultyManager::setDifficulty(DifficultySettings t_difficulty)
 {
+    originalDifficulty = t_difficulty;
     currentDifficulty = t_difficulty;
+}
+
+void DifficultyManager::resetDifficulty()
+{
+    currentDifficulty = originalDifficulty;
 }
 
 void DifficultyManager::increaseDifficulty()

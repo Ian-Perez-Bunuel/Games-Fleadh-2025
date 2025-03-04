@@ -40,6 +40,8 @@ public:
     bool respawn();
     void resetAchievements();
 
+    bool checkIfGrabbing();
+
 private:
     const int RADIUS = 40;
     Texture2D hullTexture;

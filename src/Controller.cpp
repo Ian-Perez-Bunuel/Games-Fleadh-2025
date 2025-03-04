@@ -1,10 +1,28 @@
 #include "../include/Controller.h"
 #include "stdio.h"
 #include "../include/Globals.h"
+#include "raymath.h"
 
 #define XBOX_ALIAS_1 "xbox"
 #define XBOX_ALIAS_2 "x-box"
 #define PS_ALIAS     "playstation"
+
+
+void Controller::init()
+{
+    reticle = LoadModel("resources/Art/3D/playerFull.glb");
+
+    Matrix tiltMatrix = MatrixRotateX(DEG2RAD * 90);
+    Matrix spinMatrix = MatrixRotateY(DEG2RAD * 0);
+
+    // Combine the rotations
+    Matrix rotationMatrix = MatrixMultiply(spinMatrix, tiltMatrix);
+
+    // Apply the combined rotation to the planet models
+    reticle.transform = rotationMatrix;
+
+    cursorPos = { SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f};
+}
 
 void Controller::getAllInputs()
 {
@@ -23,7 +41,7 @@ void Controller::getAllInputs()
 
 void Controller::drawCursor()
 {
-    DrawCircleLinesV(cursorPos, CURSOR_RADIUS, YELLOW); 
+    DrawModelWires(reticle, convertToMiddleCoords(cursorPos), 0.1f, YELLOW);
 }
 
 void Controller::updateCursor()
@@ -124,4 +142,12 @@ void Controller::getStickInput()
     if (leftStick.y > -LEFT_STICK_DEADZONE_Y && leftStick.y < LEFT_STICK_DEADZONE_Y) leftStick.y = 0.0f;
     if (rightStick.x > -RIGHT_STICK_DEADZONE_X && rightStick.x < RIGHT_STICK_DEADZONE_X) rightStick.x = 0.0f;
     if (rightStick.y > -RIGHT_STICK_DEADZONE_Y && rightStick.y < RIGHT_STICK_DEADZONE_Y) rightStick.y = 0.0f;
+}
+
+Vector3 Controller::convertToMiddleCoords(Vector2 t_originalCoords)
+{
+    float normalizedX = normalizeSigned(t_originalCoords.x, 0.0f, SCREEN_WIDTH);
+    float normalizedY = normalizeSigned(t_originalCoords.y, 0.0f, SCREEN_HEIGHT);
+    
+    return {normalizedX * SCREEN_BOUNDS_X, -normalizedY * SCREEN_BOUNDS_Y, MIDDLEGROUND_POS.z};
 }

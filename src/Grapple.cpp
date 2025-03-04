@@ -49,7 +49,7 @@ bool Grapple::shoot(std::shared_ptr<Object> t_target)
 {
     float distToTarget = pointToPointDist(*userPos, t_target->getPos());
 
-    if (distToTarget < RANGE && t_target->checkCollidable())
+    if (distToTarget < RANGE && t_target->checkCollidable() && !aiming)
     {
         aiming = true;
         grappledObject = t_target;
@@ -64,9 +64,21 @@ bool Grapple::shoot(std::shared_ptr<Object> t_target)
     return false;
 }
 
+bool Grapple::checkIfGrabbing()
+{
+    if (grappledObject == nullptr)
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
+
 void Grapple::release(Vector2 t_releaseDir, bool t_toPlanet)
 {
-    if (grappledObject)
+    if (grappledObject && !aiming)
     {
         grappledObject->released(t_releaseDir, t_toPlanet);
     

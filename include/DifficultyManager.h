@@ -21,6 +21,7 @@ public:
     static void initBaseDifficulties();
     
     static void setDifficulty(DifficultySettings t_difficulty);
+    static void resetDifficulty();
     static void increaseDifficulty();
 
     static int getObjectMin() { return currentDifficulty.objectMinimum; }
@@ -35,6 +36,7 @@ public:
 private:
     
     static DifficultySettings currentDifficulty;
+    static DifficultySettings originalDifficulty;
 
     static DifficultySettings easy;
     static DifficultySettings medium;

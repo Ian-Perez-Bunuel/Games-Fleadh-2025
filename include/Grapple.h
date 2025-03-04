@@ -31,6 +31,8 @@ public:
     void update();
     void draw();
 
+    bool checkIfGrabbing();
+
     bool isActive() { return active; }
     Vector2 getStartPoint() { return  startPos; }
 
