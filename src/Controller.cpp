@@ -46,25 +46,28 @@ void Controller::drawCursor()
 
 void Controller::updateCursor()
 {
-    cursorPos.x += rightStick.x * 15;
-    cursorPos.y += rightStick.y * 15;
+    if (visable)
+    {
+        cursorPos.x += rightStick.x * 750.0f * GetFrameTime();
+        cursorPos.y += rightStick.y * 750.0f * GetFrameTime();
 
-    if (cursorPos.x >= SCREEN_WIDTH - CURSOR_RADIUS * 2.5f)
-    {
-        cursorPos.x = SCREEN_WIDTH - CURSOR_RADIUS * 2.5f;
-    }
-    else if (cursorPos.x <= CURSOR_RADIUS)
-    {
-        cursorPos.x = CURSOR_RADIUS;
-    }
+        if (cursorPos.x >= SCREEN_WIDTH - CURSOR_RADIUS * 2.5f)
+        {
+            cursorPos.x = SCREEN_WIDTH - CURSOR_RADIUS * 2.5f;
+        }
+        else if (cursorPos.x <= CURSOR_RADIUS)
+        {
+            cursorPos.x = CURSOR_RADIUS;
+        }
 
-    if (cursorPos.y >= SCREEN_HEIGHT - CURSOR_RADIUS)
-    {
-        cursorPos.y = SCREEN_HEIGHT - CURSOR_RADIUS;
-    }
-    else if (cursorPos.y <= CURSOR_RADIUS)
-    {
-        cursorPos.y = CURSOR_RADIUS;
+        if (cursorPos.y >= SCREEN_HEIGHT - CURSOR_RADIUS)
+        {
+            cursorPos.y = SCREEN_HEIGHT - CURSOR_RADIUS;
+        }
+        else if (cursorPos.y <= CURSOR_RADIUS)
+        {
+            cursorPos.y = CURSOR_RADIUS;
+        }
     }
 }
 

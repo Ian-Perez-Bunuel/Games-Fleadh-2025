@@ -18,6 +18,8 @@ public:
     void draw();
     void update(Planet& t_planet);
     void reset();
+    void turnOff() { reset(); turnedOff = true; }
+    bool isOn() { return !turnedOff; }
     
     static const int SMALL;
     static const int MEDIUM;
@@ -64,6 +66,7 @@ private:
     void splitObject();
 
     void removeNotActives();
+    bool turnedOff = false;
 
     float pointToPointDist(Vector2 t_p1, Vector2 t_p2) { return sqrt(((t_p2.x - t_p1.x) * (t_p2.x - t_p1.x)) + ((t_p2.y - t_p1.y) * (t_p2.y - t_p1.y))); }
 

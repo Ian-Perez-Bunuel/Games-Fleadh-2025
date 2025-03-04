@@ -38,7 +38,6 @@ public:
 
     bool isAlive() { return alive; }
     bool respawn();
-    void resetAchievements();
 
     bool checkIfGrabbing();
 

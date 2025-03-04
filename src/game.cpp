@@ -3,6 +3,8 @@
 #include "../include/DifficultyManager.h"
 #include "../include/Transition.h"
 
+#include "rlgl.h"
+
 
 Game::Game()
 {
@@ -41,9 +43,13 @@ void Game::initialize()
 
     planetManager.init();
 
+    fullPlayerModel = LoadModel("resources/Art/3D/playerFull.glb");
+
 
     // Camera initializing
     SceneCamera::initialize();
+
+    font = LoadFontEx("resources/dogicapixelbold.ttf", FONT_SIZE, 0, 0);
 
     // Music
     musicStart = LoadMusicStream("resources/Sound/themeIntro.wav");
@@ -52,10 +58,6 @@ void Game::initialize()
     SetMusicVolume(musicStart, musicVolume);
     SetMusicVolume(musicLoop, musicVolume);
     Transition::initSound();
-
-    DifficultyManager::initBaseDifficulties();
-    // SET DIFFICULTY TEMP
-    DifficultyManager::setDifficulty(DifficultyManager::getDifficulty(1));
 }
 void Game::initializeShaders()
 {
@@ -152,6 +154,17 @@ void Game::update()
     }
     else
     {
+        if (planetManager.checkIfEnd())
+        {
+            if (objectManager->isOn())
+            {
+                objectManager->reset();
+            }
+            printf("\n\nEND\n\n");
+            objectManager->turnOff();
+            endingTimer();
+        }
+
         input();
         SceneCamera::update();
         
@@ -233,26 +246,52 @@ void Game::drawMiddleground()
                 {
                     animateReticle();
                     
-                    DrawModel(reticleIn, convertToMiddleCoords(closestObjectToPlayer->getPos()), 0.25f, WHITE);
-                    DrawModel(reticleMiddle, convertToMiddleCoords(closestObjectToPlayer->getPos()), 0.25f, WHITE);
-                    DrawModel(reticleOut, convertToMiddleCoords(closestObjectToPlayer->getPos()), 0.25f, WHITE);
+                    if (closestObjectToPlayer->checkCollidable())
+                    {
+                        DrawModelWires(reticleIn, convertToMiddleCoords(closestObjectToPlayer->getPos()), 0.25f, WHITE);
+                        DrawModelWires(reticleMiddle, convertToMiddleCoords(closestObjectToPlayer->getPos()), 0.25f, WHITE);
+                        DrawModelWires(reticleOut, convertToMiddleCoords(closestObjectToPlayer->getPos()), 0.25f, WHITE);
+                    }
                 }
             }
 
-            player.draw3D();
+            if (planetManager.checkIfEnd())
+            {
+                rlSetLineWidth(2.0f);
+                DrawModelWires(fullPlayerModel, {0, -0.1f, 0}, 0.8f, WHITE);
+                rlSetLineWidth(0.1f);
+            }
+            else
+            {
+                player.draw3D();
+            }
 
             // Controller cursor
             if (IsGamepadAvailable(0) && player.checkIfGrabbing())
             {
                 controller.drawCursor();
+                controller.visable = true;
             }
+            else
+            {
+                controller.visable = false;
+            }
+
         EndMode3D();
 
         planetManager.getMainPlanet().drawParticles();
 
         objectManager->draw();
         
-        player.draw();
+        if (planetManager.checkIfEnd())
+        {
+            // End screen text
+            DrawText(ENDING_TOP_TEXT.c_str(), (SCREEN_WIDTH / 2.0f) - 400, SCREEN_HEIGHT * 0.2f, FONT_SIZE, WHITE);
+        }
+        else
+        {
+            player.draw();
+        }
 
         achievementManager.draw();
 
@@ -358,9 +397,14 @@ void Game::mouseInput()
         planetManager.reset();
         Player::resetStages();
         player.dropEverything();
-        player.resetAchievements();
+        
         objectManager->reset();
         AchievementManager::lockAll();
+    }
+
+    if (IsKeyPressed(KEY_UP))
+    {
+        planetManager.nextPlanet();
     }
 
     if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
@@ -373,15 +417,10 @@ void Game::mouseInput()
     // Used to grab objects
     if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT))
     {
-        if (closestObjectToPlayer != nullptr)
+        if (closestObjectToPlayer != nullptr && !closestObjectToPlayer->checkCollidable())
         {
             player.shootGrapple(closestObjectToPlayer);
         }
-    }
-
-    if (IsKeyPressed(KEY_UP))
-    {
-        Player::increase3DStage();
     }
 }
 
@@ -395,7 +434,6 @@ void Game::controllerInput()
         SceneCamera::currentScene = Scene::MAIN_MENU;
         planetManager.reset();
         player.dropEverything();
-        player.resetAchievements();
         objectManager->reset();
         Player::resetStages();
     }
@@ -412,6 +450,39 @@ void Game::controllerInput()
         {
             player.shootGrapple(closestObjectToPlayer);
         }
+    }
+}
+
+void Game::animateEndModel()
+{
+    tilt += 0.5f;
+    pitch += 0.5f;
+
+    // Rotate gyro
+    Matrix tiltMatrix = MatrixRotateY(DEG2RAD * tilt);
+    Matrix spinMatrix = MatrixRotateX(DEG2RAD * pitch);
+
+    // Combine the rotations
+    Matrix rotationMatrix = MatrixMultiply(spinMatrix, tiltMatrix);
+
+    // Apply the combined rotation to the planet models
+    fullPlayerModel.transform = rotationMatrix;
+}
+
+void Game::endingTimer()
+{
+    if (endingClock < END_DURATION)
+    {
+        endingClock += GetFrameTime();
+
+        animateEndModel();
+    }
+    else
+    {
+        endingClock = 0;
+        planetManager.reset();
+        player.resetStages();
+        SceneCamera::currentScene = Scene::MAIN_MENU;
     }
 }
 

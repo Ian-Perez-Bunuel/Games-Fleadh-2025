@@ -24,6 +24,7 @@ MainMenu::~MainMenu()
 void MainMenu::initialize()
 {
     controller.init();
+    DifficultyManager::initBaseDifficulties();
 
     for (int i = 0; i < 2; i ++)
     {
@@ -62,7 +63,7 @@ void MainMenu::initialize()
 
     player.initialize({SCREEN_WIDTH / 2.0f - 30, SCREEN_HEIGHT * 0.45f});
 
-    planetPos = {0.0, -1.25, MAIN_PLANET_Z + 8};
+    planetPos = {0.0, -1.25, MAIN_PLANET_Z + 3};
     planet.init(planetPos, 1, RED);
 
     DifficultyManager::setDifficulty(DifficultyManager::getDifficulty(1)); 
@@ -231,27 +232,19 @@ void MainMenu::update()
     // Activate specific effect
     for (int i = 0; i < MAX_OPTIONS; i++)
     {
-        if (!options[i]->checkIfCanDamage())
+        if (!options[i]->isActive())
         {
-            if (!options[i]->isActive())
+            if (options[i]->effect != nullptr)
             {
-                if (options[i]->effect != nullptr)
-                {
-                    options[i]->effect();
-                }
+                options[i]->effect();
+            }
 
-                options[i]->reset();
-            }
+            options[i]->reset();
         }
-        else if (planet.isCoreConsumed())
+
+        if (planet.isCoreConsumed() && planet.checkIfParticlesActive())
         {
-            if (!options[i]->isActive() && planet.checkIfParticlesActive())
-            {
-                if (options[i]->effect != nullptr)
-                {
-                    options[i]->effect();
-                }
-            }
+            playEffect();
         }
     }
 }
@@ -287,6 +280,11 @@ void MainMenu::draw()
             if (IsGamepadAvailable(0) && checkIfAnOptionPickedup())
             {
                 controller.drawCursor();
+                controller.visable = true;
+            }
+            else
+            {
+                controller.visable = false;
             }
 
         EndMode3D();
@@ -448,8 +446,6 @@ void MainMenu::easyEffect()
     ParticleSpawner& particles = planet.getParticles();
     particles.clearColors();
     particles.addColor(GREEN);
-
-    playEffect();
 }
 
 void MainMenu::mediumEffect()
@@ -460,8 +456,6 @@ void MainMenu::mediumEffect()
     ParticleSpawner& particles = planet.getParticles();
     particles.clearColors();
     particles.addColor(ORANGE);
-
-    playEffect();
 }
 
 void MainMenu::hardEffect()
@@ -472,8 +466,6 @@ void MainMenu::hardEffect()
     ParticleSpawner& particles = planet.getParticles();
     particles.clearColors();
     particles.addColor(RED);
-
-    playEffect();
 }
 
 void MainMenu::extremeEffect()
@@ -484,6 +476,4 @@ void MainMenu::extremeEffect()
     ParticleSpawner& particles = planet.getParticles();
     particles.clearColors();
     particles.addColor(DARKPURPLE);
-
-    playEffect();
 }

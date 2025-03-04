@@ -50,6 +50,7 @@ public:
     Vector2 getCursorPos() { return cursorPos; }
     int getCursorRadius() { return CURSOR_RADIUS; }
     void drawCursor();
+    bool visable = false;
 
 private:
     void getButtonInput();

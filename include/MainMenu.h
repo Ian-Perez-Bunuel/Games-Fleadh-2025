@@ -1,5 +1,4 @@
-#ifndef MAINMENU_H
-#define MAINMENU_H
+#pragma once
 
 #include "raylib.h"
 #include "raymath.h"
@@ -61,6 +60,7 @@ private:
     bool CheckCollisionRaySphere(Ray ray, Vector3 spherePos, float sphereRadius);
     bool checkIfMouseOnPlanet(Vector2 mousePos, Vector3 spherePos, float sphereRadius);
     static Planet planet;
+
     Vector3 planetPos;
 
     // Shaders
@@ -112,5 +112,3 @@ private:
     Vector3 convertToMiddleCoords(Vector2 t_originalCoords);
     float pointToPointDist(Vector2 t_p1, Vector2 t_p2) { return sqrt(((t_p2.x - t_p1.x) * (t_p2.x - t_p1.x)) + ((t_p2.y - t_p1.y) * (t_p2.y - t_p1.y))); }
 };
-
-#endif // MAINMENU_H

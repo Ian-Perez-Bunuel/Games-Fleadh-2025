@@ -19,6 +19,8 @@ public:
 
     Planet& getMainPlanet() { return planets[currentPlanet]; }
 
+    bool checkIfEnd() { return endScene; }
+
     void nextPlanet();
     static void increaseTimesHit() { timesHit++; }
     static void increasePowerfulHits() { powerHits++; }
@@ -28,12 +30,12 @@ private:
 
     std::vector<Planet> planets;
 
-    Model model;
-
     static int timesHit;
     static int powerHits;
     int coresCollected = 0;
 
     static const int PLANET_AMOUNT = 6;
     int currentPlanet = 0;
+
+    bool endScene = false;
 };

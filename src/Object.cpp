@@ -169,6 +169,8 @@ void Object::checkForSpeedIncrease()
 		}
 		else
 		{
+			rotationSpeed = MAX_ROTATION_SPEED;
+			
 			if (!hitMaxRotationSpeed)
 			{
 				hitMaxRotationSpeed = true;

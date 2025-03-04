@@ -57,13 +57,6 @@ void Player::initAchievements()
     AchievementManager::addGoalToAchievement("Marathon Runner", &movementDone, 1500);
 }
 
-void Player::resetAchievements()
-{
-    objectsGrabbed = 0;
-    maxGrappledObjects = 0;
-    movementDone = 0;
-}
-
 void Player::rotateToMouse()
 {
     rotation = atan2f(GetMousePosition().y  - position.y, GetMousePosition().x  - position.x) * RAD2DEG;
@@ -97,17 +90,20 @@ void Player::boundryChecking()
 
 void Player::draw3D()
 {
-    if (stage >= 2)
+    if (alive)
     {
-        DrawModelWires(ring, position3D, scale / 10.0f, color);
-    }
-    if (stage >= 4)
-    {
-        DrawModelWires(beams, position3D, scale / 10.0f, color);
-    }
-    if (stage >= 6)
-    {
-        DrawModelWires(hull, position3D, scale / 10.0f, color);
+        if (stage >= 2)
+        {
+            DrawModelWires(ring, position3D, scale / 10.0f, color);
+        }
+        if (stage >= 4)
+        {
+            DrawModelWires(beams, position3D, scale / 10.0f, color);
+        }
+        if (stage >= 6)
+        {
+            DrawModelWires(hull, position3D, scale / 10.0f, color);
+        }
     }
 }
 
@@ -244,6 +240,8 @@ void Player::draw()
         // HP
         drawHealthBar();
     }
+
+    particles.draw();
 }
 
 void Player::shootGrapple(std::shared_ptr<Object> t_object)
@@ -374,6 +372,8 @@ void Player::update(Vector2 t_leftStickDir, Vector2 t_cursorPos)
 
         position3D = convertToMiddleCoords(position);
     }
+
+    particles.update();
 }
 
 void Player::updateModels()
@@ -395,7 +395,7 @@ void Player::kill()
     alive = false;
 
     particles.setValues(position, 360, 0);
-    particles.spawn(5);
+    particles.spawn(10);
 
     grapples->release({0, 0}, false);
 
@@ -462,6 +462,7 @@ void Player::takeDamage(int t_amount)
         else
         {
             kill();
+            SceneCamera::screenShake(SceneCamera::LARGE_SHAKE + 5, 15);
         }
     }
 }
@@ -504,7 +505,6 @@ bool Player::respawn()
             health = MAX_HEALTH;
             lastHit = false;
 
-            resetAchievements();
             stage = 0;
 
             Transition::begin();

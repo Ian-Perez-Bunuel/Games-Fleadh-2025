@@ -11,36 +11,39 @@ void AchievementManager::init()
     achievementComplete = LoadSound("resources/Sound/achievement.wav");
     SetSoundVolume(achievementComplete, 0.2);
 
+    font = LoadFontEx("resources/dogicapixelbold.ttf", FONT_SIZE, 0, 0);
+
 
     // Type::NONE
-    achievements.push_back(Achievement(box, "Hello World!", AchievementType::NONE));
+    achievements.push_back(Achievement(box, font, "Hello World!", AchievementType::NONE));
 
     // Type::PLAYER
-    achievements.push_back(Achievement(box, "Baby's first toy", AchievementType::PLAYER));
-    achievements.push_back(Achievement(box, "GRAB, GRAB, GRAB!", AchievementType::PLAYER));
-    achievements.push_back(Achievement(box, "ALL FULL!!!", AchievementType::PLAYER));
-    achievements.push_back(Achievement(box, "Asteroid Lover", AchievementType::PLAYER));
-    achievements.push_back(Achievement(box, "Rock Collector", AchievementType::PLAYER));
+    achievements.push_back(Achievement(box, font, "Baby's first toy", AchievementType::PLAYER));
+    achievements.push_back(Achievement(box, font, "GRAB, GRAB, GRAB!", AchievementType::PLAYER));
+    achievements.push_back(Achievement(box, font, "ALL FULL!!!", AchievementType::PLAYER));
+    achievements.push_back(Achievement(box, font, "Asteroid Lover", AchievementType::PLAYER));
+    achievements.push_back(Achievement(box, font, "Rock Collector", AchievementType::PLAYER));
 
-    achievements.push_back(Achievement(box, "Engines On!", AchievementType::PLAYER));
-    achievements.push_back(Achievement(box, "Marathon Runner", AchievementType::PLAYER));
+    achievements.push_back(Achievement(box, font, "Engines On!", AchievementType::PLAYER));
+    achievements.push_back(Achievement(box, font, "Marathon Runner", AchievementType::PLAYER));
 
     // Type::OBJECT
-    achievements.push_back(Achievement(box, "Speed Star!", AchievementType::OBJECT));
-    achievements.push_back(Achievement(box, "Particle Accelerator", AchievementType::OBJECT));
+    achievements.push_back(Achievement(box, font, "Speed Star!", AchievementType::OBJECT));
+    achievements.push_back(Achievement(box, font, "Particle Accelerator", AchievementType::OBJECT));
 
-    achievements.push_back(Achievement(box, "Powerful Hit!", AchievementType::OBJECT));
+    achievements.push_back(Achievement(box, font, "Powerful Hit!", AchievementType::OBJECT));
 
     // Type::PLANET
-    achievements.push_back(Achievement(box, "First Blood", AchievementType::PLANET));
-    achievements.push_back(Achievement(box, "Nice Aim!!", AchievementType::PLANET));
-    achievements.push_back(Achievement(box, "Resolve Is Key", AchievementType::PLANET));
-    achievements.push_back(Achievement(box, "COMBO!", AchievementType::PLANET));
-    achievements.push_back(Achievement(box, "ORA! ORA! ORA!", AchievementType::PLANET));
+    achievements.push_back(Achievement(box, font, "First Blood", AchievementType::PLANET));
+    achievements.push_back(Achievement(box, font, "Nice Aim!!", AchievementType::PLANET));
+    achievements.push_back(Achievement(box, font, "Resolve Is Key", AchievementType::PLANET));
+    achievements.push_back(Achievement(box, font, "COMBO!", AchievementType::PLANET));
+    achievements.push_back(Achievement(box, font, "ORA! ORA! ORA!", AchievementType::PLANET));
 
-    achievements.push_back(Achievement(box, "Core Collector", AchievementType::PLANET));
-    achievements.push_back(Achievement(box, "Almost there!", AchievementType::PLANET));
-    achievements.push_back(Achievement(box, "3D Achieved!!!", AchievementType::PLANET));
+    achievements.push_back(Achievement(box, font, "Core Collector", AchievementType::PLANET));
+    achievements.push_back(Achievement(box, font, "Almost there!", AchievementType::PLANET));
+    achievements.push_back(Achievement(box, font, "3D Achieved!!!", AchievementType::PLANET));
+    achievements.push_back(Achievement(box, font, "Congratulations!!!", AchievementType::PLAYER));
 }
 
 void AchievementManager::checkForChanges()

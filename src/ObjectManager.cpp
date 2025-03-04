@@ -47,14 +47,10 @@ void ObjectManager::reset()
 {
     for (std::shared_ptr<Object>& o : objects)
     {
-        if (!o->checkGrabbed())
-        {
-            o->deactivate();
-        }
-
-        hitMaxRotationSpeed = 0;
-        amountSpeedMaxed = 0;
+        o->deactivate();
     }
+
+    pickups.clear();
 }
 
 void ObjectManager::addObject()
@@ -285,29 +281,32 @@ void ObjectManager::draw()
 
 void ObjectManager::update(Planet& t_planet)
 {
-    for (std::shared_ptr<Object>& object : objects)
+    if (!turnedOff)
     {
-        object->update();
-
-        if (object->checkToPlanet())
-	    {
-		    object->movementToPlanet(t_planet);
-	    }
-
-        checkPlayerCollisions(object);
-
-        // Achievement checking
-        if (!hitMaxRotationSpeed)
+        for (std::shared_ptr<Object>& object : objects)
         {
-            hitMaxRotationSpeed = static_cast<int>(object->getRotationMaxHit());
+            object->update();
+
+            if (object->checkToPlanet())
+            {
+                object->movementToPlanet(t_planet);
+            }
+
+            checkPlayerCollisions(object);
+
+            // Achievement checking
+            if (!hitMaxRotationSpeed)
+            {
+                hitMaxRotationSpeed = static_cast<int>(object->getRotationMaxHit());
+            }
         }
-    }
-    checkCollisions();
+        checkCollisions();
 
-    for (std::shared_ptr<PickUp>& pickup : pickups)
-    {
-        pickup->update();
-    }
+        for (std::shared_ptr<PickUp>& pickup : pickups)
+        {
+            pickup->update();
+        }
 
-    keepObjectsAboveMin();
+        keepObjectsAboveMin();
+    }
 }

@@ -21,6 +21,9 @@ public:
 private:
     static std::vector<Achievement> achievements;
 
+    Font font;
+    const int FONT_SIZE = 18;
+
     int achievementAmount = 0;
 
     Texture2D box;

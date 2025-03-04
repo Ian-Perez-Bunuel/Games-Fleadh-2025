@@ -42,6 +42,7 @@ private:
     Player player;
     std::shared_ptr<Object> closestObjectToPlayer;
 
+    Model fullPlayerModel;
 
     // Reticle
     void animateReticle();
@@ -81,6 +82,13 @@ private:
     RenderTexture2D middleground;
     RenderTexture2D foreground;
 
+    void endingTimer();
+    void animateEndModel();
+    const int END_DURATION = 8;
+    float endingClock = 0;
+    Font font;
+    const std::string ENDING_TOP_TEXT = "YOU HAVE BECOME 3D!";
+    const int FONT_SIZE = 60;
 
     // Projectile testing
     std::vector<Projectile> projectiles;

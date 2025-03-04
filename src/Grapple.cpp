@@ -147,7 +147,11 @@ void Grapple::update()
 
     if (grappledObject != nullptr)
     {
-        // float distToTarget = pointToPointDist(*userPos, grappledObject->getPos());
+        if (!grappledObject->isActive())
+        {
+            release({0, 0}, false);
+        }
+
         grappledObject->held(*userPos, ORBIT_LENGTH);
     }
 

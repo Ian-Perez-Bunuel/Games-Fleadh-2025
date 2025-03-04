@@ -15,7 +15,7 @@ enum class AchievementType
 class Achievement
 {
 public:
-    Achievement(Texture2D& t_texture, std::string t_title, AchievementType t_type);
+    Achievement(Texture2D& t_texture, Font& t_font, std::string t_title, AchievementType t_type);
     void addGoal(int* t_valueToKeepTrackOf, int t_goal);
 
     void draw(float t_yOffset);
@@ -25,7 +25,7 @@ public:
     bool hasBeenCompleted() { return completed; }
 
     bool checkIfCompleted();
-    void lock() { completed = false; value = 0; }
+    void lock(); 
 
 private:
     bool completed = false;
@@ -40,7 +40,7 @@ private:
     static const int HEIGHT = 150;
 
     // Description
-    Font font;
+    Font& font;
     const int FONT_SIZE = 18;
     int extraLineSpacing = 20;
     const int CHARACTERS_PER_LINE = 18;

@@ -4,12 +4,13 @@
 #include "../include/DifficultyManager.h"
 #include "../include/Transition.h"
 #include "../include/AchievementManager.h"
+#include "../include/SceneCamera.h"
 
 int PlanetManager::timesHit = 0;
 int PlanetManager::powerHits = 0;
 
 void PlanetManager::init()
-{
+{    
     initAchievements();
     planets.clear();
 
@@ -57,7 +58,7 @@ void PlanetManager::init()
 void PlanetManager::initAchievements()
 {
     AchievementManager::addGoalToAchievement("First Blood", &timesHit, 1);
-    AchievementManager::addGoalToAchievement("Nice Aim!!", &timesHit, 5);
+    AchievementManager::addGoalToAchievement("Nice Aim!!", &timesHit, 10);
     AchievementManager::addGoalToAchievement("Resolve Is Key", &timesHit, 25);
     AchievementManager::addGoalToAchievement("COMBO!", &timesHit, 50);
     AchievementManager::addGoalToAchievement("ORA! ORA! ORA!", &timesHit, 100);
@@ -67,59 +68,78 @@ void PlanetManager::initAchievements()
     AchievementManager::addGoalToAchievement("Core Collector", &coresCollected, 1);
     AchievementManager::addGoalToAchievement("Almost there!", &coresCollected, 3);
     AchievementManager::addGoalToAchievement("3D Achieved!!!", &coresCollected, 5);
+    AchievementManager::addGoalToAchievement("Congratulations!!!", &coresCollected, 6);
 }
 
 bool PlanetManager::update(Vector3 t_playerPos3D, Player& t_player)
 {
-    planets[currentPlanet].update(t_playerPos3D, t_player);
-
-    if (planets[currentPlanet].isCoreConsumed() && planets[currentPlanet].checkIfParticlesActive())
+    // Ensure currentPlanet is valid before updating.
+    if (!endScene)
     {
-        coresCollected++;
-        Transition::begin();
-        t_player.dropEverything();
-        nextPlanet();
-        
-        return true;
+        if (currentPlanet >= planets.size()) 
+        {
+            return false;
+        }
+
+        planets[currentPlanet].update(t_playerPos3D, t_player);
+
+        if (planets[currentPlanet].isCoreConsumed() && planets[currentPlanet].checkIfParticlesActive())
+        {
+            coresCollected++;
+            Transition::begin();
+            t_player.dropEverything();
+            nextPlanet();
+            return true;
+        }
     }
+
 
     return false;
 }
 
 void PlanetManager::drawMainPlanet()
 {
-    planets[currentPlanet].draw();
+    if (currentPlanet < planets.size() && !endScene)
+    {
+        planets[currentPlanet].draw();
+    }
 }
 
 void PlanetManager::drawOtherPlanets()
 {
-    for (int i = currentPlanet + 1; i < PLANET_AMOUNT; i++)
+    for (int i = currentPlanet + 1; i < planets.size(); i++)
     {
-        planets[i].draw();
+        if (!endScene)
+        {
+            planets[i].draw();
+        }
     }
 }
 
 void PlanetManager::nextPlanet()
 {
-    if (currentPlanet < planets.size())
+    // Only increment if we're not at the last planet.
+    if (currentPlanet < planets.size() - 1 && !endScene)
     {
         currentPlanet++;
         DifficultyManager::increaseDifficulty();
         
+        // Adjust positions of all planets.
         for (Planet& planet : planets)
         {
-            planet.setPos({planet.getPos().x, planet.getPos().y, planet.getPos().z + PLANET_SPACING});
+            Vector3 pos = planet.getPos();
+            planet.setPos({ pos.x, pos.y, pos.z + PLANET_SPACING });
         }
     }
-
+    else
+    {
+        endScene = true;
+    }
 }
 
 void PlanetManager::reset()
 {
-    timesHit = 0;
-    powerHits = 0;
-    coresCollected = 0;
-
+    endScene = false;
     currentPlanet = 0;
 
     const int TOTAL = 326;

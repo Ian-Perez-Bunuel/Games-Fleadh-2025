@@ -86,6 +86,23 @@
         "*.m": "cpp",
         "regex": "cpp",
         "strstream": "cpp",
-        "__hash_table": "cpp"
+        "__hash_table": "cpp",
+        "barrier": "cpp",
+        "coroutine": "cpp",
+        "deque": "cpp",
+        "expected": "cpp",
+        "filesystem": "cpp",
+        "fstream": "cpp",
+        "map": "cpp",
+        "memory_resource": "cpp",
+        "ranges": "cpp",
+        "set": "cpp",
+        "shared_mutex": "cpp",
+        "valarray": "cpp",
+        "xtree": "cpp",
+        "__tree": "cpp",
+        "queue": "cpp",
+        "stack": "cpp",
+        "*.ipp": "cpp"
     }
 }

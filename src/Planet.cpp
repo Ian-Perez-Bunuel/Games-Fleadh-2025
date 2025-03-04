@@ -19,6 +19,7 @@ void Planet::init(Vector3 t_pos, int t_maxHealth, Color t_color)
     health = maxHealth;
 
     defeated = false;
+    coreConsumed = false;
 
     //  Load each planet type
     planet1 = LoadModel("resources/Art/3D/planet1.obj");
@@ -58,7 +59,7 @@ void Planet::init(Vector3 t_pos, int t_maxHealth, Color t_color)
     projectileModel = LoadModel("resources/Art/3D/missile.glb");
 
     color = t_color;
-    genExplosionTexture();
+    // genExplosionTexture();
     
     explosionShader = LoadShader("resources/Shaders/explosion.vs", "resources/Shaders/explosion.fs");
 
@@ -143,10 +144,14 @@ void Planet::draw()
     if (!defeated)
     {
         rlSetLineWidth(2.0f);
-        DrawModelWires(model, position, 0.75f, color);
-        for (Projectile projectile : projectiles)
+        DrawModelWires(model, position, 1.1f, color);
+
+        if (projectiles.size() > 0)
         {
-            projectile.draw();
+            for (Projectile projectile : projectiles)
+            {
+                projectile.draw();
+            }
         }
     }
     if (!coreConsumed)
@@ -162,9 +167,12 @@ void Planet::drawParticles()
     deathParticles.draw();
     if (!defeated)
     {
-        for (Projectile projectile : projectiles)
+        if (projectiles.size() > 0)
         {
-            projectile.drawParticles();
+            for (Projectile projectile : projectiles)
+            {
+                projectile.drawParticles();
+            }
         }
     }
 }
@@ -287,6 +295,7 @@ void Planet::takeDmg(int t_damage)
         if (!defeated)
         {
             defeated = true;
+            projectiles.clear();
 
             SceneCamera::screenShake(SceneCamera::LARGE_SHAKE, 30);
             Player::increase3DStage();

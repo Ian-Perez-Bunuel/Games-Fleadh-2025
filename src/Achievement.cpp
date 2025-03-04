@@ -6,11 +6,9 @@
 #include <sstream>
 
 
-Achievement::Achievement(Texture2D& t_texture, std::string t_title, AchievementType t_type)
-    : texture(t_texture), title(t_title), type(t_type)
+Achievement::Achievement(Texture2D& t_texture, Font& t_font, std::string t_title, AchievementType t_type)
+    : texture(t_texture), font(t_font), title(t_title), type(t_type)
 {
-    font = LoadFontEx("resources/dogicapixelbold.ttf", FONT_SIZE, 0, 0);
-
     position = {-100, 50};
 
     switch (type)
@@ -157,4 +155,14 @@ std::string Achievement::splitSentence(std::string t_original)
     }
     
     return result;
+}
+
+void Achievement::lock()
+{
+    completed = false; 
+    
+    if (value != nullptr)
+    {
+        *value = 0;
+    }
 }
