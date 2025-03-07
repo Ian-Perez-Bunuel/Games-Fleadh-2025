@@ -17,7 +17,7 @@ Once you've done enough damage to the planet it will be destroyed and absorbed.
 
 While you are doing this The planet will be attacking you so you better stay on the move!
 
-----Goal----
+----GOAL----
 The goal of the game is to destroy planets to become 3D by absorbing their cores.
 
 

@@ -417,7 +417,7 @@ void Game::mouseInput()
     // Used to grab objects
     if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT))
     {
-        if (closestObjectToPlayer != nullptr && closestObjectToPlayer->checkCollidable())
+        if (closestObjectToPlayer != nullptr)
         {
             player.shootGrapple(closestObjectToPlayer);
         }

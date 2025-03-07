@@ -147,12 +147,15 @@ void Grapple::update()
 
     if (grappledObject != nullptr)
     {
+        if (userPos != nullptr)
+        {
+            grappledObject->held(*userPos, ORBIT_LENGTH);
+        }
+
         if (!grappledObject->isActive())
         {
             release({0, 0}, false);
         }
-
-        grappledObject->held(*userPos, ORBIT_LENGTH);
     }
 
     particleSpawnpoint.update();

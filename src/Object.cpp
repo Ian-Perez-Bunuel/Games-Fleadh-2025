@@ -266,11 +266,23 @@ void Object::released(Vector2 t_releaseDir, bool t_toPlanet)
 		planetPos = t_releaseDir;
 	}
 	
-	velocity.x = t_releaseDir.x - position.x;
-	velocity.y = t_releaseDir.y - position.y;
+	Vector2 dir = {
+		t_releaseDir.x - position.x,
+		t_releaseDir.y - position.y
+	};
 	
-	velocity.x *= 0.05 * (rotationSpeed / MAX_ROTATION_SPEED);
-	velocity.y *= 0.05 * (rotationSpeed / MAX_ROTATION_SPEED);
+	// Compute the length (magnitude) of that vector
+	float length = sqrtf(dir.x * dir.x + dir.y * dir.y);
+	
+	// Avoid division by zero
+	if (length > 0.0f)
+	{
+		dir.x /= length;
+		dir.y /= length;
+	}
+	
+	velocity.x = dir.x * (rotationSpeed / 10);
+	velocity.y = dir.y * (rotationSpeed / 10);
 	
 	rotationSpeed = 0;
 
