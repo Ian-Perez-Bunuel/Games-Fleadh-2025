@@ -488,6 +488,13 @@ void Player::dropEverything()
     releaseGrapple({0, 0}, false);
 }
 
+void Player::reset()
+{
+    dropEverything();
+
+    health = MAX_HEALTH;
+}
+
 bool Player::respawn()
 {
     if (!alive)

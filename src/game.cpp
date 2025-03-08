@@ -396,7 +396,7 @@ void Game::mouseInput()
         SceneCamera::currentScene = Scene::MAIN_MENU;
         planetManager.reset();
         Player::resetStages();
-        player.dropEverything();
+        player.reset();
         
         objectManager->reset();
         AchievementManager::lockAll();
@@ -433,7 +433,7 @@ void Game::controllerInput()
         Transition::begin();
         SceneCamera::currentScene = Scene::MAIN_MENU;
         planetManager.reset();
-        player.dropEverything();
+        player.reset();
         objectManager->reset();
         Player::resetStages();
     }
