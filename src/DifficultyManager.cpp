@@ -85,4 +85,6 @@ DifficultySettings DifficultyManager::getDifficulty(int t_level)
         return extreme;
         break;
     }
+
+    return easy;
 }

@@ -176,7 +176,10 @@ build_web: install_toolchain
 			-L$(RAYLIB_LIBRARY_WEB) \
 			-lraylib \
 			-s USE_GLFW=3 -s FULL_ES2=1 -s ASYNCIFY \
+			-s STACK_SIZE=1048576 \
+			-s ALLOW_MEMORY_GROWTH=1 \
 			--shell-file $(HTML_TEMPLATE) \
+			--embed-file resources@/resources \
 			-D WEB_BUILD"; \
 		if [ $$? -eq 0 ]; then \
 			$(call SUCCESS_MSG, $(MSG_BUILD_WEB_END)); \

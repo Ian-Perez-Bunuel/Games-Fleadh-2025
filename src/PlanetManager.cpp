@@ -43,8 +43,6 @@ void PlanetManager::init()
         randomColor.b = b;
         randomColor.a = 255;
 
-        printf("\n\n%f, %f, %f\n\n", randomColor.r, randomColor.g, randomColor.b);
-
         float randX = static_cast<float>((rand() % (2 * (int)SCREEN_BOUNDS_X)) - SCREEN_BOUNDS_X);
         float randY = static_cast<float>((rand() % (2 * (int)SCREEN_BOUNDS_Y)) - SCREEN_BOUNDS_Y);
 

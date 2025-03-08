@@ -3,11 +3,11 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Gameplay Programming I</title>
+    <title>STARBURST</title>
     <style>
         /* Custom styles */
         body {
-            background-color: #f0f0f0;
+            background-color: #000000;
             font-family: Arial, sans-serif;
             margin: 0;
             overflow: hidden;
@@ -29,6 +29,10 @@
     {{{ SCRIPT }}}
 
     <script>
+
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        }, false);
 
         // Ensure 'Module' exists before using it
         var Module = Module || {};

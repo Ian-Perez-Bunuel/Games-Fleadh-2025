@@ -160,12 +160,12 @@ void Object::checkForSpeedIncrease()
 	// Restrict angle within (0, 360)
 	if (angle >= 360.0f)
 	{
-		angle -= 360.0f;
+		angle = 0.0f;
 
 		// Slightly increase rotationSpeed upon full rotation
 		if (rotationSpeed < MAX_ROTATION_SPEED)
 		{
-			rotationSpeed *= 1.05f; // Adjust acceleration factor as needed
+			rotationSpeed += 30; // Adjust acceleration factor as needed
 		}
 		else
 		{

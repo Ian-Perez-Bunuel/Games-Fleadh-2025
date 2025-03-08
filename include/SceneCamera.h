@@ -37,7 +37,7 @@ private:
     static float offsetY;
     static float offsetZ;
 
-    static const int MAX_OFFSET = 1.2;
+    static const int MAX_OFFSET = 1;
 
     static float getRandFloat();
 };

@@ -2,7 +2,7 @@
 #include "../include/Globals.h"
 #include "../include/DifficultyManager.h"
 #include "../include/AchievementManager.h"
-#include <bits/stdc++.h>
+#include <algorithm>
 
 
 const int ObjectManager::SMALL = 15;
@@ -78,7 +78,7 @@ void ObjectManager::addObject()
 
 Vector2 ObjectManager::genSpawnPos()
 {
-    Vector2 start = { -(SCREEN_WIDTH / 2), SCREEN_HEIGHT / 2 };
+    Vector2 start = { -(SCREEN_WIDTH / 2.0f), SCREEN_HEIGHT / 2.0f };
     Vector2 end = { (SCREEN_WIDTH * 0.75f), -(SCREEN_HEIGHT * 0.75f)};
 
     // Pick a random t in [0, 1]
@@ -221,11 +221,17 @@ void ObjectManager::keepObjectsAboveMin()
 void ObjectManager::removeNotActives()
 {
     // Remove all objects that are marked as not active (Including their particles).
-    objects.erase(std::remove_if(objects.begin(), objects.end(),
-                   [](const std::shared_ptr<Object>& obj) {
-                       return obj->isParticalsActive() && !obj->isActive();
-                   }),
-                   objects.end());
+    for (auto it = objects.begin(); it != objects.end(); ) 
+    {
+        if ((*it)->isParticalsActive() && !(*it)->isActive()) 
+        {
+            it = objects.erase(it);
+        } 
+        else 
+        {
+            ++it;
+        }
+    }
 }
 
 void ObjectManager::splitObject()

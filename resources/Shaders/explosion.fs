@@ -1,21 +1,15 @@
-#version 330
+#ifdef GL_ES
+precision mediump float;
+#endif
 
-// Input vertex attributes from vertex shader
-in vec2 fragTexCoord;
-in vec4 fragColor;    // Comes from the vertex shader
-in vec3 fragNormal;
+// Replace 'in' with 'varying'
+varying vec2 fragTexCoord;
+varying vec4 fragColor;    // Passed from the vertex shader
+varying vec3 fragNormal;
 
 uniform vec4 color;    // Comes from the code
 
-// Final color output
-out vec4 finalColor;
-
 void main()
-{
-    // Basic lighting calculation
-    // Can use new vertex normal for lighting
-    // vec3 lightDir = normalize(vec3(1.0, 1.0, -1.0));
-    // float intensity = max(dot(fragNormal, lightDir), 0.0);
-    
-    finalColor = fragColor * color;
+{    
+    gl_FragColor = fragColor * color;
 }
