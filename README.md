@@ -1,3 +1,9 @@
+This game was made for the Games Fleadh. It took around 2 months to make and won 2 awards. These were best game mechanic and best game using a libary.
+To make it we used Raylib and a Makefile to run it.
+If you wish to download the game it is currently on itch.io : https://shadowmalteser.itch.io/starburst
+
+
+
 ----CONTROLS----
 
 Keyboard:
@@ -21,29 +27,5 @@ While you are doing this The planet will be attacking you so you better stay on 
 The goal of the game is to destroy planets to become 3D by absorbing their cores.
 
 
-
-////// ESPANOL //////
-----CONTROLES----
-
-Teclado y Raton:
-WASD - Movimiento
-Clic derecho (raton) - Coger el objeto más cercano
-Clic izquierdo (raton) - Lanzar el objeto al raton
-
-Mando (XBOX):
-Joystick izquierdo: movimiento
-Joystick derecho: mover la retícula de puntería
-Botón superior derecho (RB): agarrar el objeto más cercano
-Gatillo derecho (RT): lanzar el objeto agarrado a la posición de la retícula
-
-
-----CÓMO JUGAR----
-Cuando quieres atacar el planeta, pon el raton / retículo sobre el planeta y aprieta el botón de lanzar objetos.
-Una vez que hayas hecho bastante daño al planeta, lo destruyes y lo absorbes.
-
-Mientras haces esto, el planeta te atacará pues tienes que estar moviendote.
-
-----OBJETIVO----
-El objetivo del juego es destruir planetas para convertirte en 3D absorbiendo sus núcleos.
 
 
